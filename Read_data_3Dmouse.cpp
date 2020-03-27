@@ -1,9 +1,6 @@
 #include "Read_data_3Dmouse.h"
 
-HDC          hdc;
-SiHdl        devHdl;
-TCHAR devicename[100] = _T("");
-HWND         hWndMain;
+
 
 int SbInit()
 {

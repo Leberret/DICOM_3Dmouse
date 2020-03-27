@@ -1,4 +1,4 @@
-//#pragma once
+#pragma once
 #include <QtWidgets/QMainWindow>
 #include "ui_DICOM_3Dmouse.h"
 #include <QApplication>
@@ -9,7 +9,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <fstream>
+
+#include <QFileDialog>
+#include "utils.h"
+
+#include <QMenuBar>
+#include <iostream>
+
+#include <opencv2/opencv.hpp>
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "dcm/dicom_file.h"
+#include "dcm/logger.h"
+#include "dcm/util.h"
+
+
 
 extern HWND         hWndMain;
 

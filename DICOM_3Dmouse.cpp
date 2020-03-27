@@ -1,22 +1,4 @@
 #include "DICOM_3Dmouse.h"
-#include <QApplication>
-#include <QtWidgets>
-#include <QFileDialog>
-#include "utils.h"
-#include <fstream>
-#include <string>
-#include <QMenuBar>
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <fstream>
-#include <opencv2/opencv.hpp>
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-#include "dcm/dicom_file.h"
-#include "dcm/logger.h"
-#include "dcm/util.h"
 
 QVector<int>* ALLPixels(vector<unsigned short>* pixels, QVector<int>* allpixels) //Stocker tous les pixels de chaque image dans un seul vecteur
 {

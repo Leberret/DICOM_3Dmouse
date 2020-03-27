@@ -1,18 +1,6 @@
 #include "DICOM_3Dmouse.h"
 #include "Read_data_3Dmouse.h"
 
-#include <QtWidgets/QApplication>
-#include "utils.h"
-#include <fstream>
-#include <string>
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <fstream>
-#include <opencv2/opencv.hpp>
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
 int main(int argc, char* argv[])
 {
 
