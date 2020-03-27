@@ -1,5 +1,6 @@
-#include "DICOM_3Dmouse.h"
 #include "Read_data_3Dmouse.h"
+#include "DICOM_3Dmouse.h"
+
 
 int main(int argc, char* argv[])
 {

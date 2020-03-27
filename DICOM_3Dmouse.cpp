@@ -113,7 +113,8 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     layout->addWidget(slider2, 1, 1);//Position
     layout->addWidget(slider3, 1, 2);//Position
 
-}void Interface::ChangerIntensite()
+}
+void Interface::ChangerIntensite()
 {
     if (*NbFichiers == 0) //S'il n'y a pas de fichier on se casse
         return;
@@ -498,4 +499,6 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(value2(int)));// Connexion du slider a fonction
     connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(value3(int)));// Connexion du slider a fonction
     connect(slider4, SIGNAL(valueChanged(int)), this, SLOT(value4(int)));// Connexion du slider a fonction
+
+
 }

@@ -1,5 +1,15 @@
 #include "Read_data_3Dmouse.h"
+HDC          hdc;
+SiHdl        devHdl;
+TCHAR devicename[100] = _T("");
+HWND         hWndMain;
 
+TCHAR buff0[30];                            /* text buffer for TX */
+TCHAR buff1[30];                            /* text buffer for TY */
+TCHAR buff2[30];                            /* text buffer for TZ */
+TCHAR buff3[30];                            /* text buffer for RX */
+TCHAR buff4[30];                            /* text buffer for RY */
+TCHAR buff5[30];                            /* text buffer for RZ */
 
 
 int SbInit()
@@ -136,15 +146,8 @@ LRESULT WINAPI HandleNTEvent(HWND hWnd, unsigned msg, WPARAM wParam,
 
 void SbMotionEvent(SiSpwEvent* pEvent)
 {
-    TCHAR buff0[30];                            /* text buffer for TX */
-    TCHAR buff1[30];                            /* text buffer for TY */
-    TCHAR buff2[30];                            /* text buffer for TZ */
-    TCHAR buff3[30];                            /* text buffer for RX */
-    TCHAR buff4[30];                            /* text buffer for RY */
-    TCHAR buff5[30];                            /* text buffer for RZ */
-    TCHAR buff6[30];                            /* text buffer for Period */
-
-    int len0, len1, len2, len3, len4, len5, len6;	   /* length of each buffer */
+   
+    int len0, len1, len2, len3, len4, len5;	   /* length of each buffer */
 
     /* put the actual ball data into the buffers */
     len0 = _stprintf_s(buff0, 30, _T("TX: %d         "), pEvent->u.spwData.mData[SI_TX]);
@@ -153,25 +156,15 @@ void SbMotionEvent(SiSpwEvent* pEvent)
     len3 = _stprintf_s(buff3, 30, _T("RX: %d         "), pEvent->u.spwData.mData[SI_RX]);
     len4 = _stprintf_s(buff4, 30, _T("RY: %d         "), pEvent->u.spwData.mData[SI_RY]);
     len5 = _stprintf_s(buff5, 30, _T("RZ: %d         "), pEvent->u.spwData.mData[SI_RZ]);
-    len6 = _stprintf_s(buff6, 30, _T(" P: %d         "), pEvent->u.spwData.period);
-
+    
     /* get handle of our window to draw on */
     hdc = GetDC(hWndMain);
 
     /* Dump to debugger output buffer to get a running log */
     _RPT3(_CRT_WARN, "%S %S %S", buff0, buff1, buff2);
-    _RPT3(_CRT_WARN, " %S %S %S", buff3, buff4, buff5);
-    _RPT1(_CRT_WARN, " %S\n", buff6);
+    _RPT3(_CRT_WARN, " %S %S %S\n", buff3, buff4, buff5);
 
-    // Also dump to stdout for a searchable log
-    printf("%d %d %d %d %d %d\n",
-        pEvent->u.spwData.mData[SI_TX],
-        pEvent->u.spwData.mData[SI_TY],
-        pEvent->u.spwData.mData[SI_TZ],
-        pEvent->u.spwData.mData[SI_RX],
-        pEvent->u.spwData.mData[SI_RY],
-        pEvent->u.spwData.mData[SI_RZ]);
-
+    
     /*release our window handle */
     ReleaseDC(hWndMain, hdc);
 
