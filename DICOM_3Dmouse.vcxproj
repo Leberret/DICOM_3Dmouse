@@ -88,20 +88,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\DCMExemple_Nap\DCMExemple\utils.cpp" />
-    <ClCompile Include="..\dcm\dcm\charset.cpp" />
-    <ClCompile Include="..\dcm\dcm\data_dict.cpp" />
-    <ClCompile Include="..\dcm\dcm\data_element.cpp" />
-    <ClCompile Include="..\dcm\dcm\data_sequence.cpp" />
-    <ClCompile Include="..\dcm\dcm\data_set.cpp" />
-    <ClCompile Include="..\dcm\dcm\defs.cpp" />
-    <ClCompile Include="..\dcm\dcm\dicom_file.cpp" />
-    <ClCompile Include="..\dcm\dcm\dicom_reader.cpp" />
-    <ClCompile Include="..\dcm\dcm\full_read_handler.cpp" />
-    <ClCompile Include="..\dcm\dcm\logger.cpp" />
-    <ClCompile Include="..\dcm\dcm\util.cpp" />
-    <ClCompile Include="..\dcm\dcm\write_visitor.cpp" />
     <ClCompile Include="DICOM_3Dmouse.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\DCMExemple_Nap\DCMExemple\utils.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\charset.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\data_dict.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\data_element.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\data_sequence.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\data_set.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\defs.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\dicom_file.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\dicom_reader.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\full_read_handler.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\logger.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\util.cpp" />
+    <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\write_visitor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Read_data_3Dmouse.cpp" />
   </ItemGroup>
@@ -115,37 +115,37 @@
     <QtRcc Include="DICOM_3Dmouse.qrc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\DCMExemple_Nap\DCMExemple\utils.h" />
-    <ClInclude Include="..\dcm\dcm\charset.h" />
-    <ClInclude Include="..\dcm\dcm\config.h" />
-    <ClInclude Include="..\dcm\dcm\data_dict.h" />
-    <ClInclude Include="..\dcm\dcm\data_element.h" />
-    <ClInclude Include="..\dcm\dcm\data_sequence.h" />
-    <ClInclude Include="..\dcm\dcm\data_set.h" />
-    <ClInclude Include="..\dcm\dcm\defs.h" />
-    <ClInclude Include="..\dcm\dcm\dicom_file.h" />
-    <ClInclude Include="..\dcm\dcm\dicom_reader.h" />
-    <ClInclude Include="..\dcm\dcm\full_read_handler.h" />
-    <ClInclude Include="..\dcm\dcm\logger.h" />
-    <ClInclude Include="..\dcm\dcm\reader.h" />
-    <ClInclude Include="..\dcm\dcm\read_handler.h" />
-    <ClInclude Include="..\dcm\dcm\singleton_base.h" />
-    <ClInclude Include="..\dcm\dcm\util.h" />
-    <ClInclude Include="..\dcm\dcm\visitor.h" />
-    <ClInclude Include="..\dcm\dcm\writer.h" />
-    <ClInclude Include="..\dcm\dcm\write_visitor.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\DCMExemple_Nap\DCMExemple\utils.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\charset.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\config.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\data_dict.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\data_element.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\data_sequence.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\data_set.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\defs.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\dicom_file.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\dicom_reader.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\full_read_handler.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\logger.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\reader.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\read_handler.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\singleton_base.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\util.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\visitor.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\writer.h" />
+    <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\write_visitor.h" />
     <ClInclude Include="Read_data_3Dmouse.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\dcm\dcm\CMakeLists.txt" />
-    <Text Include="..\dcm\dcm\dict.txt" />
+    <Text Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\CMakeLists.txt" />
+    <Text Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\dict.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\dcm\dcm\config.h.in" />
-    <None Include="..\dcm\dcm\dcm.pro" />
-    <None Include="..\dcm\dcm\dict.inl" />
-    <None Include="..\dcm\dcm\dict.py" />
-    <None Include="..\dcm\dcm\dict_vm.inl" />
+    <None Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\config.h.in" />
+    <None Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\dcm.pro" />
+    <None Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\dict.inl" />
+    <None Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\dict.py" />
+    <None Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\dict_vm.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

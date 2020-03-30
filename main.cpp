@@ -19,6 +19,8 @@ int main(int argc, char* argv[])
 
         ExitProcess(1);                /* exit program */
     }
+    affichage();
+    cout << "test2\n\n" << endl;
 
     /* Function To be Repeated */
     return(DispatchLoopNT());

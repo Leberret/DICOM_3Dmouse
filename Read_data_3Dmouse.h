@@ -3,6 +3,7 @@
 #include "si.h"      
 #include "siapp.h"
 #include <iostream>
+
 using namespace std;
 
 
@@ -11,4 +12,4 @@ LRESULT  WINAPI HandleNTEvent(HWND hWnd, unsigned msg, WPARAM wParam, LPARAM lPa
 int   DispatchLoopNT();
 int   SbInit();
 void  SbMotionEvent(SiSpwEvent* pEvent);
-
+void affichage();

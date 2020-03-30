@@ -68,6 +68,7 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     tailleImage = new qint16;//Taille image en globale init ici
     cols = new qint16;//Colones en global init ici
     rows = new qint16;//lignes en global init ici
+    
     QDirIterator direction(*FichierImage, QDir::Files | QDir::NoSymLinks);// Obtenir l'arborescence des fichiers
     while (direction.hasNext()) //tant qu'il reste des dossier dans le fichier
         *Listechemin << direction.next(); //Ajout de tous les chemins dans une liste
@@ -87,17 +88,19 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
         if (data == NULL)
             return;
         *rows = getUShortTagValue(0x00280010, data);//Rows
-        *cols = getUShortTagValue(0x00280011, data);//Rows
+        *cols = getUShortTagValue(0x00280011, data);//Cols
         pixels = readPixels(data); //Lecture des pixesls
         allpixels = ALLPixels(pixels, allpixels); //Tous les pixels stockés dans un vecteur
         delete(data);
         delete(pixels);
+
     }
 
     slider->setRange(0, *NbFichiers - 1);
     slider2->setRange(1, *rows - 1); //Valeurs du slider selon nb de fichiers
     slider3->setRange(1, *cols); //Valeurs du slider selon nb de fichiers
-
+    *precValue = 0;
+    *compteur = *NbFichiers /2;
     slider->setValue(*NbFichiers / 2);//Positionnement du cuseur a la moitié
     slider2->setValue(*rows / 2);//Positionnement du cuseur a la moitié
     slider3->setValue(*cols / 2);//Positionnement du cuseur a la moitié
@@ -112,6 +115,8 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     layout->addWidget(slider, 1, 0);//Position
     layout->addWidget(slider2, 1, 1);//Position
     layout->addWidget(slider3, 1, 2);//Position
+
+
 
 }
 void Interface::ChangerIntensite()
@@ -205,7 +210,9 @@ void Interface::changeAffichage7()//Affectation de la valeur correspondant a la 
 }
 void Interface::value(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
 {
+    
     ImageDICOM(v); //Appel de la fonction ImageDICOM pour afficher une image dicom
+
 }
 void Interface::value2(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
 {
@@ -224,6 +231,47 @@ void Interface::value4(int v) //Récuperer la valeur du curseur lorsqu'il est dép
     ImageDICOM2(slider2->value());//Affichage de l'image
     ImageDICOM3(slider3->value());//Affichage de l'image
 }
+
+void Interface::valueMouse() {
+
+    int i = *compteur;
+    if ((i > 0) && (i < *NbFichiers)) {
+        ImageDICOM(i);
+            if ((pTx > 0) &&(pTx > * precValue) && (pTx<200)){
+                i=i+1;
+            }
+            else if ((pTx >= 200) && (pTx > * precValue) && (pTx < 350)) {
+                i = i + 2;
+            }
+            else if ((pTx >= 350) && (pTx > * precValue) && (pTx < 650) ) {
+                i = i + 3;
+            }
+            else if ((pTx < 0) && (pTx < * precValue) && (pTx > -200)) {
+                i=i-1;
+            }
+            else if ((pTx <= -200) && (pTx < * precValue) && (pTx > -350) ) {
+                i = i - 2;
+            }
+            else if ((pTx <= -350) && (pTx < * precValue) && (pTx > -650)) {
+                i = i - 3;
+            }
+    }
+    
+    else if(i <= 0 ){
+        i = 1;
+    }
+    else if (i >= *NbFichiers) {
+        i = *NbFichiers - 1;
+    }
+    else if (pTx == 0) {
+
+        return;
+    }
+    *compteur = i;
+    *precValue = pTx;
+}
+
+
 //----------Coupe coronale------------------
 void Interface::ImageDICOM3(int v)
 {
@@ -451,8 +499,9 @@ void Interface::ImageDICOM(int v)//Ouverture, lecture et affichage image "*.dcm"
 
 Interface::Interface() : QWidget() //Widget = fenetre principale
 {
+    
     hWndMain = (HWND)this->winId();
-
+ 
     FichierImage2 = new QString();
     layout = new QGridLayout;//Init layout
     imageLabel1 = new QLabel(); //init label
@@ -469,7 +518,8 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     file = new QMenu("&Fichiers");//init menu fichiers
     Info = new QMenu("&Informations");//init menu infos
     Affichage = new QMenu("&Affichage");//Init menu affichage
-
+    precValue = new qint16;
+    compteur = new qint16;
     Affichage->addAction("ORIGINAL", this, SLOT(changeAffichage()));//Action pour couleur
     Affichage->addAction("JET", this, SLOT(changeAffichage1()));//Action pour couleur
     Affichage->addAction("BONE", this, SLOT(changeAffichage2()));//Action pour couleur
@@ -484,6 +534,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
 
     *NbFichiers = 0; //Initialise a 0 pour ne pas avoir de pb de memoires
     *visible = 0;//compteur global pour savoir si affichage slider4
+    
 
     menu->addMenu(file);//Ajout menu a bar de menus
     menu->addMenu(Info);//Ajout menu a bar de menus
@@ -494,11 +545,14 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     setLayout(layout);//Mise en place du layout
     setWindowTitle("Logiciel de navigation 3D dans les images IRM");//titre fenetre
     setWindowIcon(QIcon("icon.png"));//Mettre un Icon a la fenetre
-
+    
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(value(int)));// Connexion du slider a fonction
     connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(value2(int)));// Connexion du slider a fonction
     connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(value3(int)));// Connexion du slider a fonction
     connect(slider4, SIGNAL(valueChanged(int)), this, SLOT(value4(int)));// Connexion du slider a fonction
 
+    QTimer* timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse()));
+    timer->start(0);
 
 }

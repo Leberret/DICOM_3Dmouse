@@ -8,7 +8,6 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-//#include <math.h>
 
 #include <QFileDialog>
 #include "utils.h"
@@ -26,6 +25,17 @@
 
 
 extern HWND         hWndMain;
+extern string test;
+extern TCHAR buff0[30];                            /* text buffer for TX */
+extern TCHAR buff1[30];                            /* text buffer for TY */
+extern TCHAR buff2[30];                            /* text buffer for TZ */
+extern TCHAR buff3[30];                            /* text buffer for RX */
+extern TCHAR buff4[30];                            /* text buffer for RY */
+extern TCHAR buff5[30];                            /* text buffer for RZ */
+
+extern INT TX, TY, TZ, RX, RY, RZ;
+
+extern INT pTx;
 
 
 class Interface : public QWidget
@@ -54,6 +64,7 @@ public slots:
 	void value3(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
 	void value4(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
 	void displayTags();
+	void valueMouse();
 
 private:
 	QLabel* imageLabel1;
@@ -84,4 +95,6 @@ private:
 	qint16* ValMaxC;
 	qint16* ValeurMaxC;
 	qint16* visible;
+	qint16* precValue;
+	qint16* compteur;
 };
