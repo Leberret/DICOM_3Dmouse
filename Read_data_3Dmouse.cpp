@@ -5,8 +5,7 @@ TCHAR devicename[100] = _T("");
 HWND         hWndMain;
 string test;
 
-INT TX, TY, TZ, RX, RY, RZ;
-INT pTx;
+INT pTx,pTz;
 
 int SbInit()
 {
@@ -144,27 +143,7 @@ LRESULT WINAPI HandleNTEvent(HWND hWnd, unsigned msg, WPARAM wParam,
 void SbMotionEvent(SiSpwEvent* pEvent)
 {
 
-    //TCHAR buff0[30], buff1[30], buff2[30], buff3[30], buff4[30], buff5[30];
-
-    //int len0, len1, len2, len3, len4, len5;	   /* length of each buffer */
-
-    /* put the actual ball data into the buffers */
-    /*len0 = _stprintf_s(buff0, 30, _T("TX: %d"), pEvent->u.spwData.mData[SI_TX]);
-    len1 = _stprintf_s(buff1, 30, _T("TY: %d"), pEvent->u.spwData.mData[SI_TY]);
-    len2 = _stprintf_s(buff2, 30, _T("TZ: %d"), pEvent->u.spwData.mData[SI_TZ]);
-    len3 = _stprintf_s(buff3, 30, _T("RX: %d"), pEvent->u.spwData.mData[SI_RX]);
-    len4 = _stprintf_s(buff4, 30, _T("RY: %d"), pEvent->u.spwData.mData[SI_RY]);
-    len5 = _stprintf_s(buff5, 30, _T("RZ: %d"), pEvent->u.spwData.mData[SI_RZ]);
-    */
-    /*hdc = GetDC(hWndMain);
-
-    TextOut(hdc, 15, 100, buff0, len0);
-    TextOut(hdc, 15, 120, buff1, len1);
-    TextOut(hdc, 15, 140, buff2, len2);
-    TextOut(hdc, 15, 160, buff3, len3);
-    TextOut(hdc, 15, 180, buff4, len4);
-    TextOut(hdc, 15, 200, buff5, len5);
-    */
+    int TX, TY, TZ, RX, RY, RZ;
 
     TX = pEvent->u.spwData.mData[SI_TX];
     TY = pEvent->u.spwData.mData[SI_TY];
@@ -174,29 +153,8 @@ void SbMotionEvent(SiSpwEvent* pEvent)
     RZ = pEvent->u.spwData.mData[SI_RZ];
 
     pTx = TX;
-    _RPT1(_CRT_WARN, "%d\n", pTx);
+    pTz = TZ;
+    _RPT1(_CRT_WARN, "pTx %d   pTz %d\n", pTx,pTz);
 
-    //cout << "TEST" << endl;
-    //test = "cc";
-    /*printf("%d %d %d %d %d %d\n",
-        pEvent->u.spwData.mData[SI_TX],
-        pEvent->u.spwData.mData[SI_TY],
-        pEvent->u.spwData.mData[SI_TZ],
-        pEvent->u.spwData.mData[SI_RX],
-        pEvent->u.spwData.mData[SI_RY],
-        pEvent->u.spwData.mData[SI_RZ]);
-*/
-    //_RPT3(_CRT_WARN, "%d %d %d\n", TX,TY,TZ);
-    //_RPT3(_CRT_WARN, "%d %d %d\n", RX,RY,RZ);
-   
-    /* Dump to debugger output buffer to get a running log */
-    //_RPT3(_CRT_WARN, "%S %S %S", buff0, buff1, buff2);
-    //_RPT3(_CRT_WARN, " %S %S %S\n", buff3, buff4, buff5);
-
-    //ReleaseDC(hWndMain, hdc);
-}
-
-void affichage() {
-    //printf("%d %d %d %d %d %d\n", TX, TY, TZ, RX, RY, RZ);
-    cout<<"test\n\n"<<endl;
+    
 }

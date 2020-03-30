@@ -66,8 +66,7 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     Listechemin = new QStringList();//init list QString
     allpixels = new QVector<int>; //vecteur pour tous les pixels
     tailleImage = new qint16;//Taille image en globale init ici
-    cols = new qint16;//Colones en global init ici
-    rows = new qint16;//lignes en global init ici
+
     
     QDirIterator direction(*FichierImage, QDir::Files | QDir::NoSymLinks);// Obtenir l'arborescence des fichiers
     while (direction.hasNext()) //tant qu'il reste des dossier dans le fichier
@@ -99,8 +98,13 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     slider->setRange(0, *NbFichiers - 1);
     slider2->setRange(1, *rows - 1); //Valeurs du slider selon nb de fichiers
     slider3->setRange(1, *cols); //Valeurs du slider selon nb de fichiers
+
     *precValue = 0;
     *compteur = *NbFichiers /2;
+    
+    *precValue2 = 0;
+    *compteur2 = 100;
+    
     slider->setValue(*NbFichiers / 2);//Positionnement du cuseur a la moitié
     slider2->setValue(*rows / 2);//Positionnement du cuseur a la moitié
     slider3->setValue(*cols / 2);//Positionnement du cuseur a la moitié
@@ -271,6 +275,45 @@ void Interface::valueMouse() {
     *precValue = pTx;
 }
 
+
+void Interface::valueMouse2() {
+
+    int i = *compteur2;
+    if ((i > 0) && (i < *rows)) {
+        ImageDICOM2(i);
+        if ((pTz > 0) && (pTz > * precValue2) && (pTz < 200)) {
+            i = i + 1;
+        }
+        else if ((pTz >= 200) && (pTz > * precValue2) && (pTz < 350)) {
+            i = i + 2;
+        }
+        else if ((pTz >= 350) && (pTz > * precValue2) && (pTz < 650)) {
+            i = i + 3;
+        }
+        else if ((pTz < 0) && (pTz < *precValue2) && (pTz > -200)) {
+            i = i - 1;
+        }
+        else if ((pTz <= -200) && (pTz < *precValue2) && (pTz > -350)) {
+            i = i - 2;
+        }
+        else if ((pTz <= -350) && (pTz < *precValue2) && (pTz > -650)) {
+            i = i - 3;
+        }
+    }
+
+    else if (i <= 0) {
+        i = 1;
+    }
+    else if (i >= *rows) {
+        i = *rows - 1;
+    }
+    else if (pTz == 0) {
+
+        return;
+    }
+    *compteur2 = i;
+    *precValue2 = pTz;
+}
 
 //----------Coupe coronale------------------
 void Interface::ImageDICOM3(int v)
@@ -520,6 +563,10 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     Affichage = new QMenu("&Affichage");//Init menu affichage
     precValue = new qint16;
     compteur = new qint16;
+    precValue2 = new qint16;
+    compteur2 = new qint16;
+    cols = new qint16;//Colones en global init ici
+    rows = new qint16;//lignes en global init ici
     Affichage->addAction("ORIGINAL", this, SLOT(changeAffichage()));//Action pour couleur
     Affichage->addAction("JET", this, SLOT(changeAffichage1()));//Action pour couleur
     Affichage->addAction("BONE", this, SLOT(changeAffichage2()));//Action pour couleur
@@ -553,6 +600,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
 
     QTimer* timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse2()));
     timer->start(0);
 
 }
