@@ -5,7 +5,7 @@ TCHAR devicename[100] = _T("");
 HWND         hWndMain;
 string test;
 
-INT pTx,pTz;
+INT pTx, pTy, pTz, pRx, pRy, pRz;
 
 int SbInit()
 {
@@ -143,18 +143,12 @@ LRESULT WINAPI HandleNTEvent(HWND hWnd, unsigned msg, WPARAM wParam,
 void SbMotionEvent(SiSpwEvent* pEvent)
 {
 
-    int TX, TY, TZ, RX, RY, RZ;
-
-    TX = pEvent->u.spwData.mData[SI_TX];
-    TY = pEvent->u.spwData.mData[SI_TY];
-    TZ = pEvent->u.spwData.mData[SI_TZ];
-    RX = pEvent->u.spwData.mData[SI_RX];
-    RY = pEvent->u.spwData.mData[SI_RY];
-    RZ = pEvent->u.spwData.mData[SI_RZ];
-
-    pTx = TX;
-    pTz = TZ;
-    _RPT1(_CRT_WARN, "pTx %d   pTz %d\n", pTx,pTz);
+    pTx = pEvent->u.spwData.mData[SI_TX];
+    pTy = pEvent->u.spwData.mData[SI_TY];
+    pTz = pEvent->u.spwData.mData[SI_TZ];
+    pRx = pEvent->u.spwData.mData[SI_RX];
+    pRy = pEvent->u.spwData.mData[SI_RY];
+    pRz = pEvent->u.spwData.mData[SI_RZ];
 
     
 }

@@ -27,7 +27,7 @@
 extern HWND         hWndMain;
 
 
-extern INT pTx,pTz;
+extern INT pTx, pTy, pTz, pRx, pRy, pRz;
 
 
 class Interface : public QWidget
@@ -42,6 +42,7 @@ public:
 
 public slots:
 	void ouvrirFichier(); //Ouvrir le dossier l'image en fonction du positionnement du curseur
+	void UtiliserSouris3D();
 	void changeAffichage();
 	void changeAffichage1();
 	void changeAffichage2();
@@ -58,6 +59,7 @@ public slots:
 	void displayTags();
 	void valueMouse();
 	void valueMouse2();
+	void valueMouse3();
 
 private:
 	QLabel* imageLabel1;
@@ -74,6 +76,7 @@ private:
 	QMenuBar* menu;
 	QMenu* file;
 	QMenu* Info;
+	QMenu* Outils;
 	QStringList* Listechemin;
 	QVector<int>* allpixels;
 	qint16* tailleImage;
@@ -92,4 +95,7 @@ private:
 	qint16* compteur;
 	qint16* precValue2;
 	qint16* compteur2;
+	qint16* precValue3;
+	qint16* compteur3;
+	qint16* souris3D;
 };

@@ -104,7 +104,9 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     
     *precValue2 = 0;
     *compteur2 = 100;
-    
+    *precValue3 = 0;
+    *compteur3 = 100;
+
     slider->setValue(*NbFichiers / 2);//Positionnement du cuseur a la moitié
     slider2->setValue(*rows / 2);//Positionnement du cuseur a la moitié
     slider3->setValue(*cols / 2);//Positionnement du cuseur a la moitié
@@ -120,6 +122,7 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     layout->addWidget(slider2, 1, 1);//Position
     layout->addWidget(slider3, 1, 2);//Position
 
+    *souris3D = 0;
 
 
 }
@@ -131,6 +134,15 @@ void Interface::ChangerIntensite()
     slider4->setValue(0);//Init a 0 -> valMax réelle
     slider4->setVisible(true);//rendre visible le curseur
     layout->addWidget(slider4, 2, 0, 1, 3);//Position
+}
+
+void Interface::UtiliserSouris3D() {
+    int value = *souris3D;
+    if (value == 0)
+        *souris3D = 1;
+    
+    else
+        *souris3D = 0;
 }
 void Interface::changeAffichage() //Affectation de la valeur correspondant a la couleur
 {
@@ -238,6 +250,10 @@ void Interface::value4(int v) //Récuperer la valeur du curseur lorsqu'il est dép
 
 void Interface::valueMouse() {
 
+    
+    int value = *souris3D;
+    if (value == 0)
+        return;
     int i = *compteur;
     if ((i > 0) && (i < *NbFichiers)) {
         ImageDICOM(i);
@@ -278,25 +294,29 @@ void Interface::valueMouse() {
 
 void Interface::valueMouse2() {
 
+    
+    int value = *souris3D;
+    if (value == 0)
+        return;
     int i = *compteur2;
     if ((i > 0) && (i < *rows)) {
         ImageDICOM2(i);
-        if ((pTz > 0) && (pTz > * precValue2) && (pTz < 200)) {
+        if ((pTy > 0) && (pTy > * precValue2) && (pTy < 200)) {
             i = i + 1;
         }
-        else if ((pTz >= 200) && (pTz > * precValue2) && (pTz < 350)) {
+        else if ((pTy >= 200) && (pTy > * precValue2) && (pTy < 350)) {
             i = i + 2;
         }
-        else if ((pTz >= 350) && (pTz > * precValue2) && (pTz < 650)) {
+        else if ((pTy >= 350) && (pTy > * precValue2) && (pTy < 650)) {
             i = i + 3;
         }
-        else if ((pTz < 0) && (pTz < *precValue2) && (pTz > -200)) {
+        else if ((pTy < 0) && (pTy < *precValue2) && (pTy > -200)) {
             i = i - 1;
         }
-        else if ((pTz <= -200) && (pTz < *precValue2) && (pTz > -350)) {
+        else if ((pTy <= -200) && (pTy < *precValue2) && (pTy > -350)) {
             i = i - 2;
         }
-        else if ((pTz <= -350) && (pTz < *precValue2) && (pTz > -650)) {
+        else if ((pTy <= -350) && (pTy < *precValue2) && (pTy > -650)) {
             i = i - 3;
         }
     }
@@ -305,15 +325,61 @@ void Interface::valueMouse2() {
         i = 1;
     }
     else if (i >= *rows) {
-        i = *rows - 1;
+        i = *cols - 1;
+    }
+    else if (pTy == 0) {
+
+        return;
+    }
+    *compteur2 = i;
+    *precValue2 = pTy;
+}
+
+
+void Interface::valueMouse3() {
+
+    
+    int value = *souris3D;
+    if (value == 0)
+        return;
+    
+    int i = *compteur3;
+    if ((i > 0) && (i < *cols)) {
+        ImageDICOM3(i);
+        if ((pTz > 0) && (pTz > * precValue3) && (pTz < 200)) {
+            i = i + 1;
+        }
+        else if ((pTz >= 200) && (pTz > * precValue3) && (pTz < 350)) {
+            i = i + 2;
+        }
+        else if ((pTz >= 350) && (pTz > * precValue3) && (pTz < 650)) {
+            i = i + 3;
+        }
+        else if ((pTz < 0) && (pTz < *precValue3) && (pTz > -200)) {
+            i = i - 1;
+        }
+        else if ((pTz <= -200) && (pTz < *precValue3) && (pTz > -350)) {
+            i = i - 2;
+        }
+        else if ((pTz <= -350) && (pTz < *precValue3) && (pTz > -650)) {
+            i = i - 3;
+        }
+    }
+
+    else if (i <= 0) {
+        i = 1;
+    }
+    else if (i >= *cols) {
+        i = *cols - 1;
     }
     else if (pTz == 0) {
 
         return;
     }
-    *compteur2 = i;
-    *precValue2 = pTz;
+    *compteur3 = i;
+    *precValue3 = pTz;
 }
+
 
 //----------Coupe coronale------------------
 void Interface::ImageDICOM3(int v)
@@ -561,12 +627,18 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     file = new QMenu("&Fichiers");//init menu fichiers
     Info = new QMenu("&Informations");//init menu infos
     Affichage = new QMenu("&Affichage");//Init menu affichage
+    Outils = new QMenu("&Outils");//Init menu outils
+
     precValue = new qint16;
     compteur = new qint16;
     precValue2 = new qint16;
     compteur2 = new qint16;
+    precValue3 = new qint16;
+    compteur3 = new qint16;
     cols = new qint16;//Colones en global init ici
     rows = new qint16;//lignes en global init ici
+    souris3D = new qint16;
+    Outils->addAction("Activer/Desactiver souris 3D", this, SLOT(UtiliserSouris3D()));
     Affichage->addAction("ORIGINAL", this, SLOT(changeAffichage()));//Action pour couleur
     Affichage->addAction("JET", this, SLOT(changeAffichage1()));//Action pour couleur
     Affichage->addAction("BONE", this, SLOT(changeAffichage2()));//Action pour couleur
@@ -581,11 +653,11 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
 
     *NbFichiers = 0; //Initialise a 0 pour ne pas avoir de pb de memoires
     *visible = 0;//compteur global pour savoir si affichage slider4
-    
 
     menu->addMenu(file);//Ajout menu a bar de menus
     menu->addMenu(Info);//Ajout menu a bar de menus
     menu->addMenu(Affichage);//Ajout menu a bar de menus
+    menu->addMenu(Outils);//Ajout menu a bar de menus
     layout->setMenuBar(menu);//Ajout du menu au layout
 
     setWindowState(windowState() | Qt::WindowMaximized);//Fenetre en plein ecran
@@ -598,9 +670,12 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(value3(int)));// Connexion du slider a fonction
     connect(slider4, SIGNAL(valueChanged(int)), this, SLOT(value4(int)));// Connexion du slider a fonction
 
+       
+    
     QTimer* timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse()));
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse2()));
-    timer->start(0);
+    connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse3()));
+    timer->start(10);
 
 }
