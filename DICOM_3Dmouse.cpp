@@ -120,9 +120,12 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
 
     layout->removeWidget(slider4);//Pas de widgets intensité
     slider4->setVisible(false);//Non visible
-    layout->addWidget(slider, 1, 0);//Position
-    layout->addWidget(slider2, 1, 1);//Position
-    layout->addWidget(slider3, 1, 2);//Position
+    layout->addWidget(slider, 2, 0);//Position
+    layout->addWidget(slider2, 2, 1);//Position
+    layout->addWidget(slider3, 2, 2);//Position
+    layout->addWidget(imageLabel4, 0, 0, Qt::AlignHCenter);//Labels vides pour centrer
+    layout->addWidget(imageLabel5, 0, 1, Qt::AlignHCenter);//Labels vides pour centrer
+    layout->addWidget(imageLabel6, 0, 2, Qt::AlignHCenter);//Labels vides pour centrer
 
     *souris3D = 0;
 
@@ -135,7 +138,7 @@ void Interface::ChangerIntensite()
     slider4->setRange(-1500, 3000); //Nuances d'intensité
     slider4->setValue(0);//Init a 0 -> valMax réelle
     slider4->setVisible(true);//rendre visible le curseur
-    layout->addWidget(slider4, 2, 0, 1, 3);//Position
+    layout->addWidget(slider4, 3, 0, 1, 3);//Position
 }
 
 void Interface::UtiliserSouris3D() {
@@ -145,6 +148,42 @@ void Interface::UtiliserSouris3D() {
     
     else
         *souris3D = 0;
+}
+void Interface::affichetruc(QMouseEvent* e)
+{
+    if (*NbFichiers == 0)
+        return;
+    QPoint coord = imageLabel1->pos();
+    QPoint bla = e->pos();
+    int label_x = coord.x();
+    int label_y = coord.y();
+    int tailleLimite_X;
+    int tailleLimite_Y;
+    int posi_x = bla.x();
+    int posi_y = bla.y();
+    int nouveau;
+    int nouveau2;
+    if (*rows < 400 && *cols < 400) //Si image de petite taille
+    {
+        tailleLimite_X = (label_x + *cols * 1.75);
+        tailleLimite_Y = (label_y + *rows * 1.75);
+        nouveau = (posi_x - label_x) / 1.75;
+        nouveau2 = (posi_y - label_y) / 1.75;
+    }
+    else {
+        tailleLimite_X = (label_x + *cols);
+        tailleLimite_Y = (label_y + *rows);
+        nouveau = (posi_x - label_x);
+        nouveau2 = (posi_y - label_y);
+    }
+    if (e->button() == Qt::LeftButton) {
+        if (posi_x > label_x && posi_x< tailleLimite_X && posi_y>label_y && posi_y < tailleLimite_Y) {
+            ImageDICOM3(nouveau);
+            ImageDICOM2(nouveau2);
+        }
+
+    }
+
 }
 void Interface::changeAffichage() //Affectation de la valeur correspondant a la couleur
 {
@@ -463,7 +502,7 @@ void Interface::ImageDICOM3(int v)
         c = 1.75 * c;//Coeff de 1.75
     }
     imageLabel3->setPixmap(QPixmap::fromImage(dest).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
-    layout->addWidget(imageLabel3, 0, 2, Qt::AlignHCenter);//Ajout du layout à l'image
+    layout->addWidget(imageLabel3, 1, 2, Qt::AlignHCenter);//Ajout du layout à l'image
 }
 //-------------------Coupe Axiale------------------------
 void Interface::ImageDICOM2(int v)
@@ -541,7 +580,7 @@ void Interface::ImageDICOM2(int v)
         c = 1.75 * c;//Coeff de 1.75
     }
     imageLabel2->setPixmap(QPixmap::fromImage(dest).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
-    layout->addWidget(imageLabel2, 0, 1, Qt::AlignHCenter);//Ajout du layout à l'image
+    layout->addWidget(imageLabel2, 1, 1, Qt::AlignHCenter);//Ajout du layout à l'image
 
 }
 //------------------Coupe sagittale------------------------------
@@ -611,7 +650,8 @@ void Interface::ImageDICOM(int v)//Ouverture, lecture et affichage image "*.dcm"
         c = 1.75 * c;//Coeff de 1.75
     }
     imageLabel1->setPixmap(QPixmap::fromImage(dest).scaled(QSize(c, l), Qt::IgnoreAspectRatio)); //Ajoute au layout
-    layout->addWidget(imageLabel1, 0, 0, Qt::AlignHCenter);//Ajout du layout à l'image
+    imageLabel1->setMaximumSize(c, l);//Taille du QLabel max = taille de l'image
+    layout->addWidget(imageLabel1, 1, 0, Qt::AlignHCenter);//Ajout du layout à l'image
 
 }
 
@@ -625,6 +665,9 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     imageLabel1 = new QLabel(); //init label
     imageLabel2 = new QLabel();//init label
     imageLabel3 = new QLabel();//init label
+    imageLabel4 = new QLabel(); //init label
+    imageLabel5 = new QLabel();//init label
+    imageLabel6 = new QLabel();//init label
     slider = new QSlider(Qt::Horizontal);//init curseur
     slider2 = new QSlider(Qt::Horizontal);//init curseur
     slider3 = new QSlider(Qt::Horizontal);//init curseur
@@ -681,7 +724,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(value2(int)));// Connexion du slider a fonction
     connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(value3(int)));// Connexion du slider a fonction
     connect(slider4, SIGNAL(valueChanged(int)), this, SLOT(value4(int)));// Connexion du slider a fonction
-
+    connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc(QMouseEvent*)));//Connexion du clic sur image1
        
     
     QTimer* timer = new QTimer(this);
@@ -691,4 +734,8 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse_int()));
     timer->start(10);
 
+}
+void Interface::mousePressEvent(QMouseEvent* e)//Definition du signal clic
+{
+    emit clic(e);
 }

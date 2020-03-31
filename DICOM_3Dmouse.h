@@ -3,6 +3,7 @@
 #include "ui_DICOM_3Dmouse.h"
 #include <QApplication>
 #include <QtWidgets>
+#include <QMouseEvent>
 #include <fstream>
 #include <string>
 #include <iostream>
@@ -39,7 +40,9 @@ public:
 	void ImageDICOM(int v);//Ouverture, lecture et affichage image "*.dcm"
 	void ImageDICOM2(int v);//Ouverture, lecture et affichage image "*.dcm"
 	void ImageDICOM3(int v);//Ouverture, lecture et affichage image "*.dcm"
-
+	void mousePressEvent(QMouseEvent* e);
+signals:
+	void clic(QMouseEvent* e);
 public slots:
 	void ouvrirFichier(); //Ouvrir le dossier l'image en fonction du positionnement du curseur
 	void UtiliserSouris3D();
@@ -66,6 +69,9 @@ private:
 	QLabel* imageLabel1;
 	QLabel* imageLabel2;
 	QLabel* imageLabel3;
+	QLabel* imageLabel4;
+	QLabel* imageLabel5;
+	QLabel* imageLabel6;
 	QString* FichierImage;
 	QString* FichierImage2;
 	QGridLayout* layout;
