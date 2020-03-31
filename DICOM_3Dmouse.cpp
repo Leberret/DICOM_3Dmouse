@@ -259,23 +259,18 @@ void Interface::valueMouse() {
     int i = *compteur;
     if ((i > 0) && (i < *NbFichiers)) {
         ImageDICOM(i);
-            if ((pTx > 5) &&(pTx >= * precValue) && (pTx<200)){
+            if ((pTx > 5) &&(pTx >= * precValue) && (pTx<20)){
                 i=i+1;
             }
-            else if ((pTx >= 200) && (pTx > * precValue) && (pTx < 350)) {
+            else if ((pTx >= 20) && (pTx >= * precValue) && (pTx < 300)) {
                 i = i + 2;
             }
-            else if ((pTx >= 350) && (pTx > * precValue) && (pTx < 650) ) {
-                i = i + 3;
-            }
-            else if ((pTx < -5) && (pTx <= * precValue) && (pTx > -200)) {
+           
+            else if ((pTx < -5) && (pTx <= * precValue) && (pTx > -20)) {
                 i=i-1;
             }
-            else if ((pTx <= -200) && (pTx < * precValue) && (pTx > -350) ) {
+            else if ((pTx <= -20) && (pTx <= *precValue) && (pTx > -300)) {
                 i = i - 2;
-            }
-            else if ((pTx <= -350) && (pTx < * precValue) && (pTx > -650)) {
-                i = i - 3;
             }
     }
     
@@ -303,24 +298,20 @@ void Interface::valueMouse2() {
     int i = *compteur2;
     if ((i > 0) && (i < *rows)) {
         ImageDICOM2(i);
-        if ((pTy > 5) && (pTy >= * precValue2) && (pTy < 75)) {
+        if ((pTy > 5) && (pTy >= * precValue2) && (pTy < 20)) {
             i = i + 1;
         }
-        else if ((pTy >= 75) && (pTy > * precValue2) && (pTy < 125)) {
+        else if ((pTy >= 20) && (pTy >= * precValue2) && (pTy < 150)) {
             i = i + 2;
         }
-        else if ((pTy >= 125) && (pTy > * precValue2) && (pTy < 150)) {
-            i = i + 3;
-        }
-        else if ((pTy < -5) && (pTy <= *precValue2) && (pTy > -75)) {
+        
+        else if ((pTy < -5) && (pTy <= *precValue2) && (pTy > -20)) {
             i = i - 1;
         }
-        else if ((pTy <= -75) && (pTy < *precValue2) && (pTy > -125)) {
+        else if ((pTy <= -20) && (pTy <= *precValue2) && (pTy > -150)) {
             i = i - 2;
         }
-        else if ((pTy <= -125) && (pTy < *precValue2) && (pTy > -150)) {
-            i = i - 3;
-        }
+        
     }
 
     else if (i <= 0) {
@@ -348,24 +339,20 @@ void Interface::valueMouse3() {
     int i = *compteur3;
     if ((i > 0) && (i < *cols)) {
         ImageDICOM3(i);
-        if ((pTz > 5) && (pTz >= * precValue3) && (pTz < 100)) {
+        if ((pTz > 5) && (pTz >= * precValue3) && (pTz <20)) {
             i = i + 1;
         }
-        else if ((pTz >= 100) && (pTz > * precValue3) && (pTz < 150)) {
+        else if ((pTz >= 20) && (pTz >= * precValue3) && (pTz < 250)) {
             i = i + 2;
         }
-        else if ((pTz >= 150) && (pTz > * precValue3) && (pTz < 250)) {
-            i = i + 3;
-        }
-        else if ((pTz < -5) && (pTz <= *precValue3) && (pTz > -100)) {
+        
+        else if ((pTz < -5) && (pTz <= *precValue3) && (pTz > -20)) {
             i = i - 1;
         }
-        else if ((pTz <= -100) && (pTz < *precValue3) && (pTz > -150)) {
+        else if ((pTz <= -20) && (pTz <= *precValue3) && (pTz > -250)) {
             i = i - 2;
         }
-        else if ((pTz <= -150) && (pTz < *precValue3) && (pTz > -250)) {
-            i = i - 3;
-        }
+        
     }
 
     else if (i <= 0) {
@@ -387,51 +374,20 @@ void Interface::valueMouse_int() {
     int value = *souris3D;
     if (value == 0)
         return;
-    int v = pRy;
+    int v = 3*pRy;
 
-    //int i = *compteur4;
-    if ((3*v > -1500) && (3*v < 3000)) {
-        *ValeurMaxA = *ValMaxA + 3*v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxB = *ValMaxB + 3*v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxC = *ValMaxC + 3*v;//changement de la valeur max d'intensité de référence
+    if ((v > -1500) && (v < 3000)) {
+        *ValeurMaxA = *ValMaxA + v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxB = *ValMaxB + v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxC = *ValMaxC + v;//changement de la valeur max d'intensité de référence
 
         valueMouse();
         valueMouse2();
         valueMouse3();
-        /*
-        if ((v > 50) && (v > * precValue4) && (v < 200)) {
-            i = i + 10;
-        }
-        else if ((v >= 200) && (v > * precValue4) && (v < 350)) {
-            i = i + 50;
-        }
-        else if ((v >= 350) && (v > * precValue4) && (v < 400)) {
-            i = i + 100;
-        }
-        else if ((v < 50) && (v < *precValue4) && (v > -200)) {
-            i = i - 10;
-        }
-        else if ((v <= -200) && (v < *precValue4) && (v > -350)) {
-            i = i - 50;
-        }
-        else if ((v <= -350) && (v < *precValue4) && (v > -400)) {
-            i = i - 100;
-        }*/
+        
     }
-    /*
-    else if (i <= -1500) {
-        i = -1499;
-    }
-    else if (i >= 3000) {
-        i = 2999;
-    }
-    else if (v == 0) {
-
-        return;
-    }*/    
-
-    //*compteur4 = i;
-    //*precValue4 = v;
+    
+    *precValue4 = v;
 }
 
 //----------Coupe coronale------------------
