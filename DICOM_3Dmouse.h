@@ -60,6 +60,7 @@ public slots:
 	void valueMouse();
 	void valueMouse2();
 	void valueMouse3();
+	void valueMouse_int();
 
 private:
 	QLabel* imageLabel1;
@@ -97,5 +98,7 @@ private:
 	qint16* compteur2;
 	qint16* precValue3;
 	qint16* compteur3;
+	qint16* precValue4;
+	qint16* compteur4;
 	qint16* souris3D;
 };

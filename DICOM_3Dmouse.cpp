@@ -106,6 +106,8 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     *compteur2 = 100;
     *precValue3 = 0;
     *compteur3 = 100;
+    *precValue4 = 0;
+    *compteur4 = 0;
 
     slider->setValue(*NbFichiers / 2);//Positionnement du cuseur a la moitié
     slider2->setValue(*rows / 2);//Positionnement du cuseur a la moitié
@@ -257,7 +259,7 @@ void Interface::valueMouse() {
     int i = *compteur;
     if ((i > 0) && (i < *NbFichiers)) {
         ImageDICOM(i);
-            if ((pTx > 0) &&(pTx > * precValue) && (pTx<200)){
+            if ((pTx > 5) &&(pTx >= * precValue) && (pTx<200)){
                 i=i+1;
             }
             else if ((pTx >= 200) && (pTx > * precValue) && (pTx < 350)) {
@@ -266,7 +268,7 @@ void Interface::valueMouse() {
             else if ((pTx >= 350) && (pTx > * precValue) && (pTx < 650) ) {
                 i = i + 3;
             }
-            else if ((pTx < 0) && (pTx < * precValue) && (pTx > -200)) {
+            else if ((pTx < -5) && (pTx <= * precValue) && (pTx > -200)) {
                 i=i-1;
             }
             else if ((pTx <= -200) && (pTx < * precValue) && (pTx > -350) ) {
@@ -283,7 +285,7 @@ void Interface::valueMouse() {
     else if (i >= *NbFichiers) {
         i = *NbFichiers - 1;
     }
-    else if (pTx == 0) {
+    else if (pTx >= 0 && pTx<50) {
 
         return;
     }
@@ -301,22 +303,22 @@ void Interface::valueMouse2() {
     int i = *compteur2;
     if ((i > 0) && (i < *rows)) {
         ImageDICOM2(i);
-        if ((pTy > 0) && (pTy > * precValue2) && (pTy < 200)) {
+        if ((pTy > 5) && (pTy >= * precValue2) && (pTy < 75)) {
             i = i + 1;
         }
-        else if ((pTy >= 200) && (pTy > * precValue2) && (pTy < 350)) {
+        else if ((pTy >= 75) && (pTy > * precValue2) && (pTy < 125)) {
             i = i + 2;
         }
-        else if ((pTy >= 350) && (pTy > * precValue2) && (pTy < 650)) {
+        else if ((pTy >= 125) && (pTy > * precValue2) && (pTy < 150)) {
             i = i + 3;
         }
-        else if ((pTy < 0) && (pTy < *precValue2) && (pTy > -200)) {
+        else if ((pTy < -5) && (pTy <= *precValue2) && (pTy > -75)) {
             i = i - 1;
         }
-        else if ((pTy <= -200) && (pTy < *precValue2) && (pTy > -350)) {
+        else if ((pTy <= -75) && (pTy < *precValue2) && (pTy > -125)) {
             i = i - 2;
         }
-        else if ((pTy <= -350) && (pTy < *precValue2) && (pTy > -650)) {
+        else if ((pTy <= -125) && (pTy < *precValue2) && (pTy > -150)) {
             i = i - 3;
         }
     }
@@ -327,7 +329,7 @@ void Interface::valueMouse2() {
     else if (i >= *rows) {
         i = *cols - 1;
     }
-    else if (pTy == 0) {
+    else if (pTy == 0 && pTy < 50) {
 
         return;
     }
@@ -346,22 +348,22 @@ void Interface::valueMouse3() {
     int i = *compteur3;
     if ((i > 0) && (i < *cols)) {
         ImageDICOM3(i);
-        if ((pTz > 0) && (pTz > * precValue3) && (pTz < 200)) {
+        if ((pTz > 5) && (pTz >= * precValue3) && (pTz < 100)) {
             i = i + 1;
         }
-        else if ((pTz >= 200) && (pTz > * precValue3) && (pTz < 350)) {
+        else if ((pTz >= 100) && (pTz > * precValue3) && (pTz < 150)) {
             i = i + 2;
         }
-        else if ((pTz >= 350) && (pTz > * precValue3) && (pTz < 650)) {
+        else if ((pTz >= 150) && (pTz > * precValue3) && (pTz < 250)) {
             i = i + 3;
         }
-        else if ((pTz < 0) && (pTz < *precValue3) && (pTz > -200)) {
+        else if ((pTz < -5) && (pTz <= *precValue3) && (pTz > -100)) {
             i = i - 1;
         }
-        else if ((pTz <= -200) && (pTz < *precValue3) && (pTz > -350)) {
+        else if ((pTz <= -100) && (pTz < *precValue3) && (pTz > -150)) {
             i = i - 2;
         }
-        else if ((pTz <= -350) && (pTz < *precValue3) && (pTz > -650)) {
+        else if ((pTz <= -150) && (pTz < *precValue3) && (pTz > -250)) {
             i = i - 3;
         }
     }
@@ -372,7 +374,7 @@ void Interface::valueMouse3() {
     else if (i >= *cols) {
         i = *cols - 1;
     }
-    else if (pTz == 0) {
+    else if (pTz == 0 && pTy < 50) {
 
         return;
     }
@@ -380,6 +382,57 @@ void Interface::valueMouse3() {
     *precValue3 = pTz;
 }
 
+
+void Interface::valueMouse_int() {
+    int value = *souris3D;
+    if (value == 0)
+        return;
+    int v = pRy;
+
+    //int i = *compteur4;
+    if ((3*v > -1500) && (3*v < 3000)) {
+        *ValeurMaxA = *ValMaxA + 3*v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxB = *ValMaxB + 3*v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxC = *ValMaxC + 3*v;//changement de la valeur max d'intensité de référence
+
+        valueMouse();
+        valueMouse2();
+        valueMouse3();
+        /*
+        if ((v > 50) && (v > * precValue4) && (v < 200)) {
+            i = i + 10;
+        }
+        else if ((v >= 200) && (v > * precValue4) && (v < 350)) {
+            i = i + 50;
+        }
+        else if ((v >= 350) && (v > * precValue4) && (v < 400)) {
+            i = i + 100;
+        }
+        else if ((v < 50) && (v < *precValue4) && (v > -200)) {
+            i = i - 10;
+        }
+        else if ((v <= -200) && (v < *precValue4) && (v > -350)) {
+            i = i - 50;
+        }
+        else if ((v <= -350) && (v < *precValue4) && (v > -400)) {
+            i = i - 100;
+        }*/
+    }
+    /*
+    else if (i <= -1500) {
+        i = -1499;
+    }
+    else if (i >= 3000) {
+        i = 2999;
+    }
+    else if (v == 0) {
+
+        return;
+    }*/    
+
+    //*compteur4 = i;
+    //*precValue4 = v;
+}
 
 //----------Coupe coronale------------------
 void Interface::ImageDICOM3(int v)
@@ -635,6 +688,9 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     compteur2 = new qint16;
     precValue3 = new qint16;
     compteur3 = new qint16;
+    precValue4 = new qint16;
+    compteur4 = new qint16;
+
     cols = new qint16;//Colones en global init ici
     rows = new qint16;//lignes en global init ici
     souris3D = new qint16;
@@ -653,7 +709,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
 
     *NbFichiers = 0; //Initialise a 0 pour ne pas avoir de pb de memoires
     *visible = 0;//compteur global pour savoir si affichage slider4
-
+    *souris3D = 0;
     menu->addMenu(file);//Ajout menu a bar de menus
     menu->addMenu(Info);//Ajout menu a bar de menus
     menu->addMenu(Affichage);//Ajout menu a bar de menus
@@ -676,6 +732,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse()));
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse2()));
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse3()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse_int()));
     timer->start(10);
 
 }

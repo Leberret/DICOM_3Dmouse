@@ -150,5 +150,6 @@ void SbMotionEvent(SiSpwEvent* pEvent)
     pRy = pEvent->u.spwData.mData[SI_RY];
     pRz = pEvent->u.spwData.mData[SI_RZ];
 
-    
+    _RPT3(_CRT_WARN, "TX : %d   TY : %d   TZ : %d", pTx, pTy, pTz);
+    _RPT3(_CRT_WARN, " RX : %d   RY : %d   RZ : %d\n", pRx, pRy, pRz);
 }
