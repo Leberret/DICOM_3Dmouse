@@ -64,9 +64,6 @@ public slots:
 	void valueMouse2();
 	void valueMouse3();
 	void valueMouse_int();
-	void affichetruc(QMouseEvent* e);
-	void affichetruc2(QMouseEvent* e);
-	void affichetruc3(QMouseEvent* e);
 
 private:
 	QLabel* imageLabel1;
