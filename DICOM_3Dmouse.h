@@ -68,6 +68,7 @@ public slots:
 	void affichetruc(QMouseEvent* e);
 	void affichetruc2(QMouseEvent* e);
 	void affichetruc3(QMouseEvent* e);
+	void InfoCoupes();
 
 private:
 	QLabel* imageLabel1;
@@ -111,4 +112,5 @@ private:
 	qint16* precValue4;
 	qint16* compteur4;
 	qint16* souris3D;
+	qint16* coupe;
 };

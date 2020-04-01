@@ -7,8 +7,77 @@ QVector<int>* ALLPixels(vector<unsigned short>* pixels, QVector<int>* allpixels)
         allpixels->push_back(pixel2); //Remplissage du vecteur avec les valeurs des pixels
     return allpixels;
 }
+void Interface::InfoCoupes()
+{
+    if (*NbFichiers == 0)
+        return;
+    QStringList Listchemin = *Listechemin;
+    *FichierImage2 = Listchemin[*NbFichiers / 2];
+    QByteArray b = FichierImage2->toLocal8Bit(); //Convertir le QString* en const char * 
+    const char* chemin = b.data();
+    dcm::DicomFile* data;
+    vector<unsigned short>* pixels;
+    // Read file.
+    data = readFile(chemin);//Lecture du fichier
+    if (data == NULL)
+        return;
+    int nombre1, nombre2, nombre3, nombre4, nombre5, nombre6, nombre7;
+    bool ok1, ok2, ok3, ok4, ok5, ok6, ok7;
+    QString orientation1, orientation2, orientation3, orientation4, orientation5, orientation6, orientation7;
+    string orientationGLOBAL = getStringTagValue(0x00200037, data);
+    QString global = QString::fromStdString(orientationGLOBAL);
+    global.remove("0");
+    global.remove(".");
+    global.remove("-");
+    orientation1 = global[0];
+    nombre1 = orientation1.toInt(&ok1);
+    orientation2 = global[1];
+    nombre2 = orientation2.toInt(&ok2);
+    orientation3 = global[2];
+    nombre3 = orientation3.toInt(&ok3);
+    orientation4 = global[3];
+    nombre4 = orientation4.toInt(&ok4);
+    orientation5 = global[4];
+    nombre5 = orientation5.toInt(&ok5);
+    orientation6 = global[5];
+    nombre6 = orientation6.toInt(&ok6);
+    orientation7 = global[6];
+    nombre7 = orientation7.toInt(&ok7);
+
+    QMessageBox erreur;
+    erreur.setText(QString::number(nombre1) + QString::number(nombre2) + QString::number(nombre3) + QString::number(nombre4) + QString::number(nombre5) + QString::number(nombre6) + QString::number(nombre7));
+    erreur.exec();
+
+    if (nombre2 == 1 && nombre7 == 1)
+    {
+        *coupe = 1;
+        imageLabel4->setText("Coupe Sagittale");
+        imageLabel5->setText("Coupe Transversale");
+        imageLabel6->setText("Coupe Coronale");
+    }
+
+    if (nombre1 == 1 && nombre6 == 1)
+    {
+        *coupe = 2;
+        imageLabel4->setText("Coupe Transversale");
+        imageLabel5->setText("Coupe Coronale");
+        imageLabel6->setText("Coupe Sagittale");
+    }
+
+    if (nombre1 == 1 && nombre7 == 1)
+    {
+        *coupe = 3;
+        imageLabel4->setText("Coupe Coronale");
+        imageLabel5->setText("Coupe Transversale");
+        imageLabel6->setText("Coupe Sagittale");
+    }
+
+
+}
 void Interface::displayTags() //Fonction ressortant les informations du patient dans une boite de dialogue
 {
+    if (*NbFichiers == 0)
+        return;
     QByteArray b = FichierImage2->toLocal8Bit(); //Convertir le QString* en const char *
     const char* chemin = b.data();
     dcm::DicomFile data(chemin);
@@ -113,6 +182,7 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     slider2->setValue(*rows / 2);//Positionnement du cuseur a la moitié
     slider3->setValue(*cols / 2);//Positionnement du cuseur a la moitié
 
+    InfoCoupes();
 
     ImageDICOM(slider->value()); //Affiche image selon curseur
     ImageDICOM2(slider2->value());//Affiche image selon curseur
@@ -413,7 +483,18 @@ void Interface::valueMouse() {
         return;
     int i = *compteur;
     if ((i > 0) && (i < *NbFichiers)) {
-        ImageDICOM(i);
+        switch (*coupe)
+        {
+        case 1:
+            ImageDICOM(i);
+            break;
+        case 2:
+            ImageDICOM3(i);
+            break;
+        case 3:
+            ImageDICOM3(i);
+            break;
+        }        
             if ((pTx > 5) &&(pTx >= * precValue) && (pTx<20)){
                 i=i+1;
             }
@@ -451,7 +532,18 @@ void Interface::valueMouse2() {
         return;
     int i = *compteur2;
     if ((i > 0) && (i < *rows)) {
-        ImageDICOM2(i);
+        switch (*coupe)
+        {
+        case 1:
+            ImageDICOM2(i);
+            break;
+        case 2:
+            ImageDICOM1(i);
+            break;
+        case 3:
+            ImageDICOM2(i);
+            break;
+        }
         if ((pTy > 5) && (pTy >= * precValue2) && (pTy < 20)) {
             i = i + 1;
         }
@@ -491,7 +583,18 @@ void Interface::valueMouse3() {
     
     int i = *compteur3;
     if ((i > 0) && (i < *cols)) {
-        ImageDICOM3(i);
+        switch (*coupe)
+        {
+        case 1:
+            ImageDICOM3(i);
+            break;
+        case 2:
+            ImageDICOM2(i);
+            break;
+        case 3:
+            ImageDICOM1(i);
+            break;
+        }
         if ((pTz > 5) && (pTz >= * precValue3) && (pTz <20)) {
             i = i + 1;
         }
@@ -836,6 +939,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     compteur3 = new qint16;
     precValue4 = new qint16;
     compteur4 = new qint16;
+    coupe = new qint16;
 
     cols = new qint16;//Colones en global init ici
     rows = new qint16;//lignes en global init ici
