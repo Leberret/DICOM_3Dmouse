@@ -1,5 +1,6 @@
 #include "DICOM_3Dmouse.h"
 
+
 QVector<int>* ALLPixels(vector<unsigned short>* pixels, QVector<int>* allpixels) //Stocker tous les pixels de chaque image dans un seul vecteur
 {
     for (auto pixel2 : *pixels)
@@ -142,6 +143,8 @@ void Interface::ChangerIntensite()
 }
 
 void Interface::UtiliserSouris3D() {
+    if (*NbFichiers == 0)
+        return;
     int value = *souris3D;
     if (value == 0)
         *souris3D = 1;
@@ -179,11 +182,22 @@ void Interface::affichetruc(QMouseEvent* e)
             nouveau = (posi_x - label_x);
             nouveau2 = (posi_y - label_y);
         }
+
         if (posi_x > label_x && posi_x< tailleLimite_X && posi_y>label_y && posi_y < tailleLimite_Y) {
-            ImageDICOM3(nouveau);
-            ImageDICOM2(nouveau2);
-            slider3->setValue(nouveau);
-            slider2->setValue(nouveau2);
+
+            if (*souris3D == 0) {
+                ImageDICOM3(nouveau);
+                ImageDICOM2(nouveau2);
+                slider3->setValue(nouveau);
+                slider2->setValue(nouveau2);
+            }
+            else if (*souris3D == 1) {
+                *compteur2 = nouveau2;
+                *compteur3 = nouveau;
+                valueMouse2();
+                valueMouse3();
+            }
+            
         }
 
     }
@@ -220,10 +234,19 @@ void Interface::affichetruc2(QMouseEvent* e)
             nouveau2 = (posi_y - label_y);
         }
         if (posi_x > label_x && posi_x< tailleLimite_X && posi_y>label_y && posi_y < tailleLimite_Y) {
-            ImageDICOM3(nouveau2);
-            ImageDICOM(*NbFichiers - nouveau);
-            slider->setValue(*NbFichiers - nouveau);
-            slider3->setValue(nouveau2);
+            if (*souris3D == 0) {
+                ImageDICOM3(nouveau2);
+                ImageDICOM(*NbFichiers - nouveau);
+                slider->setValue(*NbFichiers - nouveau);
+                slider3->setValue(nouveau2);
+            }
+            else if (*souris3D == 1) {
+                *compteur = *NbFichiers - nouveau;
+                *compteur3 = nouveau2;
+                valueMouse();
+                valueMouse3();
+            }
+
         }
 
     }
@@ -260,10 +283,18 @@ void Interface::affichetruc3(QMouseEvent* e)
             nouveau2 = (posi_y - label_y);
         }
         if (posi_x > label_x && posi_x< tailleLimite_X && posi_y>label_y && posi_y < tailleLimite_Y) {
-            ImageDICOM(*NbFichiers - nouveau);
-            ImageDICOM2(nouveau2);
-            slider->setValue(*NbFichiers - nouveau);
-            slider2->setValue(nouveau2);
+            if (*souris3D == 0) {
+                ImageDICOM(*NbFichiers - nouveau);
+                ImageDICOM2(nouveau2);
+                slider->setValue(*NbFichiers - nouveau);
+                slider2->setValue(nouveau2);
+            }
+            else if (*souris3D == 1) {
+                *compteur = *NbFichiers - nouveau;
+                *compteur2 = nouveau2;
+                valueMouse();
+                valueMouse2();
+            }
         }
 
     }
@@ -409,6 +440,7 @@ void Interface::valueMouse() {
 
         return;
     }
+    slider->setValue(i);
     *compteur = i;
     *precValue = pTx;
 }
@@ -447,6 +479,7 @@ void Interface::valueMouse2() {
 
         return;
     }
+    slider2->setValue(i);
     *compteur2 = i;
     *precValue2 = pTy;
 }
@@ -486,14 +519,16 @@ void Interface::valueMouse3() {
 
         return;
     }
+    slider3->setValue(i);
     *compteur3 = i;
     *precValue3 = pTz;
 }
 void Interface::valueMouse_int() {
     int value = *souris3D;
-    if (value == 0)
+    int inte = Intensite;
+    if ((value == 0))
         return;
-    int v = 3*pRy;
+    int v = 2*pRy;
 
     if ((v > 5) && (v < 3000) && (v>=*precValue4)) {
         *ValeurMaxA = *ValeurMaxA + v;//changement de la valeur max d'intensité de référence
@@ -535,8 +570,7 @@ void Interface::valueMouse_int() {
         valueMouse3();
 
     }
-    else
-        return;
+    
     
     *precValue4 = v;
 }
@@ -771,7 +805,8 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
 {
     
     hWndMain = (HWND)this->winId();
- 
+    QTimer* timer = new QTimer(this);
+
     FichierImage2 = new QString();
     layout = new QGridLayout;//Init layout
     imageLabel1 = new QLabel(); //init label
@@ -805,6 +840,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     cols = new qint16;//Colones en global init ici
     rows = new qint16;//lignes en global init ici
     souris3D = new qint16;
+    //Intensite = new qint16;
     Outils->addAction("Activer/Desactiver souris 3D", this, SLOT(UtiliserSouris3D()));
     Affichage->addAction("ORIGINAL", this, SLOT(changeAffichage()));//Action pour couleur
     Affichage->addAction("JET", this, SLOT(changeAffichage1()));//Action pour couleur
@@ -840,8 +876,6 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc2(QMouseEvent*)));
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc3(QMouseEvent*)));
        
-    
-    QTimer* timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse()));
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse2()));
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse3()));

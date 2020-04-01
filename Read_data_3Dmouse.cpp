@@ -3,9 +3,9 @@ HDC          hdc;
 SiHdl        devHdl;
 TCHAR devicename[100] = _T("");
 HWND         hWndMain;
-string test;
 
 INT pTx, pTy, pTz, pRx, pRy, pRz;
+INT Intensite;
 
 int SbInit()
 {
@@ -15,7 +15,9 @@ int SbInit()
     /*init the SpaceWare input library */
     if (SiInitialize() == SPW_DLL_LOAD_ERROR)
     {
-        cout << "Error: Could not load SiAppDll dll files" << endl;
+        QMessageBox error;
+        error.setText("Error: Could not load SiAppDll dll files"); //Ajout à la boite QMessageBox
+        error.exec();//affichage boite de dialogue
     }
 
     SiOpenWinInitEx(&oData, hWndMain);    /* init Win. platform specific data  */
@@ -29,7 +31,7 @@ int SbInit()
 
     /* open data, which will check for device type and return the device handle
     to be used by this function */
-    if ((devHdl = SiOpenEx(L"3DxTest", SI_ANY_DEVICE, SI_NO_MASK, SI_EVENT, &oData)) == NULL)
+    if ((devHdl = SiOpenEx(L"Logiciel de navigation 3D dans les images IRM", SI_ANY_DEVICE, SI_NO_MASK, SI_EVENT, &oData)) == NULL)
     {
         SiTerminate();  /* called to shut down the SpaceWare input library */
         res = 0;        /* could not open device */
@@ -72,6 +74,10 @@ int DispatchLoopNT()
             {
                 SbMotionEvent(&Event);        /* process 3D mouse motion event */
 
+            }
+            else if (Event.type == SI_CMD_EVENT)
+            {
+                HandleV3DCMDEvent(&Event); /* V3DCMD_* events */
             }
 
 
@@ -150,6 +156,25 @@ void SbMotionEvent(SiSpwEvent* pEvent)
     pRy = pEvent->u.spwData.mData[SI_RY];
     pRz = pEvent->u.spwData.mData[SI_RZ];
 
-    _RPT3(_CRT_WARN, "TX : %d   TY : %d   TZ : %d", pTx, pTy, pTz);
-    _RPT3(_CRT_WARN, " RX : %d   RY : %d   RZ : %d\n", pRx, pRy, pRz);
+    //_RPT3(_CRT_WARN, "TX : %d   TY : %d   TZ : %d", pTx, pTy, pTz);
+    //_RPT3(_CRT_WARN, " RX : %d   RY : %d   RZ : %d\n", pRx, pRy, pRz);
+}
+
+void HandleV3DCMDEvent(SiSpwEvent* pEvent)
+{
+    hdc = GetDC(hWndMain);
+    switch (pEvent->u.cmdEventData.functionNumber)
+    {
+    case V3DCMD_KEY_F1:
+        _RPT1(_CRT_WARN, "BG : %d\n",pEvent->u.cmdEventData.pressed);
+        break;
+    case V3DCMD_KEY_F2:
+        _RPT1(_CRT_WARN, "BD : %d\n", pEvent->u.cmdEventData.pressed);
+        Intensite = pEvent->u.cmdEventData.pressed;
+        break;
+    default:
+        _RPT1(_CRT_WARN, "Unhandled V3DCMD : number = % d\n", pEvent->u.cmdEventData.functionNumber );
+
+        break;
+    }
 }

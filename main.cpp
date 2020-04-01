@@ -15,7 +15,10 @@ int main(int argc, char* argv[])
     /* if 3D mouse was not detected then print error, close win., exit prog. */
     if (res < 1)
     {
-        cout << "Sorry - No supported 3Dconnexion device available.\n" << endl;
+        QMessageBox error;
+        error.setText("Sorry - No supported 3Dconnexion device available."); //Ajout à la boite QMessageBox
+        error.exec();//affichage boite de dialogue
+        
 
         ExitProcess(1);                /* exit program */
     }
