@@ -120,9 +120,9 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
 
     layout->removeWidget(slider4);//Pas de widgets intensité
     slider4->setVisible(false);//Non visible
-    layout->addWidget(slider, 2, 0);//Position
-    layout->addWidget(slider2, 2, 1);//Position
-    layout->addWidget(slider3, 2, 2);//Position
+    layout->addWidget(slider, 2, 0,Qt::AlignBottom);//Position
+    layout->addWidget(slider2, 2, 1, Qt::AlignBottom);//Position
+    layout->addWidget(slider3, 2, 2, Qt::AlignBottom);//Position
     layout->addWidget(imageLabel4, 0, 0, Qt::AlignHCenter);//Labels vides pour centrer
     layout->addWidget(imageLabel5, 0, 1, Qt::AlignHCenter);//Labels vides pour centrer
     layout->addWidget(imageLabel6, 0, 2, Qt::AlignHCenter);//Labels vides pour centrer
@@ -185,6 +185,7 @@ void Interface::affichetruc(QMouseEvent* e)
     }
 
 }
+
 void Interface::changeAffichage() //Affectation de la valeur correspondant a la couleur
 {
     if (*NbFichiers == 0) //S'il n'y a pas de fichier on se casse
@@ -265,6 +266,7 @@ void Interface::changeAffichage7()//Affectation de la valeur correspondant a la 
     ImageDICOM2(slider2->value());//Affichage de l'image
     ImageDICOM3(slider3->value());//Affichage de l'image
 }
+
 void Interface::value(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
 {
     
@@ -326,8 +328,6 @@ void Interface::valueMouse() {
     *compteur = i;
     *precValue = pTx;
 }
-
-
 void Interface::valueMouse2() {
 
     
@@ -366,8 +366,6 @@ void Interface::valueMouse2() {
     *compteur2 = i;
     *precValue2 = pTy;
 }
-
-
 void Interface::valueMouse3() {
 
     
@@ -407,24 +405,54 @@ void Interface::valueMouse3() {
     *compteur3 = i;
     *precValue3 = pTz;
 }
-
-
 void Interface::valueMouse_int() {
     int value = *souris3D;
     if (value == 0)
         return;
     int v = 3*pRy;
 
-    if ((v > -1500) && (v < 3000)) {
-        *ValeurMaxA = *ValMaxA + v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxB = *ValMaxB + v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxC = *ValMaxC + v;//changement de la valeur max d'intensité de référence
+    if ((v > 5) && (v < 3000) && (v>=*precValue4)) {
+        *ValeurMaxA = *ValeurMaxA + v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxB = *ValeurMaxB + v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxC = *ValeurMaxB + v;//changement de la valeur max d'intensité de référence
 
         valueMouse();
         valueMouse2();
         valueMouse3();
-        
+
     }
+    else if ((v > 5) && (v < 3000) && (v <= *precValue4)) {
+        *ValeurMaxA = *ValeurMaxA - v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxB = *ValeurMaxB - v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxC = *ValeurMaxC - v;//changement de la valeur max d'intensité de référence
+
+        valueMouse();
+        valueMouse2();
+        valueMouse3();
+
+    }
+    else if ((v > -1500) && (v < -5) && (v <= *precValue4)) {
+        *ValeurMaxA = *ValeurMaxA + v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxB = *ValeurMaxB + v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxC = *ValeurMaxC + v;//changement de la valeur max d'intensité de référence
+
+        valueMouse();
+        valueMouse2();
+        valueMouse3();
+
+    }
+    else if ((v > -1500) && (v < -5) && (v >= *precValue4)) {
+        *ValeurMaxA = *ValeurMaxA - v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxB = *ValeurMaxB - v;//changement de la valeur max d'intensité de référence
+        *ValeurMaxC = *ValeurMaxC - v;//changement de la valeur max d'intensité de référence
+
+        valueMouse();
+        valueMouse2();
+        valueMouse3();
+
+    }
+    else
+        return;
     
     *precValue4 = v;
 }
@@ -714,7 +742,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     menu->addMenu(Affichage);//Ajout menu a bar de menus
     menu->addMenu(Outils);//Ajout menu a bar de menus
     layout->setMenuBar(menu);//Ajout du menu au layout
-
+    layout->setAlignment(Qt::AlignHCenter);
     setWindowState(windowState() | Qt::WindowMaximized);//Fenetre en plein ecran
     setLayout(layout);//Mise en place du layout
     setWindowTitle("Logiciel de navigation 3D dans les images IRM");//titre fenetre
