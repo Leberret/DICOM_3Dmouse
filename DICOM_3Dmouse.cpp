@@ -153,33 +153,117 @@ void Interface::affichetruc(QMouseEvent* e)
 {
     if (*NbFichiers == 0)
         return;
-    QPoint coord = imageLabel1->pos();
     QPoint bla = e->pos();
+    int posi_x = bla.x();
+    int posi_y = bla.y();
+    QPoint coord = imageLabel1->pos();
     int label_x = coord.x();
     int label_y = coord.y();
     int tailleLimite_X;
     int tailleLimite_Y;
-    int posi_x = bla.x();
-    int posi_y = bla.y();
+
     int nouveau;
     int nouveau2;
-    if (*rows < 400 && *cols < 400) //Si image de petite taille
-    {
-        tailleLimite_X = (label_x + *cols * 1.75);
-        tailleLimite_Y = (label_y + *rows * 1.75);
-        nouveau = (posi_x - label_x) / 1.75;
-        nouveau2 = (posi_y - label_y) / 1.75;
-    }
-    else {
-        tailleLimite_X = (label_x + *cols);
-        tailleLimite_Y = (label_y + *rows);
-        nouveau = (posi_x - label_x);
-        nouveau2 = (posi_y - label_y);
-    }
+
     if (e->button() == Qt::LeftButton) {
+        if (*rows < 400 && *cols < 400) //Si image de petite taille
+        {
+            tailleLimite_X = (label_x + *cols * 1.75);
+            tailleLimite_Y = (label_y + *rows * 1.75);
+            nouveau = (posi_x - label_x) / 1.75;
+            nouveau2 = (posi_y - label_y) / 1.75;
+        }
+        else {
+            tailleLimite_X = (label_x + *cols);
+            tailleLimite_Y = (label_y + *rows);
+            nouveau = (posi_x - label_x);
+            nouveau2 = (posi_y - label_y);
+        }
         if (posi_x > label_x && posi_x< tailleLimite_X && posi_y>label_y && posi_y < tailleLimite_Y) {
             ImageDICOM3(nouveau);
             ImageDICOM2(nouveau2);
+            slider3->setValue(nouveau);
+            slider2->setValue(nouveau2);
+        }
+
+    }
+
+}
+void Interface::affichetruc2(QMouseEvent* e)
+{
+    if (*NbFichiers == 0)
+        return;
+    QPoint bla = e->pos();
+    int posi_x = bla.x();
+    int posi_y = bla.y();
+    QPoint coord = imageLabel2->pos();
+    int label_x = coord.x();
+    int label_y = coord.y();
+    int tailleLimite_X;
+    int tailleLimite_Y;
+
+    int nouveau;
+    int nouveau2;
+
+    if (e->button() == Qt::LeftButton) {
+        if (*rows < 400 && *cols < 400) //Si image de petite taille
+        {
+            tailleLimite_X = (label_x + *NbFichiers * 1.75);
+            tailleLimite_Y = (label_y + *rows * 1.75);
+            nouveau = (posi_x - label_x) / 1.75;
+            nouveau2 = (posi_y - label_y) / 1.75;
+        }
+        else {
+            tailleLimite_X = (label_x + *NbFichiers);
+            tailleLimite_Y = (label_y + *rows);
+            nouveau = (posi_x - label_x);
+            nouveau2 = (posi_y - label_y);
+        }
+        if (posi_x > label_x && posi_x< tailleLimite_X && posi_y>label_y && posi_y < tailleLimite_Y) {
+            ImageDICOM3(nouveau2);
+            ImageDICOM(nouveau);
+            slider->setValue(nouveau);
+            slider3->setValue(nouveau2);
+        }
+
+    }
+
+}
+void Interface::affichetruc3(QMouseEvent* e)
+{
+    if (*NbFichiers == 0)
+        return;
+    QPoint bla = e->pos();
+    int posi_x = bla.x();
+    int posi_y = bla.y();
+    QPoint coord = imageLabel3->pos();
+    int label_x = coord.x();
+    int label_y = coord.y();
+    int tailleLimite_X;
+    int tailleLimite_Y;
+
+    int nouveau;
+    int nouveau2;
+
+    if (e->button() == Qt::LeftButton) {
+        if (*rows < 400 && *cols < 400) //Si image de petite taille
+        {
+            tailleLimite_X = (label_x + *NbFichiers * 1.75);
+            tailleLimite_Y = (label_y + *rows * 1.75);
+            nouveau = (posi_x - label_x) / 1.75;
+            nouveau2 = (posi_y - label_y) / 1.75;
+        }
+        else {
+            tailleLimite_X = (label_x + *NbFichiers);
+            tailleLimite_Y = (label_y + *rows);
+            nouveau = (posi_x - label_x);
+            nouveau2 = (posi_y - label_y);
+        }
+        if (posi_x > label_x && posi_x< tailleLimite_X && posi_y>label_y && posi_y < tailleLimite_Y) {
+            ImageDICOM(nouveau);
+            ImageDICOM2(nouveau2);
+            slider->setValue(nouveau);
+            slider2->setValue(nouveau2);
         }
 
     }
@@ -719,7 +803,10 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     setLayout(layout);//Mise en place du layout
     setWindowTitle("Logiciel de navigation 3D dans les images IRM");//titre fenetre
     setWindowIcon(QIcon("icon.png"));//Mettre un Icon a la fenetre
-    
+
+    connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc(QMouseEvent*)));
+    connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc2(QMouseEvent*)));
+    connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc3(QMouseEvent*)));
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(value(int)));// Connexion du slider a fonction
     connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(value2(int)));// Connexion du slider a fonction
     connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(value3(int)));// Connexion du slider a fonction
