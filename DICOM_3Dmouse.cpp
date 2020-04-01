@@ -102,7 +102,6 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
 
     *precValue = 0;
     *compteur = *NbFichiers /2;
-    
     *precValue2 = 0;
     *compteur2 = 100;
     *precValue3 = 0;
@@ -526,7 +525,7 @@ void Interface::valueMouse3() {
 void Interface::valueMouse_int() {
     int value = *souris3D;
     int inte = Intensite;
-    if ((value == 0))
+    if ((value == 0)||(inte==0))
         return;
     int v = 2*pRy;
 
@@ -568,6 +567,7 @@ void Interface::valueMouse_int() {
         valueMouse();
         valueMouse2();
         valueMouse3();
+        slider4->setValue(v);
 
     }
     
@@ -840,7 +840,6 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     cols = new qint16;//Colones en global init ici
     rows = new qint16;//lignes en global init ici
     souris3D = new qint16;
-    //Intensite = new qint16;
     Outils->addAction("Activer/Desactiver souris 3D", this, SLOT(UtiliserSouris3D()));
     Affichage->addAction("ORIGINAL", this, SLOT(changeAffichage()));//Action pour couleur
     Affichage->addAction("JET", this, SLOT(changeAffichage1()));//Action pour couleur

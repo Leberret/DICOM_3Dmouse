@@ -5,7 +5,8 @@ TCHAR devicename[100] = _T("");
 HWND         hWndMain;
 
 INT pTx, pTy, pTz, pRx, pRy, pRz;
-INT Intensite;
+INT Intensite=0;
+INT prevInt = 0;
 
 int SbInit()
 {
@@ -162,19 +163,32 @@ void SbMotionEvent(SiSpwEvent* pEvent)
 
 void HandleV3DCMDEvent(SiSpwEvent* pEvent)
 {
+    
     hdc = GetDC(hWndMain);
     switch (pEvent->u.cmdEventData.functionNumber)
     {
     case V3DCMD_KEY_F1:
         _RPT1(_CRT_WARN, "BG : %d\n",pEvent->u.cmdEventData.pressed);
+        
         break;
+     
     case V3DCMD_KEY_F2:
-        _RPT1(_CRT_WARN, "BD : %d\n", pEvent->u.cmdEventData.pressed);
-        Intensite = pEvent->u.cmdEventData.pressed;
+        if (pEvent->u.cmdEventData.pressed == 1) {
+            _RPT1(_CRT_WARN, "BD : %d\n", pEvent->u.cmdEventData.pressed);
+            int i = prevInt;
+            if (i == 0) {
+                Intensite = 1;
+            }
+            else {
+                Intensite = 0;
+            }
+            prevInt = Intensite;
+        }
+        else
+            return;
         break;
     default:
         _RPT1(_CRT_WARN, "Unhandled V3DCMD : number = % d\n", pEvent->u.cmdEventData.functionNumber );
-
         break;
     }
 }

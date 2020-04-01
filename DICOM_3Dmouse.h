@@ -111,5 +111,4 @@ private:
 	qint16* precValue4;
 	qint16* compteur4;
 	qint16* souris3D;
-	//qint16* Intensite;
 };
