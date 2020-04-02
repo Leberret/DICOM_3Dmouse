@@ -33,12 +33,6 @@ void Interface::InfoCoupes()
     nombre1 = orientation1.toInt(&ok1);
     orientation2 = global[1];
     nombre2 = orientation2.toInt(&ok2);
-    orientation3 = global[2];
-    nombre3 = orientation3.toInt(&ok3);
-    orientation4 = global[3];
-    nombre4 = orientation4.toInt(&ok4);
-    orientation5 = global[4];
-    nombre5 = orientation5.toInt(&ok5);
     orientation6 = global[5];
     nombre6 = orientation6.toInt(&ok6);
     orientation7 = global[6];
@@ -481,8 +475,21 @@ void Interface::valueMouse() {
     int value = *souris3D;
     if (value == 0)
         return;
+    int NbMaxImages;
+    switch (*coupe)
+    {
+    case 1:
+        NbMaxImages = *NbFichiers;
+        break;
+    case 2:
+        NbMaxImages = *cols;
+        break;
+    case 3:
+        NbMaxImages = *cols;
+        break;
+    }
     int i = *compteur;
-    if ((i > 0) && (i < *NbFichiers)) {
+    if ((i > 0) && (i < NbMaxImages)) {
         switch (*coupe)
         {
         case 1:
@@ -530,8 +537,21 @@ void Interface::valueMouse2() {
     int value = *souris3D;
     if (value == 0)
         return;
+    int NbMaxImages;
+    switch (*coupe)
+    {
+    case 1:
+        NbMaxImages=*rows;
+        break;
+    case 2:
+        NbMaxImages = *NbFichiers;
+        break;
+    case 3:
+        NbMaxImages = *rows;
+        break;
+    }
     int i = *compteur2;
-    if ((i > 0) && (i < *rows)) {
+    if ((i > 0) && (i < NbMaxImages)) {
         switch (*coupe)
         {
         case 1:
@@ -580,9 +600,21 @@ void Interface::valueMouse3() {
     int value = *souris3D;
     if (value == 0)
         return;
-    
+    int NbMaxImages;
+    switch (*coupe)
+    {
+    case 1:
+        NbMaxImages = *cols;
+        break;
+    case 2:
+        NbMaxImages = *rows;
+        break;
+    case 3:
+        NbMaxImages = *NbFichiers;
+        break;
+    }
     int i = *compteur3;
-    if ((i > 0) && (i < *cols)) {
+    if ((i > 0) && (i < NbMaxImages)) {
         switch (*coupe)
         {
         case 1:
