@@ -8,6 +8,11 @@ int main(int argc, char* argv[])
 	QApplication a(argc, argv);
 	Interface w;
 	w.show();
+    w.setStyleSheet("color: white;"
+        "background-color:black;"
+        "selection-color: white;"
+        "selection-background-color: darkGrey;");
+
     int res;
     /* Initialize 3D mouse */
     res = SbInit();
@@ -22,10 +27,13 @@ int main(int argc, char* argv[])
 
         ExitProcess(1);                /* exit program */
     }
+    else {
+        DispatchLoopNT();
+    }
+
+    return a.exec();
 
 
-    /* Function To be Repeated */
-    return(DispatchLoopNT());
-	return a.exec();
+
 }
 

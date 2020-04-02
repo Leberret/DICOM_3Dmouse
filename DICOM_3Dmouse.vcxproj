@@ -147,6 +147,9 @@
     <None Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\dict.py" />
     <None Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\dict_vm.inl" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
     <Import Project="$(QtMsBuild)\qt.targets" />

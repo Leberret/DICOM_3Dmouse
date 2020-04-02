@@ -1,5 +1,6 @@
 #include "DICOM_3Dmouse.h"
 
+MAT imageSave;
 
 QVector<int>* ALLPixels(vector<unsigned short>* pixels, QVector<int>* allpixels) //Stocker tous les pixels de chaque image dans un seul vecteur
 {
@@ -38,9 +39,6 @@ void Interface::InfoCoupes()
     orientation7 = global[6];
     nombre7 = orientation7.toInt(&ok7);
 
-    QMessageBox erreur;
-    erreur.setText(QString::number(nombre1) + QString::number(nombre2) + QString::number(nombre3) + QString::number(nombre4) + QString::number(nombre5) + QString::number(nombre6) + QString::number(nombre7));
-    erreur.exec();
 
     if (nombre2 == 1 && nombre7 == 1)
     {
@@ -194,6 +192,9 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     *souris3D = 0;
 
 
+}
+void Interface::SaveAs() {
+    
 }
 void Interface::ChangerIntensite()
 {
@@ -506,14 +507,14 @@ void Interface::valueMouse() {
                 i=i+1;
             }
             else if ((pTx >= 20) && (pTx >= * precValue) && (pTx < 300)) {
-                i = i + 2;
+                i = i+3;
             }
            
             else if ((pTx < -5) && (pTx <= * precValue) && (pTx > -20)) {
                 i=i-1;
             }
             else if ((pTx <= -20) && (pTx <= *precValue) && (pTx > -300)) {
-                i = i - 2;
+                i = i-3;
             }
     }
     
@@ -527,7 +528,18 @@ void Interface::valueMouse() {
 
         return;
     }
-    slider->setValue(i);
+    switch (*coupe)
+    {
+    case 1:
+        slider->setValue(i);
+        break;
+    case 2:
+        slider3->setValue(i);
+        break;
+    case 3:
+        slider3->setValue(i);
+        break;
+    }
     *compteur = i;
     *precValue = pTx;
 }
@@ -590,7 +602,18 @@ void Interface::valueMouse2() {
 
         return;
     }
-    slider2->setValue(i);
+    switch (*coupe)
+    {
+    case 1:
+        slider2->setValue(i);
+        break;
+    case 2:
+        slider->setValue(i);
+        break;
+    case 3:
+        slider2->setValue(i);
+        break;
+    }
     *compteur2 = i;
     *precValue2 = pTy;
 }
@@ -653,8 +676,18 @@ void Interface::valueMouse3() {
 
         return;
     }
-    slider3->setValue(i);
-    *compteur3 = i;
+    switch (*coupe)
+    {
+    case 1:
+        slider3->setValue(i);
+        break;
+    case 2:
+        slider2->setValue(i);
+        break;
+    case 3:
+        slider->setValue(i);
+        break;
+    }    *compteur3 = i;
     *precValue3 = pTz;
 }
 void Interface::valueMouse_int() {
@@ -662,9 +695,9 @@ void Interface::valueMouse_int() {
     int inte = Intensite;
     if ((value == 0)||(inte==0))
         return;
-    int v = 2*pRy;
+    int v = pRy;
 
-    if ((v > 5) && (v < 3000) && (v>=*precValue4)) {
+    if ((v > 5) && (v < 50) && (v>=*precValue4)) {
         *ValeurMaxA = *ValeurMaxA + v;//changement de la valeur max d'intensité de référence
         *ValeurMaxB = *ValeurMaxB + v;//changement de la valeur max d'intensité de référence
         *ValeurMaxC = *ValeurMaxB + v;//changement de la valeur max d'intensité de référence
@@ -674,7 +707,7 @@ void Interface::valueMouse_int() {
         valueMouse3();
 
     }
-    else if ((v > 5) && (v < 3000) && (v <= *precValue4)) {
+    else if ((v > 5) && (50) && (v <= *precValue4)) {
         *ValeurMaxA = *ValeurMaxA - v;//changement de la valeur max d'intensité de référence
         *ValeurMaxB = *ValeurMaxB - v;//changement de la valeur max d'intensité de référence
         *ValeurMaxC = *ValeurMaxC - v;//changement de la valeur max d'intensité de référence
@@ -684,7 +717,7 @@ void Interface::valueMouse_int() {
         valueMouse3();
 
     }
-    else if ((v > -1500) && (v < -5) && (v <= *precValue4)) {
+    else if ((v > -50) && (v < -5) && (v <= *precValue4)) {
         *ValeurMaxA = *ValeurMaxA + v;//changement de la valeur max d'intensité de référence
         *ValeurMaxB = *ValeurMaxB + v;//changement de la valeur max d'intensité de référence
         *ValeurMaxC = *ValeurMaxC + v;//changement de la valeur max d'intensité de référence
@@ -694,7 +727,7 @@ void Interface::valueMouse_int() {
         valueMouse3();
 
     }
-    else if ((v > -1500) && (v < -5) && (v >= *precValue4)) {
+    else if ((v > -50) && (v < -5) && (v >= *precValue4)) {
         *ValeurMaxA = *ValeurMaxA - v;//changement de la valeur max d'intensité de référence
         *ValeurMaxB = *ValeurMaxB - v;//changement de la valeur max d'intensité de référence
         *ValeurMaxC = *ValeurMaxC - v;//changement de la valeur max d'intensité de référence
@@ -702,7 +735,7 @@ void Interface::valueMouse_int() {
         valueMouse();
         valueMouse2();
         valueMouse3();
-        slider4->setValue(v);
+        //slider4->setValue(v);
 
     }
     
@@ -958,10 +991,13 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     NbFichiers = new qint16;//Init du nb de fichier
     visible = new qint16;//Init du nb de fichier
     menu = new QMenuBar();//Init Bar de menus
+
     file = new QMenu("&Fichiers");//init menu fichiers
     Info = new QMenu("&Informations");//init menu infos
     Affichage = new QMenu("&Affichage");//Init menu affichage
     Outils = new QMenu("&Outils");//Init menu outils
+
+
 
     precValue = new qint16;
     compteur = new qint16;
@@ -1007,6 +1043,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(value2(int)));// Connexion du slider a fonction
     connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(value3(int)));// Connexion du slider a fonction
     connect(slider4, SIGNAL(valueChanged(int)), this, SLOT(value4(int)));// Connexion du slider a fonction
+   
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc(QMouseEvent*)));
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc2(QMouseEvent*)));
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc3(QMouseEvent*)));

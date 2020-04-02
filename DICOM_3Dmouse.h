@@ -46,6 +46,7 @@ signals:
 	void clic(QMouseEvent* e);
 public slots:
 	void ouvrirFichier(); //Ouvrir le dossier l'image en fonction du positionnement du curseur
+	void SaveAs();
 	void UtiliserSouris3D();
 	void changeAffichage();
 	void changeAffichage1();
