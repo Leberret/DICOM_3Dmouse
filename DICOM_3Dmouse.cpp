@@ -538,7 +538,7 @@ void Interface::valueMouse2() {
             ImageDICOM2(i);
             break;
         case 2:
-            ImageDICOM1(i);
+            ImageDICOM(i);
             break;
         case 3:
             ImageDICOM2(i);
@@ -592,7 +592,7 @@ void Interface::valueMouse3() {
             ImageDICOM2(i);
             break;
         case 3:
-            ImageDICOM1(i);
+            ImageDICOM(i);
             break;
         }
         if ((pTz > 5) && (pTz >= * precValue3) && (pTz <20)) {
