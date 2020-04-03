@@ -1,6 +1,5 @@
 #include "DICOM_3Dmouse.h"
 
-MAT imageSave;
 
 QVector<int>* ALLPixels(vector<unsigned short>* pixels, QVector<int>* allpixels) //Stocker tous les pixels de chaque image dans un seul vecteur
 {
@@ -164,9 +163,9 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     *precValue = 0;
     *compteur = *NbFichiers /2;
     *precValue2 = 0;
-    *compteur2 = 100;
+    *compteur2 = *rows/2;
     *precValue3 = 0;
-    *compteur3 = 100;
+    *compteur3 = *cols/2;
     *precValue4 = 0;
     *compteur4 = 0;
 
@@ -193,9 +192,10 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
 
 
 }
+/*
 void Interface::SaveAs() {
     
-}
+}*/
 void Interface::ChangerIntensite()
 {
     if (*NbFichiers == 0) //S'il n'y a pas de fichier on se casse
@@ -687,7 +687,8 @@ void Interface::valueMouse3() {
     case 3:
         slider->setValue(i);
         break;
-    }    *compteur3 = i;
+    }    
+    *compteur3 = i;
     *precValue3 = pTz;
 }
 void Interface::valueMouse_int() {
@@ -696,50 +697,33 @@ void Interface::valueMouse_int() {
     if ((value == 0)||(inte==0))
         return;
     int v = pRy;
-
-    if ((v > 5) && (v < 50) && (v>=*precValue4)) {
-        *ValeurMaxA = *ValeurMaxA + v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxB = *ValeurMaxB + v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxC = *ValeurMaxB + v;//changement de la valeur max d'intensité de référence
-
-        valueMouse();
-        valueMouse2();
-        valueMouse3();
-
-    }
-    else if ((v > 5) && (50) && (v <= *precValue4)) {
-        *ValeurMaxA = *ValeurMaxA - v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxB = *ValeurMaxB - v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxC = *ValeurMaxC - v;//changement de la valeur max d'intensité de référence
+    int i = *compteur4;
+    int lim = 500;
+    if ((i > -lim) && (i < lim)) {
+        *ValeurMaxA = *ValMaxA + i;//changement de la valeur max d'intensité de référence
+        *ValeurMaxB = *ValMaxB + i;//changement de la valeur max d'intensité de référence
+        *ValeurMaxC = *ValMaxB + i;//changement de la valeur max d'intensité de référence
 
         valueMouse();
         valueMouse2();
         valueMouse3();
+        if ((v > 5) && (v >= *precValue4)&&(v<lim)) {
+            i=i+50;
+        }
 
+        else if ((v < -5) && (v <= *precValue4) && (v> -lim)) {
+            i = i-50;
+        }
     }
-    else if ((v > -50) && (v < -5) && (v <= *precValue4)) {
-        *ValeurMaxA = *ValeurMaxA + v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxB = *ValeurMaxB + v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxC = *ValeurMaxC + v;//changement de la valeur max d'intensité de référence
-
-        valueMouse();
-        valueMouse2();
-        valueMouse3();
-
+    else if (i <= -lim) {
+        i = 1-lim ;
     }
-    else if ((v > -50) && (v < -5) && (v >= *precValue4)) {
-        *ValeurMaxA = *ValeurMaxA - v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxB = *ValeurMaxB - v;//changement de la valeur max d'intensité de référence
-        *ValeurMaxC = *ValeurMaxC - v;//changement de la valeur max d'intensité de référence
-
-        valueMouse();
-        valueMouse2();
-        valueMouse3();
-        //slider4->setValue(v);
-
+    else if (i >= lim) {
+        i = lim-1;
     }
-    
-    
+    slider4->setValue(i);
+
+    * compteur4 = i;
     *precValue4 = v;
 }
 
@@ -972,6 +956,7 @@ void Interface::ImageDICOM(int v)//Ouverture, lecture et affichage image "*.dcm"
 Interface::Interface() : QWidget() //Widget = fenetre principale
 {
     
+
     hWndMain = (HWND)this->winId();
     QTimer* timer = new QTimer(this);
 
@@ -1039,6 +1024,13 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     setWindowTitle("Logiciel de navigation 3D dans les images IRM");//titre fenetre
     setWindowIcon(QIcon("icon.png"));//Mettre un Icon a la fenetre
     
+    if (DoubleClics() == TRUE) {
+        QPixmap pixmap = QScreen::grabWindow(layout->winId(), 0, 0, -1, -1);
+        QString format = "png";
+        QString filePath = "E:/Documents/Etudes_M1/Projet_M1/myscreen." + format;
+        pixmap.save(filePath);
+    }
+
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(value(int)));// Connexion du slider a fonction
     connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(value2(int)));// Connexion du slider a fonction
     connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(value3(int)));// Connexion du slider a fonction
@@ -1052,10 +1044,23 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse2()));
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse3()));
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse_int()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
+   
     timer->start(10);
 
 }
 void Interface::mousePressEvent(QMouseEvent* e)//Definition du signal clic
 {
     emit clic(e);
+}
+bool Interface::DoubleClics() {
+    if ((clicD == 1) && (clicG == 1)) {
+
+        return TRUE;
+        clicD = 0;
+        clicG = 0;
+    }
+    else
+        return FALSE;
+    
 }

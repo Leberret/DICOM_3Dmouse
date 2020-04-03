@@ -12,7 +12,8 @@ int main(int argc, char* argv[])
         "background-color:black;"
         "selection-color: white;"
         "selection-background-color: darkGrey;");
-
+    
+    
     int res;
     /* Initialize 3D mouse */
     res = SbInit();
