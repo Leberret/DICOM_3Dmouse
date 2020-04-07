@@ -26,6 +26,10 @@ void Interface::InfoCoupes()
     QString orientation1, orientation2, orientation3, orientation4, orientation5, orientation6, orientation7;
     string orientationGLOBAL = getStringTagValue(0x00200037, data);
     QString global = QString::fromStdString(orientationGLOBAL);
+    QMessageBox cc;
+
+    cc.setText(global);
+    cc.exec();
     global.remove("0");
     global.remove(".");
     global.remove("-");
@@ -38,7 +42,7 @@ void Interface::InfoCoupes()
     orientation7 = global[6];
     nombre7 = orientation7.toInt(&ok7);
 
-
+    
     if (nombre2 == 1 && nombre7 == 1)
     {
         *coupe = 1;
@@ -504,17 +508,17 @@ void Interface::valueMouse() {
             break;
         }        
             if ((pTx > 5) &&(pTx >= * precValue) && (pTx<20)){
-                i=i+1;
+                i=i-1;
             }
             else if ((pTx >= 20) && (pTx >= * precValue) && (pTx < 300)) {
-                i = i+3;
+                i = i-3;
             }
            
             else if ((pTx < -5) && (pTx <= * precValue) && (pTx > -20)) {
-                i=i-1;
+                i=i+1;
             }
             else if ((pTx <= -20) && (pTx <= *precValue) && (pTx > -300)) {
-                i = i-3;
+                i = i+3;
             }
     }
     
@@ -577,17 +581,17 @@ void Interface::valueMouse2() {
             break;
         }
         if ((pTy > 5) && (pTy >= * precValue2) && (pTy < 20)) {
-            i = i + 1;
+            i = i - 1;
         }
         else if ((pTy >= 20) && (pTy >= * precValue2) && (pTy < 150)) {
-            i = i + 2;
+            i = i - 2;
         }
         
         else if ((pTy < -5) && (pTy <= *precValue2) && (pTy > -20)) {
-            i = i - 1;
+            i = i + 1;
         }
         else if ((pTy <= -20) && (pTy <= *precValue2) && (pTy > -150)) {
-            i = i - 2;
+            i = i + 2;
         }
         
     }
@@ -651,17 +655,17 @@ void Interface::valueMouse3() {
             break;
         }
         if ((pTz > 5) && (pTz >= * precValue3) && (pTz <20)) {
-            i = i + 1;
+            i = i - 1;
         }
         else if ((pTz >= 20) && (pTz >= * precValue3) && (pTz < 250)) {
-            i = i + 2;
+            i = i - 2;
         }
         
         else if ((pTz < -5) && (pTz <= *precValue3) && (pTz > -20)) {
-            i = i - 1;
+            i = i + 1;
         }
         else if ((pTz <= -20) && (pTz <= *precValue3) && (pTz > -250)) {
-            i = i - 2;
+            i = i + 2;
         }
         
     }
@@ -963,6 +967,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     FichierImage2 = new QString();
     layout = new QGridLayout;//Init layout
     imageLabel1 = new QLabel(); //init label
+    
     imageLabel2 = new QLabel();//init label
     imageLabel3 = new QLabel();//init label
     imageLabel4 = new QLabel(); //init label
@@ -1009,6 +1014,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     Affichage->addAction("Modifier Intensite", this, SLOT(ChangerIntensite()));//Action d'affichage slider
     Info->addAction("Informations patient", this, SLOT(displayTags()));//Connexion menu action
     file->addAction("Ouvrir", this, SLOT(ouvrirFichier()));//Connexion menu action
+    //file->addAction("Enregistrer sous", this, SLOT(SaveAs(this->winId(),imageLabel1)));//Connexion menu action
 
     *NbFichiers = 0; //Initialise a 0 pour ne pas avoir de pb de memoires
     *visible = 0;//compteur global pour savoir si affichage slider4
@@ -1024,12 +1030,6 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     setWindowTitle("Logiciel de navigation 3D dans les images IRM");//titre fenetre
     setWindowIcon(QIcon("icon.png"));//Mettre un Icon a la fenetre
     
-    if (DoubleClics() == TRUE) {
-        QPixmap pixmap = QScreen::grabWindow(layout->winId(), 0, 0, -1, -1);
-        QString format = "png";
-        QString filePath = "E:/Documents/Etudes_M1/Projet_M1/myscreen." + format;
-        pixmap.save(filePath);
-    }
 
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(value(int)));// Connexion du slider a fonction
     connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(value2(int)));// Connexion du slider a fonction
@@ -1045,8 +1045,12 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse3()));
     connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse_int()));
     connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
-   
+
+
+    
+
     timer->start(10);
+    SaveAs(this->winId());
 
 }
 void Interface::mousePressEvent(QMouseEvent* e)//Definition du signal clic
@@ -1055,12 +1059,46 @@ void Interface::mousePressEvent(QMouseEvent* e)//Definition du signal clic
 }
 bool Interface::DoubleClics() {
     if ((clicD == 1) && (clicG == 1)) {
-
+        
         return TRUE;
-        clicD = 0;
-        clicG = 0;
+        //clicD = 0;
+        //clicG = 0;
     }
     else
         return FALSE;
     
+}
+
+void Interface::SaveAs(WId winId) {
+    if (DoubleClics() == TRUE) {
+        
+        QMessageBox cc;
+
+        cc.setText("screenshot");
+        cc.exec();
+        //qApp->beep(); // Signal the screenshoot
+
+    // Prise du screenshoot
+
+        //QScreen* screen = qApp->primaryScreen();
+    
+
+        //QApplication::beep();
+
+        //QPixmap pixmap = screen->grabWindow(winId,0,0,-1,-1);
+        //QPixmap pixmap = QScreen::grabWindow(winId, 0, 0, -1, -1);
+
+
+        /*QString filePath = QFileDialog::getOpenFileName(
+            this,
+            tr("Open File"),
+            "",
+            tr("JPEG (*.jpg *.jpeg);;PNG (*.png)")
+            );*/
+
+        QString filePath = "E:/Documents/Etudes_M1/Projet_M1/myscreen2.png";
+        //pixmap.save(filePath);
+        
+    
+    }
 }

@@ -43,11 +43,14 @@ public:
 	void ImageDICOM2(int v);//Ouverture, lecture et affichage image "*.dcm"
 	void ImageDICOM3(int v);//Ouverture, lecture et affichage image "*.dcm"
 	void mousePressEvent(QMouseEvent* e);
+	
+
 signals:
 	void clic(QMouseEvent* e);
 public slots:
 	void ouvrirFichier(); //Ouvrir le dossier l'image en fonction du positionnement du curseur
 	bool DoubleClics();
+	void SaveAs(WId winId);
 	void UtiliserSouris3D();
 	void changeAffichage();
 	void changeAffichage1();

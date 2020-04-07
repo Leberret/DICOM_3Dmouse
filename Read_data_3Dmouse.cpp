@@ -7,7 +7,6 @@ HWND         hWndMain;
 INT pTx, pTy, pTz, pRx, pRy, pRz;
 INT Intensite=0;
 INT prevInt = 0;
-//INT prevClicG = 0;
 INT clicD=0, clicG=0;
 int SbInit()
 {
@@ -169,7 +168,7 @@ void HandleV3DCMDEvent(SiSpwEvent* pEvent)
     switch (pEvent->u.cmdEventData.functionNumber)
     {
     case V3DCMD_KEY_F1:
-        _RPT1(_CRT_WARN, "BG : %d\n", pEvent->u.cmdEventData.pressed);
+        //_RPT1(_CRT_WARN, "BG : %d\n", pEvent->u.cmdEventData.pressed);
         clicG= pEvent->u.cmdEventData.pressed;
 
         break;
@@ -178,9 +177,9 @@ void HandleV3DCMDEvent(SiSpwEvent* pEvent)
         clicD = pEvent->u.cmdEventData.pressed;
         if (pEvent->u.cmdEventData.pressed == 1) {
             
-            _RPT1(_CRT_WARN, "BD : %d\n", pEvent->u.cmdEventData.pressed);
+            //_RPT1(_CRT_WARN, "BD : %d\n", pEvent->u.cmdEventData.pressed);
             int i = prevInt;
-            if (i == 0) {
+            if ((i == 0)&&(clicG==0)) {
                 Intensite = 1;
             }
             else {
@@ -188,8 +187,7 @@ void HandleV3DCMDEvent(SiSpwEvent* pEvent)
             }
             prevInt = Intensite;
         }
-        else
-            return;
+        
         break;
     default:
         _RPT1(_CRT_WARN, "Unhandled V3DCMD : number = % d\n", pEvent->u.cmdEventData.functionNumber );
