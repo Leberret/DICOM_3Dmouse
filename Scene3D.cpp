@@ -1,5 +1,6 @@
 #include "Scene3D.h"
-#include "Interface.h"
+#include "DICOM_3Dmouse.h"
+
 
 //------------------------------------------------------------------------------
 //--- Private methods ----------------------------------------------------------
@@ -34,7 +35,7 @@ void My3DScene::createObjects()
             string format = ".PNG";
             string numero = to_string(i);
             
-            cheminimage = "C:/Users/lefur/Desktop/Cours/M1/Projet_Souris3D/DICOM&QT/Coupe"+coupe+"_" + numero + format;
+            cheminimage = "Coupe"+coupe+"_" + numero + format;
             loader->setSource(QUrl::fromLocalFile(QString::fromStdString(cheminimage)));
             this->planeTexture->setTexture(loader);
             loader->setMirrored(false);

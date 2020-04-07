@@ -73,6 +73,9 @@
     <ClCompile Include="E:\Documents\Etudes_M1\Projet_M1\DCMExemple_Nap\DCMExemple\utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scene3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="DICOM_3Dmouse.h">
@@ -148,6 +151,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\writer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

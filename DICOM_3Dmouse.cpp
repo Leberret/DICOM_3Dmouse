@@ -1180,6 +1180,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     Affichage->addAction("PARULA", this, SLOT(changeAffichage6()));//Action pour couleur
     Affichage->addAction("TWILIGHT SHIFTED", this, SLOT(changeAffichage7()));//Action pour couleur
     Affichage->addAction("Modifier Intensite", this, SLOT(ChangerIntensite()));//Action d'affichage slider
+    Affichage->addAction("Passer en visualisation 3D", this, SLOT(passer3D()));//Action d'affichage slider
     Info->addAction("Informations patient", this, SLOT(displayTags()));//Connexion menu action
     file->addAction("Ouvrir", this, SLOT(ouvrirFichier()));//Connexion menu action
     file->addAction("Enregistrer images", this, SLOT(Enregistre()));//Connexion menu action
