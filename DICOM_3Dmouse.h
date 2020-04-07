@@ -3,7 +3,6 @@
 #include "ui_DICOM_3Dmouse.h"
 #include <QApplication>
 #include <QtWidgets>
-#include <QMouseEvent>
 #include <fstream>
 #include <string>
 #include <iostream>
@@ -74,6 +73,9 @@ public slots:
 	void affichetruc2(QMouseEvent* e);
 	void affichetruc3(QMouseEvent* e);
 	void InfoCoupes();
+	void Enregistre();
+	void Supprimer();
+	void passer3D();
 
 private:
 	QLabel* imageLabel1;
@@ -118,4 +120,5 @@ private:
 	qint16* compteur4;
 	qint16* souris3D;
 	qint16* coupe;
+	qint16* enregistre;
 };
