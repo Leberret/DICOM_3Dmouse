@@ -64,6 +64,9 @@ public slots:
 	void value2(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
 	void value3(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
 	void value4(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void valueSpin(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void valueSpin2(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void valueSpin3(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
 	void displayTags();
 	void valueMouse();
 	void valueMouse2();
@@ -98,6 +101,11 @@ private:
 	QMenu* Outils;
 	QStringList* Listechemin;
 	QVector<int>* allpixels;
+	//--------------------------
+	QSpinBox* SpinBox1;
+	QSpinBox* SpinBox2;
+	QSpinBox* SpinBox3;
+	//-------------------------
 	qint16* tailleImage;
 	qint16* cols;
 	qint16* rows;

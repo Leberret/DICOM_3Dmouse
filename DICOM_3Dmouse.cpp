@@ -104,25 +104,25 @@ void Interface::InfoCoupes()
     if (nombre2 == 1 && nombre7 == 1)
     {
         *coupe = 1;
-        imageLabel4->setText("Coupe Sagittale");
-        imageLabel5->setText("Coupe Transversale");
-        imageLabel6->setText("Coupe Coronale");
+        SpinBox1->setPrefix("Coupe Sagittale : ");
+        SpinBox2->setPrefix("Coupe Transversale : ");
+        SpinBox3->setPrefix("Coupe Coronale : ");
     }
 
     if (nombre1 == 1 && nombre6 == 1)
     {
         *coupe = 2;
-        imageLabel4->setText("Coupe Transversale");
-        imageLabel5->setText("Coupe Coronale");
-        imageLabel6->setText("Coupe Sagittale");
+        SpinBox1->setPrefix("Coupe Transversale : ");
+        SpinBox2->setPrefix("Coupe Coronale : ");
+        SpinBox3->setPrefix("Coupe Sagittale : ");
     }
 
     if (nombre1 == 1 && nombre7 == 1)
     {
         *coupe = 3;
-        imageLabel4->setText("Coupe Coronale");
-        imageLabel5->setText("Coupe Transversale");
-        imageLabel6->setText("Coupe Sagittale");
+        SpinBox1->setPrefix("Coupe Coronale : ");
+        SpinBox2->setPrefix("Coupe Transversale : ");
+        SpinBox3->setPrefix("Coupe Sagittale : ");
     }
 
 
@@ -217,7 +217,21 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
         delete(pixels);
 
     }
+    SpinBox1->setButtonSymbols(QSpinBox::NoButtons);
+    SpinBox2->setButtonSymbols(QSpinBox::NoButtons);
+    SpinBox3->setButtonSymbols(QSpinBox::NoButtons);
+    SpinBox1->setRange(0, *NbFichiers - 1);
+    SpinBox2->setRange(0, *rows - 1);
+    SpinBox3->setRange(0, *cols - 1);
 
+
+    SpinBox1->setStyleSheet("QSpinBox { border: 0px solid grey; border-radius: 4px; background-color: rgb(230,230,230); color: black }");
+    SpinBox2->setStyleSheet("QSpinBox { border: 0px solid grey; border-radius: 4px; background-color: rgb(230,230,230); color: black }");
+    SpinBox3->setStyleSheet("QSpinBox { border: 0px solid grey; border-radius: 4px; background-color: rgb(230,230,230); color: black }");
+
+    layout->addWidget(SpinBox1, 0, 0, Qt::AlignCenter);
+    layout->addWidget(SpinBox2, 0, 1, Qt::AlignCenter);
+    layout->addWidget(SpinBox3, 0, 2, Qt::AlignCenter);
     slider->setRange(0, *NbFichiers - 1);
     slider2->setRange(1, *rows - 1); //Valeurs du slider selon nb de fichiers
     slider3->setRange(1, *cols); //Valeurs du slider selon nb de fichiers
@@ -531,7 +545,21 @@ void Interface::value4(int v) //Récuperer la valeur du curseur lorsqu'il est dép
     ImageDICOM2(slider2->value());//Affichage de l'image
     ImageDICOM3(slider3->value());//Affichage de l'image
 }
-
+void Interface::valueSpin(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+{
+    ImageDICOM(v); //Appel de la fonction ImageDICOM pour afficher une image dicom
+    slider->setValue(SpinBox1->value());
+}
+void Interface::valueSpin2(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+{
+    ImageDICOM2(v); //Appel de la fonction ImageDICOM pour afficher une image dicom
+    slider2->setValue(SpinBox2->value());
+}
+void Interface::valueSpin3(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+{
+    ImageDICOM3(v); //Appel de la fonction ImageDICOM pour afficher une image dicom
+    slider3->setValue(SpinBox3->value());
+}
 void Interface::valueMouse() {
 
     
@@ -871,15 +899,15 @@ void Interface::ImageDICOM3(int v)
             {
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
                 // if pixel is white
-                if (image.at<unsigned char>(y, x) < 10)
+                if (image.at<unsigned char>(y, x) < 15)
                 {
                     // set alpha to zero:
                     pixel[3] = 0;
                 }
                 else {
-                    pixel[0] -= 95;
-                    pixel[1] -= 95;
-                    pixel[2] -= 95;
+                    pixel[0] -= 50;
+                    pixel[1] -= 50;
+                    pixel[2] -= 50;
                     pixel[3] = 1;
                 }
             }
@@ -985,15 +1013,15 @@ void Interface::ImageDICOM2(int v)
             {
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
                 // if pixel is white
-                if (image.at<unsigned char>(y, x) < 10)
+                if (image.at<unsigned char>(y, x) < 15)
                 {
                     // set alpha to zero:
                     pixel[3] = 0;
                 }
                 else {
-                    pixel[0] -= 95;
-                    pixel[1] -= 95;
-                    pixel[2] -= 95;
+                    pixel[0] -= 50;
+                    pixel[1] -= 50;
+                    pixel[2] -= 50;
                     pixel[3] = 1;
                 }
             }
@@ -1091,15 +1119,15 @@ void Interface::ImageDICOM(int v)//Ouverture, lecture et affichage image "*.dcm"
             {
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
                 // if pixel is white
-                if (image.at<unsigned char>(y, x) < 10)
+                if (image.at<unsigned char>(y, x) < 15)
                 {
                     // set alpha to zero:
                     pixel[3] = 0;
                 }
                 else {
-                    pixel[0] -= 95;
-                    pixel[1] -= 95;
-                    pixel[2] -= 95;
+                    pixel[0] -= 50;
+                    pixel[1] -= 50;
+                    pixel[2] -= 50;
                     pixel[3] = 1;
                 }
             }
@@ -1135,6 +1163,10 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     layout = new QGridLayout;//Init layout
     imageLabel1 = new QLabel(); //init label
     
+    SpinBox1 = new QSpinBox();
+    SpinBox2 = new QSpinBox();
+    SpinBox3 = new QSpinBox();
+
     imageLabel2 = new QLabel();//init label
     imageLabel3 = new QLabel();//init label
     imageLabel4 = new QLabel(); //init label
