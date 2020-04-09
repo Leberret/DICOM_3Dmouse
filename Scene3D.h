@@ -20,6 +20,9 @@
 // Namespaces.
 using namespace std;
 
+extern INT pTx, pTy, pTz, pRx, pRy, pRz;
+extern HWND hWndMain3D;
+
 // Class My3DScene.
 class My3DScene : public Qt3DExtras::Qt3DWindow
 {
@@ -41,7 +44,6 @@ private:
 	void createObjects();
 	void createLight();
 	void createCamera();
-	void afficher();
 
 public:
 	// Constructors.

@@ -1,7 +1,6 @@
 #include "Scene3D.h"
 #include "DICOM_3Dmouse.h"
 
-
 //------------------------------------------------------------------------------
 //--- Private methods ----------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -84,26 +83,26 @@ void My3DScene::createCamera()
     this->camera()->lens()->setPerspectiveProjection(10.0f, 1.0f, 0.1f, 1000.0f);
     this->camera()->setPosition(QVector3D(0, 70.0f, 0));
     this->camera()->setViewCenter(QVector3D(0, 0, 0));
-    this->camera()->setUpVector(QVector3D(0, 0, 1));
+    this->camera()->setUpVector(QVector3D(0, 0,1));
     // For camera controls
     this->cameraController = new Qt3DExtras::QOrbitCameraController(&this->scene);
     this->cameraController->setLinearSpeed(20.0f);
     this->cameraController->setLookSpeed(100.0f);
     this->cameraController->setCamera(this->camera());
+    this->camera()->translate(QVector3D(-pTx / 10.0, pTy / 10.0, 0));
+
 }
-void My3DScene::afficher()
-{
-    this->show();
-}
+
 //------------------------------------------------------------------------------
 //--- Constructors -------------------------------------------------------------
 //------------------------------------------------------------------------------
 // Initialize the vector singelton and create the window elements.
 My3DScene::My3DScene()
 {
+    hWndMain3D = (HWND)this->winId();
+
     this->createObjects();
     this->createCamera();
     this->createLight();
     this->setRootEntity(&this->scene);
-    afficher();
 }

@@ -9,7 +9,8 @@ QVector<int>* ALLPixels(vector<unsigned short>* pixels, QVector<int>* allpixels)
 }
 void Interface::passer3D()
 {
-    new My3DScene;
+    My3DScene *scene= new My3DScene;
+    scene->show();
 }
 void Interface::Supprimer()
 {
@@ -260,9 +261,9 @@ void Interface::ouvrirFichier() //Ouvrir le dossier l'image en fonction du posit
     layout->addWidget(slider, 2, 0,Qt::AlignBottom);//Position
     layout->addWidget(slider2, 2, 1, Qt::AlignBottom);//Position
     layout->addWidget(slider3, 2, 2, Qt::AlignBottom);//Position
-    layout->addWidget(imageLabel4, 0, 0, Qt::AlignHCenter);//Labels vides pour centrer
-    layout->addWidget(imageLabel5, 0, 1, Qt::AlignHCenter);//Labels vides pour centrer
-    layout->addWidget(imageLabel6, 0, 2, Qt::AlignHCenter);//Labels vides pour centrer
+    //layout->addWidget(imageLabel4, 0, 0, Qt::AlignHCenter);//Labels vides pour centrer
+    //layout->addWidget(imageLabel5, 0, 1, Qt::AlignHCenter);//Labels vides pour centrer
+    //layout->addWidget(imageLabel6, 0, 2, Qt::AlignHCenter);//Labels vides pour centrer
 
     *souris3D = 0;
 
@@ -526,15 +527,17 @@ void Interface::value(int v) //Récuperer la valeur du curseur lorsqu'il est dépl
 {
     
     ImageDICOM(v); //Appel de la fonction ImageDICOM pour afficher une image dicom
-
+    SpinBox1->setValue(slider->value());
 }
 void Interface::value2(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
 {
     ImageDICOM2(v);
+    SpinBox2->setValue(slider2->value());
 }
 void Interface::value3(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
 {
     ImageDICOM3(v);
+    SpinBox3->setValue(slider3->value());
 }
 void Interface::value4(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
 {
@@ -1241,6 +1244,10 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(value3(int)));// Connexion du slider a fonction
     connect(slider4, SIGNAL(valueChanged(int)), this, SLOT(value4(int)));// Connexion du slider a fonction
    
+    connect(SpinBox1, SIGNAL(valueChanged(int)), this, SLOT(valueSpin(int)));// Connexion du slider a fonction
+    connect(SpinBox2, SIGNAL(valueChanged(int)), this, SLOT(valueSpin2(int)));// Connexion du slider a fonction
+    connect(SpinBox3, SIGNAL(valueChanged(int)), this, SLOT(valueSpin3(int)));// Connexion du slider a fonction
+
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc(QMouseEvent*)));
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc2(QMouseEvent*)));
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc3(QMouseEvent*)));

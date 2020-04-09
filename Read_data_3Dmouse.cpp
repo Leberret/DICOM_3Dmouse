@@ -3,6 +3,8 @@ HDC          hdc;
 SiHdl        devHdl;
 TCHAR devicename[100] = _T("");
 HWND         hWndMain;
+HWND         hWndMain3D;
+
 
 INT pTx, pTy, pTz, pRx, pRy, pRz;
 INT Intensite=0;
@@ -149,7 +151,7 @@ LRESULT WINAPI HandleNTEvent(HWND hWnd, unsigned msg, WPARAM wParam,
 
 void SbMotionEvent(SiSpwEvent* pEvent)
 {
-
+    hdc = GetDC(hWndMain3D);
     pTx = pEvent->u.spwData.mData[SI_TX];
     pTy = pEvent->u.spwData.mData[SI_TY];
     pTz = pEvent->u.spwData.mData[SI_TZ];
