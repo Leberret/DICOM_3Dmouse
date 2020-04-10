@@ -1,20 +1,17 @@
 #include "Scene3D.h"
 #include "DICOM_3Dmouse.h"
-
+extern int Coupe, Min, Max;
 //------------------------------------------------------------------------------
 //--- Private methods ----------------------------------------------------------
 //------------------------------------------------------------------------------
 // Create the 3D objects of the scene.
 void My3DScene::createObjects()
 {
-    int Coupe = QInputDialog::getInt(new Interface,"Saisir valeur", "Coupe");
     string coupe = to_string(Coupe);
-    int Min = QInputDialog::getInt(new Interface, "Saisir valeur", "Image Min");
-    int Max = QInputDialog::getInt(new Interface, "Saisir valeur", "Image Max");
     Qt3DRender::QTextureLoader* loader;
     //-----------------------------------------------------------------------------------------------------------
 
-    for (int i = Min; i <Max; i++)
+    for (int i = Min; i <Max-1; i++)
     {
         for (int k = 0; k < 3; k += 1)
         {

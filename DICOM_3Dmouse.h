@@ -21,11 +21,11 @@
 #include "dcm/dicom_file.h"
 #include "dcm/logger.h"
 #include "dcm/util.h"
-
+#include "Scene3D.h"
 
 
 extern HWND         hWndMain;
-
+extern int Coupe, Min, Max;
 
 extern INT pTx, pTy, pTz, pRx, pRy, pRz;
 extern INT Intensite;
@@ -42,7 +42,7 @@ public:
 	void ImageDICOM2(int v);//Ouverture, lecture et affichage image "*.dcm"
 	void ImageDICOM3(int v);//Ouverture, lecture et affichage image "*.dcm"
 	void mousePressEvent(QMouseEvent* e);
-	
+	void closeEvent(QCloseEvent* event);
 
 signals:
 	void clic(QMouseEvent* e);
@@ -77,8 +77,14 @@ public slots:
 	void affichetruc3(QMouseEvent* e);
 	void InfoCoupes();
 	void Enregistre();
-	void Supprimer();
-	void passer3D();
+
+	// 3D
+	void valueVisuMin(QString k);
+	void valueVisuMax(QString k);
+	void valueVisu1(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void SelectCoupes(int k);
+	void Appercu();
+	void QuitterSupprimer();
 
 private:
 	QLabel* imageLabel1;
@@ -129,4 +135,21 @@ private:
 	qint16* souris3D;
 	qint16* coupe;
 	qint16* enregistre;
+
+	//-----------------interface appercu
+	QWidget* bruh;
+	QLabel* imageLabelVisu;
+	QLabel* imageLabelVisuMin;
+	QLabel* imageLabelVisuMax;
+	QGridLayout* layoutVisu;
+	QSlider* sliderVisuInt;
+	QSlider* sliderVisuLim;
+	QLineEdit* LineEditVisuMin;
+	QLineEdit* LineEditVisuMax;
+	qint16* imageMax;
+	qint16* imageMin;
+	qint16* CoupeVisu;
+	QPushButton* validerVisu;
+	QComboBox* comboBoxVisu;
+	My3DScene* bla;
 };
