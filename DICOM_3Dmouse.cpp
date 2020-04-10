@@ -1,70 +1,218 @@
 #include "DICOM_3Dmouse.h"
 #include "Scene3D.h"
-
+INT Coupe, Min, Max;
 QVector<int>* ALLPixels(vector<unsigned short>* pixels, QVector<int>* allpixels) //Stocker tous les pixels de chaque image dans un seul vecteur
 {
     for (auto pixel2 : *pixels)
         allpixels->push_back(pixel2); //Remplissage du vecteur avec les valeurs des pixels
     return allpixels;
 }
-void Interface::passer3D()
+void Interface::QuitterSupprimer()
 {
-    My3DScene *scene= new My3DScene;
-    scene->show();
+    QDirIterator direction("Images", QDir::Files | QDir::NoSymLinks);// Obtenir l'arborescence des fichiers
+    while (direction.hasNext()) //tant qu'il reste des dossier dans le fichier
+        remove(direction.next().toStdString().c_str()); //Ajout de tous les chemins dans une liste
+    _rmdir("Images");
 }
-void Interface::Supprimer()
+void Interface::Appercu()
 {
-    int Coupe = QInputDialog::getInt(new Interface, "Saisir valeur", "Coupe");
-    int Min = QInputDialog::getInt(new Interface, "Saisir valeur", "Image de départ");
-    int Max = QInputDialog::getInt(new Interface, "Saisir valeur", "Image Finale");
-    *enregistre = 2;
-    switch (Coupe)
+    if (*NbFichiers == 0)
+        return;
+    delete bla;
+    bruh = new QWidget;
+    imageLabelVisu = new QLabel(); //init label
+    imageLabelVisuMin = new QLabel(); //init label
+    imageLabelVisuMax = new QLabel(); //init label
+    layoutVisu = new QGridLayout;//Init layout
+    sliderVisuInt = new QSlider(Qt::Horizontal);//init curseur
+    sliderVisuLim = new QSlider(Qt::Horizontal);//init curseur
+    LineEditVisuMin = new QLineEdit();
+    LineEditVisuMax = new QLineEdit();
+    validerVisu = new QPushButton("Valider");
+    *enregistre = 3;
+    switch (*CoupeVisu)
     {
+    case 0:
+        ImageDICOM(slider->value());
+        break;
     case 1:
-        for (Min; Min < Max; Min++)
-            ImageDICOM(Min);
+        ImageDICOM2(slider2->value());
         break;
     case 2:
-        for (Min; Min < Max; Min++)
-            ImageDICOM2(Min);
-        break;
-    case 3:
-        for (Min; Min < Max; Min++)
-            ImageDICOM3(Min);
+        ImageDICOM3(slider3->value());
         break;
     }
     *enregistre = 0;
-    ImageDICOM(slider->value());
-    ImageDICOM2(slider2->value());
-    ImageDICOM3(slider3->value());
+    sliderVisuInt->setRange(0, 255);
+    sliderVisuLim->setRange(0, 255);
+    imageLabelVisuMin->setText("Image initiale :");
+    imageLabelVisuMax->setText("Image finale :");
+    comboBoxVisu = new QComboBox();
+    comboBoxVisu->addItem("Coupe 1 ");
+    comboBoxVisu->addItem("Coupe 2");
+    comboBoxVisu->addItem("Coupe 3");
+    connect(comboBoxVisu, SIGNAL(activated(int)), this, SLOT(SelectCoupes(int)));// Connexion du slider a fonction
+    connect(sliderVisuInt, SIGNAL(valueChanged(int)), this, SLOT(valueVisu1(int)));// Connexion du slider a fonction
+    connect(sliderVisuLim, SIGNAL(valueChanged(int)), this, SLOT(valueVisu1(int)));// Connexion du slider a fonction
+    connect(LineEditVisuMin, SIGNAL(textChanged(QString)), this, SLOT(valueVisuMin(QString)));// Connexion du slider a fonction
+    connect(LineEditVisuMax, SIGNAL(textChanged(QString)), this, SLOT(valueVisuMax(QString)));// Connexion du slider a fonction
+    connect(validerVisu, SIGNAL(clicked()), this, SLOT(Enregistre()));// Connexion du slider a fonction
+
+    layoutVisu->addWidget(comboBoxVisu, 1, 1, 1, 1);
+    layoutVisu->addWidget(sliderVisuInt, 2, 0, 1, 3);
+    layoutVisu->addWidget(sliderVisuLim, 3, 0, 1, 3);
+    layoutVisu->addWidget(imageLabelVisuMin, 4, 0, 1, 1);
+    layoutVisu->addWidget(imageLabelVisuMax, 5, 0, 1, 1);
+    layoutVisu->addWidget(LineEditVisuMin, 4, 1, 1, 2);
+    layoutVisu->addWidget(LineEditVisuMax, 5, 1, 1, 2);
+    layoutVisu->addWidget(validerVisu, 6, 0, 1, 3);
+
+    bruh->setWindowTitle("Apercu de visualisation pour reconstitution 3D");//titre fenetre
+    bruh->setWindowIcon(QIcon("icon.png"));//Mettre un Icon a la fenetre
+    bruh->setLayout(layoutVisu);
+    bruh->show();
+
+}
+void Interface::valueVisuMax(QString v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+{
+    if (!v.toInt())
+        return;
+    *imageMax = v.toInt();
+    *enregistre = 3;
+    switch (*CoupeVisu)
+    {
+    case 0:
+        if (*imageMax < *NbFichiers && *imageMax >= 0)
+            ImageDICOM(*imageMax);
+        else
+            return;
+        break;
+    case 1:
+        if (*imageMax < *rows && *imageMax > 0)
+            ImageDICOM2(*imageMax);
+        else
+            return;
+        break;
+    case 2:
+        if (*imageMax < *cols && *imageMax > 0)
+            ImageDICOM3(*imageMax);
+        else
+            return;
+        break;
+    }
+    *enregistre = 0;
+}
+void Interface::valueVisuMin(QString v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+{
+    if (!v.toInt())
+        return;
+    *enregistre = 3;
+    *imageMin = v.toInt();
+    switch (*CoupeVisu)
+    {
+    case 0:
+        if (*imageMin >= 0 && *imageMin < *NbFichiers)
+            ImageDICOM(*imageMin);
+        else
+            return;
+        break;
+    case 1:
+        if (*imageMin >= 1 && *imageMin < *cols)
+            ImageDICOM2(*imageMin);
+        else
+            return;
+        break;
+    case 2:
+        if (*imageMin >= 1 && *imageMin < *rows)
+            ImageDICOM3(*imageMin);
+        else
+            return;
+        break;
+    }
+    *enregistre = 0;
+}
+void Interface::valueVisu1(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+{
+    *enregistre = 3;
+    switch (*CoupeVisu)
+    {
+    case 0:
+        ImageDICOM(slider->value());
+        break;
+    case 1:
+        ImageDICOM2(slider2->value());
+        break;
+    case 2:
+        ImageDICOM3(slider3->value());
+        break;
+    }
+    *enregistre = 0;
+}
+void Interface::SelectCoupes(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+{
+    *CoupeVisu = v;
+    *enregistre = 3;
+    switch (*CoupeVisu)
+    {
+    case 0:
+        ImageDICOM(slider->value());
+        break;
+    case 1:
+        ImageDICOM2(slider2->value());
+        break;
+    case 2:
+        ImageDICOM3(slider3->value());
+        break;
+    }
+    *enregistre = 0;
+
 }
 void Interface::Enregistre()
 {
-    int Coupe = QInputDialog::getInt(new Interface, "Saisir valeur", "Coupe");
-    int Min = QInputDialog::getInt(new Interface, "Saisir valeur", "Image de départ");
-    int Max = QInputDialog::getInt(new Interface, "Saisir valeur", "Image Finale");
+    bruh->close();
+    Coupe = *CoupeVisu + 1;
     *enregistre = 1;
     *NbCouleurs = 0;
+    Min = *imageMin;
+    Max = *imageMax;
+    int cpt = Min;
+    QProgressDialog progress("Importation des images", "Cancel", Min, Max, this);
+    progress.setWindowModality(Qt::WindowModal);
+    progress.setCancelButton(0);
+    progress.setMinimumDuration(0);
     switch (Coupe)
     {
+
     case 1:
-        for (Min; Min < Max; Min++)
-            ImageDICOM(Min);
+        for (cpt; cpt <= Max; cpt++) {
+            progress.setValue(cpt);
+            ImageDICOM(cpt);
+        }
+        progress.setValue(Max);
         break;
     case 2:
-        for (Min; Min < Max; Min++)
-            ImageDICOM2(Min);
+        for (cpt; cpt <= Max; cpt++) {
+            progress.setValue(cpt);
+            ImageDICOM2(cpt);
+        }
+        progress.setValue(Max);
         break;
     case 3:
-        for (Min; Min < Max; Min++)
-            ImageDICOM3(Min);
+        for (cpt; cpt <= Max; cpt++) {
+            progress.setValue(cpt);
+            ImageDICOM3(cpt);
+        }
+        progress.setValue(Max);
         break;
     }
+
     *enregistre = 0;
     ImageDICOM(slider->value());
     ImageDICOM2(slider2->value());
     ImageDICOM3(slider3->value());
-
+    delete bruh;
+    bla = new My3DScene();
+    bla->show();
 }
 void Interface::InfoCoupes()
 {
@@ -902,34 +1050,59 @@ void Interface::ImageDICOM3(int v)
             {
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
                 // if pixel is white
-                if (image.at<unsigned char>(y, x) < 15)
+                if (image.at<unsigned char>(y, x) < sliderVisuLim->value())
                 {
                     // set alpha to zero:
                     pixel[3] = 0;
                 }
                 else {
-                    pixel[0] -= 50;
-                    pixel[1] -= 50;
-                    pixel[2] -= 50;
+                    pixel[0] -= sliderVisuInt->value();
+                    pixel[1] -= sliderVisuInt->value();
+                    pixel[2] -= sliderVisuInt->value();
                     pixel[3] = 1;
                 }
             }
         string cheminimage;
         string format = ".PNG";
         string numero = to_string(v);
-        cheminimage = "Coupe3_" + numero + format;
+        cheminimage = "Images/Coupe3_" + numero + format;
         imwrite(cheminimage, input_bgra);
     }
-    if (*enregistre == 2)
+    if (*enregistre == 3 && *NbCouleurs == 0 && *CoupeVisu == 2)
     {
-        string cheminimage;
-        string format = ".PNG";
-        string numero = to_string(v);
-        cheminimage = "Coupe3_" + numero + format;
-        remove(cheminimage.c_str());
+        Mat input_bgra;
+        cvtColor(image, input_bgra, COLOR_GRAY2BGRA);
+        for (int y = 0; y < input_bgra.rows; ++y)
+            for (int x = 0; x < input_bgra.cols; ++x)
+            {
+                cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
+                // if pixel is white
+                if (image.at<unsigned char>(y, x) < sliderVisuLim->value())
+                {
+                    // set alpha to zero:
+                    pixel[0] = 255;
+                    pixel[1] = 255;
+                    pixel[2] = 255;
+                    pixel[3] = 1;
+                }
+                else {
+                    pixel[0] -= sliderVisuInt->value();
+                    pixel[1] -= sliderVisuInt->value();
+                    pixel[2] -= sliderVisuInt->value();
+                    pixel[3] = 1;
+                }
+            }
+        QImage visu = QImage((uchar*)input_bgra.data, input_bgra.cols, input_bgra.rows, input_bgra.step, QImage::Format_RGBX8888); //Conversion d'un MAT en QImage
+        imageLabelVisu->setPixmap(QPixmap::fromImage(visu).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
+        layoutVisu->addWidget(imageLabelVisu, 0, 0, 1, 3, Qt::AlignHCenter);//Ajout du layout à l'image
     }
-    imageLabel3->setPixmap(QPixmap::fromImage(dest).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
-    layout->addWidget(imageLabel3, 1, 2, Qt::AlignHCenter);//Ajout du layout à l'image
+
+    if (*enregistre == 0)
+    {
+        imageLabel3->setPixmap(QPixmap::fromImage(dest).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
+        imageLabel3->setMaximumSize(l, c);
+        layout->addWidget(imageLabel3, 1, 2, Qt::AlignHCenter);//Ajout du layout à l'image
+    }
 }
 //-------------------Coupe Axiale------------------------
 void Interface::ImageDICOM2(int v)
@@ -1016,34 +1189,59 @@ void Interface::ImageDICOM2(int v)
             {
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
                 // if pixel is white
-                if (image.at<unsigned char>(y, x) < 15)
+                if (image.at<unsigned char>(y, x) < sliderVisuLim->value())
                 {
                     // set alpha to zero:
                     pixel[3] = 0;
                 }
                 else {
-                    pixel[0] -= 50;
-                    pixel[1] -= 50;
-                    pixel[2] -= 50;
+                    pixel[0] -= sliderVisuInt->value();
+                    pixel[1] -= sliderVisuInt->value();
+                    pixel[2] -= sliderVisuInt->value();
                     pixel[3] = 1;
                 }
             }
         string cheminimage;
         string format = ".PNG";
         string numero = to_string(v);
-        cheminimage = "Coupe2_" + numero + format;
+        cheminimage = "Images/Coupe2_" + numero + format;
         imwrite(cheminimage, input_bgra);
     }
-    if (*enregistre == 2)
+    if (*enregistre == 3 && *NbCouleurs == 0 && *CoupeVisu == 1)
     {
-        string cheminimage;
-        string format = ".PNG";
-        string numero = to_string(v);
-        cheminimage = "Coupe2_" + numero + format;
-        remove(cheminimage.c_str());
+        Mat input_bgra;
+        cvtColor(image, input_bgra, COLOR_GRAY2BGRA);
+        for (int y = 0; y < input_bgra.rows; ++y)
+            for (int x = 0; x < input_bgra.cols; ++x)
+            {
+                cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
+                // if pixel is white
+                if (image.at<unsigned char>(y, x) < sliderVisuLim->value())
+                {
+                    // set alpha to zero:
+                    pixel[0] = 255;
+                    pixel[1] = 255;
+                    pixel[2] = 255;
+                    pixel[3] = 1;
+                }
+                else {
+                    pixel[0] -= sliderVisuInt->value();
+                    pixel[1] -= sliderVisuInt->value();
+                    pixel[2] -= sliderVisuInt->value();
+                    pixel[3] = 1;
+                }
+            }
+        QImage visu = QImage((uchar*)input_bgra.data, input_bgra.cols, input_bgra.rows, input_bgra.step, QImage::Format_RGBX8888); //Conversion d'un MAT en QImage
+        imageLabelVisu->setPixmap(QPixmap::fromImage(visu).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
+        layoutVisu->addWidget(imageLabelVisu, 0, 0, 1, 3, Qt::AlignHCenter);//Ajout du layout à l'image
     }
-    imageLabel2->setPixmap(QPixmap::fromImage(dest).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
-    layout->addWidget(imageLabel2, 1, 1, Qt::AlignHCenter);//Ajout du layout à l'image
+
+    if (*enregistre == 0)
+    {
+        imageLabel2->setPixmap(QPixmap::fromImage(dest).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
+        imageLabel2->setMaximumSize(l, c);
+        layout->addWidget(imageLabel2, 1, 1, Qt::AlignHCenter);//Ajout du layout à l'image
+    }
 
 }
 //------------------Coupe sagittale------------------------------
@@ -1122,43 +1320,72 @@ void Interface::ImageDICOM(int v)//Ouverture, lecture et affichage image "*.dcm"
             {
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
                 // if pixel is white
-                if (image.at<unsigned char>(y, x) < 15)
+                if (image.at<unsigned char>(y, x) < sliderVisuLim->value())
                 {
                     // set alpha to zero:
                     pixel[3] = 0;
                 }
                 else {
-                    pixel[0] -= 50;
-                    pixel[1] -= 50;
-                    pixel[2] -= 50;
+                    pixel[0] -= sliderVisuInt->value();
+                    pixel[1] -= sliderVisuInt->value();
+                    pixel[2] -= sliderVisuInt->value();
                     pixel[3] = 1;
                 }
             }
         string cheminimage;
         string format = ".PNG";
         string numero = to_string(v);
-        cheminimage = "Coupe1_" + numero + format;
+        cheminimage = "Images/Coupe1_" + numero + format;
         imwrite(cheminimage, input_bgra);
-    }
 
-    if (*enregistre == 2)
-    {
-        string cheminimage;
-        string format = ".PNG";
-        string numero = to_string(v);
-        cheminimage = "Coupe1_" + numero + format;
-        remove(cheminimage.c_str());
     }
-    imageLabel1->setPixmap(QPixmap::fromImage(dest).scaled(QSize(c, l), Qt::IgnoreAspectRatio)); //Ajoute au layout
-    imageLabel1->setMaximumSize(c, l);//Taille du QLabel max = taille de l'image
-    layout->addWidget(imageLabel1, 1, 0, Qt::AlignHCenter);//Ajout du layout à l'image
+    if (*enregistre == 3 && *NbCouleurs == 0 && *CoupeVisu == 0)
+    {
+        Mat input_bgra;
+        cvtColor(image, input_bgra, COLOR_GRAY2BGRA);
+        for (int y = 0; y < input_bgra.rows; ++y)
+            for (int x = 0; x < input_bgra.cols; ++x)
+            {
+                cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
+                // if pixel is white
+                if (image.at<unsigned char>(y, x) < sliderVisuLim->value())
+                {
+                    // set alpha to zero:
+                    pixel[0] = 255;
+                    pixel[1] = 255;
+                    pixel[2] = 255;
+                    pixel[3] = 1;
+                }
+                else {
+                    pixel[0] -= sliderVisuInt->value();
+                    pixel[1] -= sliderVisuInt->value();
+                    pixel[2] -= sliderVisuInt->value();
+                    pixel[3] = 1;
+                }
+            }
+        QImage visu = QImage((uchar*)input_bgra.data, input_bgra.cols, input_bgra.rows, input_bgra.step, QImage::Format_RGBX8888); //Conversion d'un MAT en QImage
+        imageLabelVisu->setPixmap(QPixmap::fromImage(visu).scaled(QSize(c, l), Qt::IgnoreAspectRatio)); //Ajoute au layout
+        layoutVisu->addWidget(imageLabelVisu, 0, 0, 1, 3, Qt::AlignHCenter);//Ajout du layout à l'image
+    }
+    if (*enregistre == 0)
+    {
+        imageLabel1->setPixmap(QPixmap::fromImage(dest).scaled(QSize(c, l), Qt::IgnoreAspectRatio)); //Ajoute au layout
+        imageLabel1->setMaximumSize(c, l);
+        layout->addWidget(imageLabel1, 1, 0, Qt::AlignHCenter);//Ajout du layout à l'image
+    }
 
 }
 
 Interface::Interface() : QWidget() //Widget = fenetre principale
 {
-    
-
+    _mkdir("Images");
+    bla = new My3DScene();
+    //--------------interface visualisation
+    imageMin = new qint16;
+    imageMax = new qint16;
+    CoupeVisu = new qint16;
+    *CoupeVisu = 0;
+    //------------------
     hWndMain = (HWND)this->winId();
     QTimer* timer = new QTimer(this);
 
@@ -1215,12 +1442,10 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     Affichage->addAction("PARULA", this, SLOT(changeAffichage6()));//Action pour couleur
     Affichage->addAction("TWILIGHT SHIFTED", this, SLOT(changeAffichage7()));//Action pour couleur
     Affichage->addAction("Modifier Intensite", this, SLOT(ChangerIntensite()));//Action d'affichage slider
-    Affichage->addAction("Passer en visualisation 3D", this, SLOT(passer3D()));//Action d'affichage slider
+    Affichage->addAction("Passer en visualisation 3D", this, SLOT(Appercu()));//Action d'affichage slider
     Info->addAction("Informations patient", this, SLOT(displayTags()));//Connexion menu action
     file->addAction("Ouvrir", this, SLOT(ouvrirFichier()));//Connexion menu action
-    file->addAction("Enregistrer images", this, SLOT(Enregistre()));//Connexion menu action
-    file->addAction("Supprimer images", this, SLOT(Supprimer()));//Connexion menu action
-    //file->addAction("Enregistrer sous", this, SLOT(SaveAs(this->winId(),imageLabel1)));//Connexion menu action
+    file->addAction("Supprimer", this, SLOT(QuitterSupprimer()));//Connexion menu action
 
     *NbFichiers = 0; //Initialise a 0 pour ne pas avoir de pb de memoires
     *visible = 0;//compteur global pour savoir si affichage slider4
@@ -1311,4 +1536,10 @@ void Interface::SaveAs(WId winId) {
         
     
     }
+}
+void Interface::closeEvent(QCloseEvent* event)
+{
+    QuitterSupprimer();
+    event->accept();
+
 }

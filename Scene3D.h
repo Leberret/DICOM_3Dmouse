@@ -19,7 +19,7 @@
 
 // Namespaces.
 using namespace std;
-
+extern int Coupe, Min, Max;
 extern INT pTx, pTy, pTz, pRx, pRy, pRz;
 extern HWND hWndMain3D;
 
