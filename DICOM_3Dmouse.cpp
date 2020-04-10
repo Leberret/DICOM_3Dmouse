@@ -1259,8 +1259,6 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
 
 
-    
-
     timer->start(10);
     SaveAs(this->winId());
 
