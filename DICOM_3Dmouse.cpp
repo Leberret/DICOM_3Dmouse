@@ -233,10 +233,7 @@ void Interface::InfoCoupes()
     QString orientation1, orientation2, orientation3, orientation4, orientation5, orientation6, orientation7;
     string orientationGLOBAL = getStringTagValue(0x00200037, data);
     QString global = QString::fromStdString(orientationGLOBAL);
-    QMessageBox cc;
-
-    cc.setText(global);
-    cc.exec();
+    
     global.remove("0");
     global.remove(".");
     global.remove("-");

@@ -41,11 +41,13 @@ private:
 	Qt3DExtras::QOrbitCameraController* cameraController;
 
 	// Private methods.
-	void createObjects();
-	void createLight();
-	void createCamera();
-
+	
+public slots:
+	void mouseMove();
 public:
 	// Constructors.
 	My3DScene();
+	void createObjects();
+	void createLight();
+	void createCamera();
 };

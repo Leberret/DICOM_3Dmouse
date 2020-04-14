@@ -22,6 +22,7 @@
 #include "dcm/logger.h"
 #include "dcm/util.h"
 #include "Scene3D.h"
+#include <direct.h>
 
 
 extern HWND         hWndMain;

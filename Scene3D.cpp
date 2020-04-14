@@ -31,7 +31,7 @@ void My3DScene::createObjects()
             string format = ".PNG";
             string numero = to_string(i);
             
-            cheminimage = "Coupe"+coupe+"_" + numero + format;
+            cheminimage = "Images/Coupe"+coupe+"_" + numero + format;
             loader->setSource(QUrl::fromLocalFile(QString::fromStdString(cheminimage)));
             this->planeTexture->setTexture(loader);
             loader->setMirrored(false);
@@ -79,15 +79,22 @@ void My3DScene::createCamera()
 {
     this->camera()->lens()->setPerspectiveProjection(10.0f, 1.0f, 0.1f, 1000.0f);
     this->camera()->setPosition(QVector3D(0, 70.0f, 0));
-    this->camera()->setViewCenter(QVector3D(0, 0, 0));
-    this->camera()->setUpVector(QVector3D(0, 0,1));
-    // For camera controls
-    this->cameraController = new Qt3DExtras::QOrbitCameraController(&this->scene);
-    this->cameraController->setLinearSpeed(20.0f);
-    this->cameraController->setLookSpeed(100.0f);
-    this->cameraController->setCamera(this->camera());
-    this->camera()->translate(QVector3D(-pTx / 10.0, pTy / 10.0, 0));
+    this->camera()->setViewCenter(QVector3D(0, 0.02 * (Max - Min) / 2, 0));
 
+}
+
+void My3DScene::mouseMove()
+{
+    if ((pTx > 5) && (pTy > 5) && (pTz > 5)) {
+        this->camera()->translate(QVector3D((float)-pTx / 100.0, (float)pTy / 100.0, (float)pTz / 100.0));
+    }
+
+
+    this->camera()->rotate();
+
+    this->camera()->rotateAboutViewCenter(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), (float)pRx / 100.0));
+    this->camera()->rotateAboutViewCenter(QQuaternion::fromAxisAndAngle(QVector3D(0, 1, 0), (float)pRy / 100.0));
+    this->camera()->rotateAboutViewCenter(QQuaternion::fromAxisAndAngle(QVector3D(0, 0, 1), (float)pRz / 100.0));
 }
 
 //------------------------------------------------------------------------------
@@ -102,4 +109,7 @@ My3DScene::My3DScene()
     this->createCamera();
     this->createLight();
     this->setRootEntity(&this->scene);
+    QTimer* timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &My3DScene::mouseMove);
+    timer->start(10);
 }
