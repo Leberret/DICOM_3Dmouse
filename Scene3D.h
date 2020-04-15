@@ -39,7 +39,19 @@ private:
 	Qt3DRender::QPointLight* light;
 	Qt3DCore::QTransform* lightTransform;
 	Qt3DExtras::QOrbitCameraController* cameraController;
-
+	Qt3DCore::QTransform* SceneTransform;
+	qint16* precValueTX;
+	qint16* compteurTX;
+	qint16* precValueTY;
+	qint16* compteurTY;
+	qint16* precValueTZ;
+	qint16* compteurTZ;
+	qint16* precValueRX;
+	qint16* compteurRX;
+	qint16* precValueRY;
+	qint16* compteurRY;
+	qint16* precValueRZ;
+	qint16* compteurRZ;
 	// Private methods.
 	
 public slots:
@@ -50,4 +62,5 @@ public:
 	void createObjects();
 	void createLight();
 	void createCamera();
+	void init();
 };
