@@ -80,12 +80,12 @@ public slots:
 	void Enregistre();
 
 	// 3D
-	void valueVisuMin(QString k);
-	void valueVisuMax(QString k);
-	void valueVisu1(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void FirstImage(QString k);
+	void LastImage(QString k);
+	void AfficheIntensiteTransparence();
 	void SelectCoupes(int k);
-	void Appercu();
-	void QuitterSupprimer();
+	void AppercuVisualisation3D();
+	void Supprimer();
 
 private:
 	QLabel* imageLabel1;
@@ -135,22 +135,25 @@ private:
 	qint16* compteur4;
 	qint16* souris3D;
 	qint16* coupe;
-	qint16* enregistre;
+	qint16* Mode;
 
-	//-----------------interface appercu
-	QWidget* bruh;
-	QLabel* imageLabelVisu;
-	QLabel* imageLabelVisuMin;
-	QLabel* imageLabelVisuMax;
-	QGridLayout* layoutVisu;
-	QSlider* sliderVisuInt;
-	QSlider* sliderVisuLim;
-	QLineEdit* LineEditVisuMin;
-	QLineEdit* LineEditVisuMax;
+	//-----------------interface AppercuVisualisation3D
+	QWidget* WidgetAppercu3D;
+	QLabel* LabelVisuImage;
+	QLabel* LabelSaisieMin;
+	QLabel* LabelSaisieMax;
+	QLabel* LabelSliderIntensite;
+	QLabel* LabelSliderTransparence;
+
+	QGridLayout* LayoutVisuImage;
+	QSlider* SliderVisuIntensite;
+	QSlider* SliderVisuTransparence;
+	QLineEdit* LineEditSaisieMin;
+	QLineEdit* LineEditSaisieMax;
 	qint16* imageMax;
 	qint16* imageMin;
 	qint16* CoupeVisu;
 	QPushButton* validerVisu;
 	QComboBox* comboBoxVisu;
-	My3DScene* bla;
+	My3DScene* Visualisation3D;
 };

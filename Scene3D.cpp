@@ -1,91 +1,127 @@
 #include "Scene3D.h"
 #include "DICOM_3Dmouse.h"
+
+//Appel des variables globales externes
 extern int Coupe, Min, Max;
-//------------------------------------------------------------------------------
-//--- Private methods ----------------------------------------------------------
-//------------------------------------------------------------------------------
-// Create the 3D objects of the scene.
 
+/*--------------------------------------------------------------------------
+* Fonction : init()
+*
+* Description : Initialisation des variables globales qui permettent la 
+* mémorisation des données réçues par la souris
+*
+* Arguments : Aucun
+*
+* Valeur retournée : Aucune
+*--------------------------------------------------------------------------*/
 void My3DScene::init() {
-
+    //Navigation selon TX
     precValueTX = new qint16;
     compteurTX = new qint16;
     *precValueTX = 0;
     *compteurTX = 0;
 
+    //Navigation selon TY
     precValueTY = new qint16;
     compteurTY = new qint16;
     *precValueTY = 0;
     *compteurTY = 0;
 
+    //Navigation selon TZ
     precValueTZ = new qint16;
     compteurTZ = new qint16;
     *precValueTZ = 0;
     *compteurTZ = 0;
 
+    //Rotation selon RX
     precValueRX = new qint16;
     compteurRX = new qint16;
     *precValueRX = 0;
     *compteurRX = 0;
 
+    //Rotation selon RY
     precValueRY = new qint16;
     compteurRY = new qint16;
     *precValueRY = 0;
     *compteurRY = 0;
 
+    //Rotation selon RZ
     precValueRZ = new qint16;
     compteurRZ = new qint16;
     *precValueRZ = 0;
     *compteurRZ = 0;
 }
 
-
+/*--------------------------------------------------------------------------
+* Fonction : createObjects()
+*
+* Description : Création des objets 3D constituant la scène 3D, plans 3D
+* recouverts d'une texture sur chaque face
+*
+* Arguments : Aucun
+*
+* Valeur retournée : Aucune
+*--------------------------------------------------------------------------*/
 void My3DScene::createObjects()
 {
+    //Récupération de la coupe pour ajouter dans chemin d'accès
     string coupe = to_string(Coupe);
-    Qt3DRender::QTextureLoader* loader;
-    //-----------------------------------------------------------------------------------------------------------
 
+    //Definition texture
+    Qt3DRender::QTextureLoader* loader;
+
+    //De l'image de départ à l'image d'arrivée
     for (int i = Min; i <Max-1; i++)
     {
+        //Répétition de la même image trois fois
         for (int k = 0; k < 3; k += 1)
         {
+            //--------------------------FACE RECTO---------------------------------------
+            //Initialisation Entité, plan et transform
             this->planeEntity = new Qt3DCore::QEntity(&this->scene);
             this->planeMesh = new Qt3DExtras::QPlaneMesh(this->planeEntity);
             this->planeMesh->setWidth(6);
             this->planeMesh->setHeight(5);
             this->planeTransform = new  Qt3DCore::QTransform(this->planeMesh);
+
+            //Translation pour décaler les images lors du changement de plan
             this->planeTransform->setTranslation(QVector3D(0, 0.02 * i + 0.005 * k, 0));
 
-
-            // Add texture to 3D plane.
-
+            // Ajout texture à la face recto du plan, à partir d'une image locale suivant la valeur du compteur i
             loader = new Qt3DRender::QTextureLoader(this->planeMesh);
             this->planeTexture = new Qt3DExtras::QTextureMaterial(this->planeMesh);
             string cheminimage;
             string format = ".PNG";
             string numero = to_string(i);
-            
             cheminimage = "Images/Coupe"+coupe+"_" + numero + format;
             loader->setSource(QUrl::fromLocalFile(QString::fromStdString(cheminimage)));
             this->planeTexture->setTexture(loader);
-            loader->setMirrored(false);
-            this->planeTexture->setAlphaBlendingEnabled(true);
+            loader->setMirrored(false);//Garder le sens correct de l'image
+            this->planeTexture->setAlphaBlendingEnabled(true);//Rendre transparents les valeurs d'alpha à 0
+            
+            //Ajouts des différents composants à l'entité
             this->planeEntity->addComponent(this->planeMesh);
             this->planeEntity->addComponent(this->planeTexture);
             this->planeEntity->addComponent(this->planeTransform);
 
+            //--------------------------FACE VERSO---------------------------------------
+            //Initialisation Entité, plan et transform
             this->planeEntity = new Qt3DCore::QEntity(&this->scene);
             this->planeTransform = new  Qt3DCore::QTransform(this->planeMesh);
-            this->planeTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 180.0f));
+            this->planeTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 180.0f)); //Copie de la texture à 180°
+
+            //Translation pour décaler les images lors du changement de plan
             this->planeTransform->setTranslation(QVector3D(0, 0.02 * i + 0.005 * k, 0));
 
+            // Ajout de la même texture à la face verso du plan
             loader = new Qt3DRender::QTextureLoader(this->planeMesh);
             this->planeTexture = new Qt3DExtras::QTextureMaterial(this->planeMesh);
             loader->setSource(QUrl::fromLocalFile(QString::fromStdString(cheminimage)));
             this->planeTexture->setTexture(loader);
 
-            this->planeTexture->setAlphaBlendingEnabled(true);
+            this->planeTexture->setAlphaBlendingEnabled(true);//Rendre transparents les valeurs d'alpha à 0
+            
+            //Ajouts des différents composants à l'entité
             this->planeEntity->addComponent(this->planeMesh);
             this->planeEntity->addComponent(this->planeTexture);
             this->planeEntity->addComponent(this->planeTransform);
@@ -93,40 +129,59 @@ void My3DScene::createObjects()
     }
 }
 
-
-//------------------------------------------------------------------------------
-// Create the light of the scene.
-void My3DScene::createLight()
-{
-    this->lightEntity = new Qt3DCore::QEntity(&this->scene);
-    this->light = new Qt3DRender::QPointLight(this->lightEntity);
-    this->light->setColor("white");
-    this->light->setIntensity(1);
-    this->lightEntity->addComponent(this->light);
-    this->lightTransform = new Qt3DCore::QTransform(this->lightEntity);
-    this->lightTransform->setTranslation(this->camera()->position());
-    this->lightEntity->addComponent(this->lightTransform);
-}
-
-//------------------------------------------------------------------------------
-// Create the 3D camera of the scene.
+/*--------------------------------------------------------------------------
+* Fonction : createCamera()
+*
+* Description : Création de la caméra avec un point de vu central sur l'image centrale
+* et contrôle de la caméra avec la souris classique
+*(clic droit : rotaion, clic gauche : translation)
+*
+* Arguments : Aucun
+*
+* Valeur retournée : Aucune
+*--------------------------------------------------------------------------*/
 void My3DScene::createCamera()
 {
+    //Initialisation de la caméra
     this->camera()->lens()->setPerspectiveProjection(10.0f, 1.0f, 0.1f, 1000.0f);
     this->camera()->setPosition(QVector3D(0, 70.0f, 0));
     this->camera()->setViewCenter(QVector3D(0, 0.02 * (Max - Min) / 2, 0));
+    this->camera()->setUpVector(QVector3D(0, 0, 1));
 
+    //Contrôle de la caméra
+    this->cameraController = new Qt3DExtras::QOrbitCameraController(&this->scene);
+    this->cameraController->setLinearSpeed(10.0f);
+    this->cameraController->setLookSpeed(100.0f);
+    this->cameraController->setCamera(this->camera());
 }
 
-void My3DScene::mouseMove()
-{    
+/*--------------------------------------------------------------------------
+* Fonction : mouse3DMove()
+*
+* Description : Contrôle de la scène avec la souris 3D
+*
+* Arguments : Aucun
+*
+* Valeur retournée : Aucune
+*--------------------------------------------------------------------------*/
+void My3DScene::mouse3DMove()
+{   
+    //Initialisation des transformations de la scène
     this->SceneTransform = new Qt3DCore::QTransform();
+
+    //Passage des valeurs globales en locales
     int h = *compteurTX;
     int l = *compteurTY;
     int m = *compteurTZ;
+    int i = *compteurRX;
+    int j = *compteurRY;
+    int k = *compteurRZ;
 
+    //Translation selon les veleurs de la souris pTx, pTy, pTz
     this->SceneTransform->setTranslation(QVector3D((float)h/10.0, (float)l/2.0, (float)m / 10.0));
 
+    //--------------------------TX-------------------------------
+    //Conditions de sensibilité de la souris 3D
     if ((-pTx > 5) && (-pTx >= *precValueTX) && (-pTx < 20)) {
         h = h - 1;
     }
@@ -140,10 +195,16 @@ void My3DScene::mouseMove()
     else if ((-pTx <= -20) && (-pTx <= *precValueTX) && (-pTx > -600)) {
         h = h + 3;
     }
-    
-    *compteurTX = h;
-    *precValueTX = -pTx;
 
+    //Mémorisation de la valeur du compteur
+    *compteurTX = h;
+
+    //Mémorisation de la valeur pTx de la souris 3D
+    *precValueTX = -pTx; 
+
+
+    //--------------------------TY-------------------------------
+    //Conditions de sensibilité de la souris 3D
     if ((-pTy > 5) && (-pTy >= *precValueTY) && (-pTy < 20)) {
         l = l - 1;
     }
@@ -158,9 +219,15 @@ void My3DScene::mouseMove()
         l = l + 3;
     }
 
+    //Mémorisation de la valeur du compteur
     *compteurTY = l;
+
+    //Mémorisation de la valeur pTy de la souris 3D
     *precValueTY = -pTy;
 
+
+    //--------------------------TZ-------------------------------
+    //Conditions de sensibilité de la souris 3D
     if ((pTz > 5) && (pTz >= *precValueTZ) && (pTz < 20)) {
         m = m - 1;
     }
@@ -175,14 +242,19 @@ void My3DScene::mouseMove()
         m = m + 3;
     }
 
+    //Mémorisation de la valeur du compteur
     *compteurTZ = m;
+
+    //Mémorisation de la valeur pTz de la souris 3D
     *precValueTZ = pTz;
 
 
-    int i = *compteurRX;
+    //--------------------------RX-------------------------------
+    //Conditions pour avoir une valeur d'angle cohérente
     if ((i > -360) && (i < 360)) {
         this->SceneTransform->setRotationX(i);
-
+        
+        //Conditions de sensibilité de la souris 3D
         if ((-pRx > 5) && (-pRx >= *precValueRX) && (-pRx < 20)) {
             i = i - 1;
         }
@@ -204,19 +276,19 @@ void My3DScene::mouseMove()
     else if (i >= 360) {
         i = 0;
     }
-    else if (-pRx >= 0 && -pRx < 50) {
 
-        return;
-    }
+    //Mémorisation de la valeur du compteur
     *compteurRX = i;
+
+    //Mémorisation de la valeur pRx de la souris 3D
     *precValueRX = -pRx;
 
-
-
-    int j = *compteurRY;
+    //--------------------------RY-------------------------------
+    //Conditions pour avoir une valeur d'angle cohérente
     if ((j > -360) && (j < 360)) {
         this->SceneTransform->setRotationY(j);
-
+        
+        //Conditions de sensibilité de la souris 3D
         if ((-pRy > 5) && (-pRy >= *precValueRY) && (-pRy < 20)) {
             j = j - 1;
         }
@@ -238,14 +310,19 @@ void My3DScene::mouseMove()
     else if (j >= 360) {
         j = 0;
     }
-    
+
+    //Mémorisation de la valeur du compteur
     *compteurRY = j;
+
+    //Mémorisation de la valeur pRy de la souris 3D
     *precValueRY = -pRy;
 
-    int k = *compteurRZ;
+
+    //--------------------------RZ-------------------------------
+    //Conditions pour avoir une valeur d'angle cohérente
     if ((k > -360) && (k < 360)) {
         this->SceneTransform->setRotationZ(k);
-
+        //Conditions de sensibilité de la souris 3D
         if ((pRz > 5) && (pRz >= *precValueRZ) && (pRz < 20)) {
             k = k - 1;
         }
@@ -267,36 +344,44 @@ void My3DScene::mouseMove()
     else if (k >= 360) {
         k = 0;
     }
-    else if (pRz >= 0 && pRz < 50) {
 
-        return;
-    }
+
+    //Mémorisation de la valeur du compteur
     *compteurRZ = k;
+
+    //Mémorisation de la valeur pRz de la souris 3D
     *precValueRZ = pRz;
 
 
+    //Ajout des composants à la scène
     scene.addComponent(this->SceneTransform);
     
 }
 
-//------------------------------------------------------------------------------
-//--- Constructors -------------------------------------------------------------
-//------------------------------------------------------------------------------
-// Initialize the vector singelton and create the window elements.
+/*--------------------------------------------------------------------------
+* Fonction : My3DScene()
+*
+* Description : Initialisation de la scène et de la souris et construction de la fenêtre
+*
+* Arguments : Aucun
+*
+* Valeur retournée : Aucune
+*--------------------------------------------------------------------------*/
 My3DScene::My3DScene()
 {
+    //Identifiant de la fenêtre
     hWndMain3D = (HWND)this->winId();
+
+    //Initialisation des variables globales
     init();
 
-    //this->SceneTransform1 = new Qt3DCore::QTransform(&this->scene);
-    //this->SceneTransform2 = new Qt3DCore::QTransform(&this->scene);
-    //this->SceneTransform3 = new Qt3DCore::QTransform(&this->scene);
-
+    //Construction de la scène
     this->createObjects();
     this->createCamera();
-    this->createLight();
     this->setRootEntity(&this->scene);
+
+    //Appel de la fonction mouse3DMove toutes les 10ms
     QTimer* timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &My3DScene::mouseMove);
+    connect(timer, &QTimer::timeout, this, &My3DScene::mouse3DMove);
     timer->start(10);
 }

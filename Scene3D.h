@@ -1,8 +1,7 @@
 #pragma once
-// Includes.
 
+// Includes
 #include <iostream>
-
 #include <QGuiApplication>
 #include <QEntity>
 #include <QCamera>
@@ -13,21 +12,20 @@
 #include <QPointLight>
 #include <QPhongMaterial>
 #include <QtWidgets>
-
 #include "qt3dwindow.h"
 #include "qorbitcameracontroller.h"
 
-// Namespaces.
 using namespace std;
+
+//Variables globales externes
 extern int Coupe, Min, Max;
 extern INT pTx, pTy, pTz, pRx, pRy, pRz;
 extern HWND hWndMain3D;
 
-// Class My3DScene.
+//Class My3DScene.
 class My3DScene : public Qt3DExtras::Qt3DWindow
 {
 private:
-	// Attributes.
 	Qt3DCore::QEntity scene;
 	Qt3DCore::QEntity* planeEntity;
 	Qt3DExtras::QPlaneMesh* planeMesh;
@@ -40,6 +38,8 @@ private:
 	Qt3DCore::QTransform* lightTransform;
 	Qt3DExtras::QOrbitCameraController* cameraController;
 	Qt3DCore::QTransform* SceneTransform;
+
+	//Variables globales
 	qint16* precValueTX;
 	qint16* compteurTX;
 	qint16* precValueTY;
@@ -52,15 +52,13 @@ private:
 	qint16* compteurRY;
 	qint16* precValueRZ;
 	qint16* compteurRZ;
-	// Private methods.
 	
 public slots:
-	void mouseMove();
+	void mouse3DMove();
+
 public:
-	// Constructors.
 	My3DScene();
 	void createObjects();
-	void createLight();
 	void createCamera();
 	void init();
 };
