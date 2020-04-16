@@ -48,7 +48,8 @@ public:
 signals:
 	void clic(QMouseEvent* e);
 public slots:
-	void ouvrirFichier(); //Ouvrir le dossier l'image en fonction du positionnement du curseur
+	void Initialisation();
+	void ouvrirFichiers(); //Ouvrir le dossier l'image en fonction du positionnement du curseur
 	bool DoubleClics();
 	void SaveAs(WId winId);
 	void UtiliserSouris3D();
@@ -60,7 +61,7 @@ public slots:
 	void changeAffichage5();
 	void changeAffichage6();
 	void changeAffichage7();
-	void ChangerIntensite();
+	void AfficherCurseurIntensite();
 	void value(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
 	void value2(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
 	void value3(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
@@ -73,7 +74,7 @@ public slots:
 	void valueMouse2();
 	void valueMouse3();
 	void valueMouse_int();
-	void affichetruc(QMouseEvent* e);
+	void MajClicCoupe1(QMouseEvent* e);
 	void affichetruc2(QMouseEvent* e);
 	void affichetruc3(QMouseEvent* e);
 	void InfoCoupes();
@@ -94,13 +95,13 @@ private:
 	QLabel* imageLabel4;
 	QLabel* imageLabel5;
 	QLabel* imageLabel6;
-	QString* FichierImage;
-	QString* FichierImage2;
+	QString* pathFolder;
+	QString* pathFolderSave;
 	QGridLayout* layout;
 	QSlider* slider;
 	QSlider* slider2;
 	QSlider* slider3;
-	QSlider* slider4;
+	QSlider* sliderIntensite;
 	QMenu* Affichage;
 	QMenuBar* menu;
 	QMenu* file;
@@ -113,26 +114,25 @@ private:
 	QSpinBox* SpinBox2;
 	QSpinBox* SpinBox3;
 	//-------------------------
-	qint16* tailleImage;
 	qint16* cols;
 	qint16* rows;
 	qint16* NbFichiers;
 	qint16* NbCouleurs;
-	qint16* ValMaxA;
-	qint16* ValeurMaxA;
-	qint16* ValMaxB;
-	qint16* ValeurMaxB;
-	qint16* ValMaxC;
-	qint16* ValeurMaxC;
+	qint16* IntensiteMaxInitCoupe1;
+	qint16* IntensiteVariableCoupe1;
+	qint16* IntensiteMaxInitCoupe2;
+	qint16* IntensiteVariableCoupe2;
+	qint16* IntensiteMaxInitCoupe3;
+	qint16* IntensiteVariableCoupe3;
 	qint16* visible;
-	qint16* precValue;
-	qint16* compteur;
-	qint16* precValue2;
-	qint16* compteur2;
-	qint16* precValue3;
-	qint16* compteur3;
-	qint16* precValue4;
-	qint16* compteur4;
+	qint16* lastTxValue;
+	qint16* NumImageTx;
+	qint16* lastTyValue;
+	qint16* NumImageTy;
+	qint16* lastTzValue;
+	qint16* NumImageTz;
+	qint16* lastRyValue;
+	qint16* variationIntensite;
 	qint16* souris3D;
 	qint16* coupe;
 	qint16* Mode;

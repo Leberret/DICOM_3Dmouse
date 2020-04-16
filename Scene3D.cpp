@@ -87,7 +87,7 @@ void My3DScene::createObjects()
             //Translation pour décaler les images lors du changement de plan
             this->planeTransform->setTranslation(QVector3D(0, 0.02 * i + 0.005 * k, 0));
 
-            // Ajout texture à la face recto du plan, à partir d'une image locale suivant la valeur du compteur i
+            // Ajout texture à la face recto du plan, à partir d'une image locale suivant la valeur du NumImageTx i
             loader = new Qt3DRender::QTextureLoader(this->planeMesh);
             this->planeTexture = new Qt3DExtras::QTextureMaterial(this->planeMesh);
             string cheminimage;
@@ -196,7 +196,7 @@ void My3DScene::mouse3DMove()
         h = h + 3;
     }
 
-    //Mémorisation de la valeur du compteur
+    //Mémorisation de la valeur du NumImageTx
     *compteurTX = h;
 
     //Mémorisation de la valeur pTx de la souris 3D
@@ -219,7 +219,7 @@ void My3DScene::mouse3DMove()
         l = l + 3;
     }
 
-    //Mémorisation de la valeur du compteur
+    //Mémorisation de la valeur du NumImageTx
     *compteurTY = l;
 
     //Mémorisation de la valeur pTy de la souris 3D
@@ -242,7 +242,7 @@ void My3DScene::mouse3DMove()
         m = m + 3;
     }
 
-    //Mémorisation de la valeur du compteur
+    //Mémorisation de la valeur du NumImageTx
     *compteurTZ = m;
 
     //Mémorisation de la valeur pTz de la souris 3D
@@ -277,7 +277,7 @@ void My3DScene::mouse3DMove()
         i = 0;
     }
 
-    //Mémorisation de la valeur du compteur
+    //Mémorisation de la valeur du NumImageTx
     *compteurRX = i;
 
     //Mémorisation de la valeur pRx de la souris 3D
@@ -311,7 +311,7 @@ void My3DScene::mouse3DMove()
         j = 0;
     }
 
-    //Mémorisation de la valeur du compteur
+    //Mémorisation de la valeur du NumImageTx
     *compteurRY = j;
 
     //Mémorisation de la valeur pRy de la souris 3D
@@ -346,7 +346,7 @@ void My3DScene::mouse3DMove()
     }
 
 
-    //Mémorisation de la valeur du compteur
+    //Mémorisation de la valeur du NumImageTx
     *compteurRZ = k;
 
     //Mémorisation de la valeur pRz de la souris 3D
