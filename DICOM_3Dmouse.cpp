@@ -1445,7 +1445,7 @@ void Interface::Action3DMouseIntensite() {
         Action3DMouseTx();
         Action3DMouseTy();
         Action3DMouseTz();
-
+        
         //Conditions de modification de l'intensité
         if ((pRy > 5) && (pRy >= *lastRyValue)&&(pRy<lim)) {
             i=i+50;

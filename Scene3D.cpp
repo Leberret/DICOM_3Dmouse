@@ -388,7 +388,7 @@ void My3DScene::SupprimerRam() {
 My3DScene::My3DScene()
 {
     //Identifiant de la fenêtre
-    hWndMain3D = (HWND)this->winId();
+    hWnd3D = (HWND)this->winId();
 
     //Initialisation des variables globales
     init();
