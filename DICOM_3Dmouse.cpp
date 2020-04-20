@@ -4,9 +4,6 @@
 //Initialisation des variables globales
 INT Coupe, Min, Max;
 
-void Interface::Initialisation() {
-
-}
 
 /*--------------------------------------------------------------------------
 * Fonction : ALLPixels()
@@ -61,6 +58,8 @@ void Interface::AppercuVisualisation3D()
 
     delete Visualisation3D; //Libération de la mémoire
 
+    Visualisation3D = new My3DScene(); //Création d'une scène 3D vide
+
     *souris3D = 0; //souris3D non active
 
     //Init du Widget
@@ -90,7 +89,7 @@ void Interface::AppercuVisualisation3D()
     switch (*CoupeVisu)
     {
     case 0:
-        ImageDICOM(slider->value());
+        ImageDICOM(slider1->value());
         break;
     case 1:
         ImageDICOM2(slider2->value());
@@ -268,7 +267,7 @@ void Interface::AfficheIntensiteTransparence()
     switch (*CoupeVisu)
     {
     case 0:
-        ImageDICOM(slider->value());
+        ImageDICOM(slider1->value());
         break;
     case 1:
         ImageDICOM2(slider2->value());
@@ -301,7 +300,7 @@ void Interface::SelectCoupes(int valeurCoupe)
     switch (*CoupeVisu)
     {
     case 0:
-        ImageDICOM(slider->value());
+        ImageDICOM(slider1->value());
         break;
     case 1:
         ImageDICOM2(slider2->value());
@@ -376,7 +375,7 @@ void Interface::Enregistre()
 
     *Mode = 0; //Mode 0 = retour du mode à l'état initial 
 
-    ImageDICOM(slider->value());
+    ImageDICOM(slider1->value());
     ImageDICOM2(slider2->value());
     ImageDICOM3(slider3->value());
 
@@ -403,8 +402,8 @@ void Interface::InfoCoupes()
         return;
 
     //Initialisation des varibles locales
-    int nombre1, nombre2, nombre6, nombre7;
-    bool ok1, ok2, ok6, ok7;
+    int nombre1, nombre2, nombre3, nombre4, nombre5, nombre6, nombre7;
+    bool ok1, ok2, ok3, ok4, ok5, ok6, ok7;
     QString orientation1, orientation2, orientation6, orientation7;
 
     //Gestion de l'ouverture d'un fichier dcm
@@ -424,23 +423,22 @@ void Interface::InfoCoupes()
     string orientationGLOBAL = getStringTagValue(0x00200037, data); //00200037->attribut d'orientation de l'image
     QString orientation = QString::fromStdString(orientationGLOBAL); //conversion en String
     
-    //Supression des éléments inutiles
-    orientation.remove("0");
-    orientation.remove(".");
+    //Supression des moins
     orientation.remove("-");
 
-    //Récupération des éléments d'orientation et conversion en entier
-    orientation1 = orientation[0];
-    nombre1 = orientation1.toInt(&ok1);
-    orientation2 = orientation[1];
-    nombre2 = orientation2.toInt(&ok2);
-    orientation6 = orientation[5];
-    nombre6 = orientation6.toInt(&ok6);
-    orientation7 = orientation[6];
-    nombre7 = orientation7.toInt(&ok7);
+    //Séparation des différents éléments
+    QStringList global2 = orientation.split("\\");
+
+    //Récupération des éléments d'orientation et conversion en float
+    float premier = global2[0].toFloat(&ok1);
+    float deuxieme = global2[1].toFloat(&ok2);
+    float troisieme = global2[2].toFloat(&ok3);
+    float quatrieme = global2[3].toFloat(&ok4);
+    float cinquieme = global2[4].toFloat(&ok5);
+    float sixieme = global2[5].toFloat(&ok6);
 
     //Conditions si coupe Sagittale en première
-    if (nombre2 == 1 && nombre7 == 1)
+    if (deuxieme < 1.2 && deuxieme > 0.8 && sixieme < 1.2 && sixieme > 0.8)
     {
         *coupe = 1; //Variable globale d'identification de la coupe
 
@@ -451,7 +449,7 @@ void Interface::InfoCoupes()
     }
 
     //Conditions si coupe Transversale en première
-    if (nombre1 == 1 && nombre6 == 1)
+    if (premier < 1.2 && premier > 0.8 && cinquieme < 1.2 && cinquieme > 0.8)
     {
         *coupe = 2; //Variable globale d'identification de la coupe
 
@@ -462,7 +460,7 @@ void Interface::InfoCoupes()
     }
 
     //Conditions si coupe Coronale en première
-    if (nombre1 == 1 && nombre7 == 1)
+    if (premier < 1.2 && premier > 0.8 && sixieme < 1.2 && sixieme > 0.8)
     {
         *coupe = 3; //Variable globale d'identification de la coupe
 
@@ -650,17 +648,17 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
     SpinBox2->setStyleSheet("QSpinBox { border: 0px solid grey; border-radius: 4px; background-color: rgb(230,230,230); color: black }");
     SpinBox3->setStyleSheet("QSpinBox { border: 0px solid grey; border-radius: 4px; background-color: rgb(230,230,230); color: black }");
     
-    slider->setRange(0, *NbFichiers - 1);
+    slider1->setRange(0, *NbFichiers - 1);
     slider2->setRange(1, *rows - 1); //Valeurs du slider selon nb de fichiers
     slider3->setRange(1, *cols); //Valeurs du slider selon nb de fichiers
-    slider->setValue(*NbFichiers / 2);//Positionnement du cuseur a la moitié
+    slider1->setValue(*NbFichiers / 2);//Positionnement du cuseur a la moitié
     slider2->setValue(*rows / 2);//Positionnement du cuseur a la moitié
     slider3->setValue(*cols / 2);//Positionnement du cuseur a la moitié
 
     layout->addWidget(SpinBox1, 0, 0, Qt::AlignCenter);
     layout->addWidget(SpinBox2, 0, 1, Qt::AlignCenter);
     layout->addWidget(SpinBox3, 0, 2, Qt::AlignCenter);
-    layout->addWidget(slider, 2, 0,Qt::AlignBottom);
+    layout->addWidget(slider1, 2, 0,Qt::AlignBottom);
     layout->addWidget(slider2, 2, 1, Qt::AlignBottom);
     layout->addWidget(slider3, 2, 2, Qt::AlignBottom);
     //--------------------------------------------------------------------------------
@@ -673,13 +671,13 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
     *lastTzValue = 0;
     *NumImageTz = *cols / 2;
     *lastRyValue = 0;
-    *variationIntensite = 0;
+    *variationIntensite = 0;// sliderIntensite->value();
 
     //Récuprération des infos des coupes
     InfoCoupes();
 
     //Affichage des images selon les curseurs
-    ImageDICOM(slider->value());
+    ImageDICOM(slider1->value());
     ImageDICOM2(slider2->value());
     ImageDICOM3(slider3->value());
 
@@ -701,8 +699,7 @@ void Interface::AfficherCurseurIntensite()
 {
     if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
-
-    sliderIntensite->setRange(-1500, 3000); //Nuances d'intensité
+    sliderIntensite->setRange(-500, 500); //Nuances d'intensité
     sliderIntensite->setValue(0);//Init a 0 -> valMax réelle
     sliderIntensite->setVisible(true);//rendre visible le curseur
     layout->addWidget(sliderIntensite, 3, 0, 1, 3);//Position
@@ -745,10 +742,12 @@ void Interface::MajClicCoupe1(QMouseEvent* e)
 {
     if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
+
     //Initialisation des tailles limites
     int tailleLimite_X;
     int tailleLimite_Y;
 
+    //Initialisation des numéros des deux nouvelles images
     int NouvelleImageCoupe3;
     int NouvelleImageCoupe2;
 
@@ -762,7 +761,6 @@ void Interface::MajClicCoupe1(QMouseEvent* e)
     int label_x = coord.x();
     int label_y = coord.y();
 
-    
     //Condition de clic sur le bouton gauche
     if (e->button() == Qt::LeftButton) {
         if (*rows < 400 && *cols < 400) //Si image de petite taille
@@ -795,8 +793,8 @@ void Interface::MajClicCoupe1(QMouseEvent* e)
                 *NumImageTz = NouvelleImageCoupe3;
 
                 //Affichage des nouvelles images
-                valueMouse2();
-                valueMouse3();
+                Action3DMouseTy();
+                Action3DMouseTz();
             }
             
         }
@@ -804,48 +802,62 @@ void Interface::MajClicCoupe1(QMouseEvent* e)
     }
 
 }
-void Interface::affichetruc2(QMouseEvent* e)
+void Interface::MajClicCoupe2(QMouseEvent* e)
 {
-    if (*NbFichiers == 0)
+    if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
-    QPoint Visualisation3D = e->pos();
-    int posi_x = Visualisation3D.x();
-    int posi_y = Visualisation3D.y();
+    
+    //Initialisation des tailles limites
+    int tailleLimite_X;
+    int tailleLimite_Y;
+
+    //Initialisation des numéros des deux nouvelles images
+    int NouvelleImageCoupe1;
+    int NouvelleImageCoupe3;
+
+    //Récupération des coordonées du clic
+    QPoint PositionClic = e->pos();
+    int posi_x = PositionClic.x();
+    int posi_y = PositionClic.y();
+
+    //Récupération des coordonées de la coupe 2
     QPoint coord = imageLabel2->pos();
     int label_x = coord.x();
     int label_y = coord.y();
-    int tailleLimite_X;
-    int tailleLimite_Y;
-
-    int nouveau;
-    int nouveau2;
-
+    
+    //Condition de clic sur le bouton gauche
     if (e->button() == Qt::LeftButton) {
         if (*rows < 400 && *cols < 400) //Si image de petite taille
         {
+            //facteur 1.75 pour prendre en compte le zoom
             tailleLimite_X = (label_x + *NbFichiers * 1.75);
             tailleLimite_Y = (label_y + *rows * 1.75);
-            nouveau = (posi_x - label_x) / 1.75;
-            nouveau2 = (posi_y - label_y) / 1.75;
+            NouvelleImageCoupe1 = (posi_x - label_x) / 1.75;
+            NouvelleImageCoupe3 = (posi_y - label_y) / 1.75;
         }
-        else {
+        else { //Si grande image
             tailleLimite_X = (label_x + *NbFichiers);
             tailleLimite_Y = (label_y + *rows);
-            nouveau = (posi_x - label_x);
-            nouveau2 = (posi_y - label_y);
+            NouvelleImageCoupe1 = (posi_x - label_x);
+            NouvelleImageCoupe3 = (posi_y - label_y);
         }
+        //Conditon tant qu'on clic sur l'image
         if (posi_x > label_x && posi_x< tailleLimite_X && posi_y>label_y && posi_y < tailleLimite_Y) {
-            if (*souris3D == 0) {
-                ImageDICOM3(nouveau2);
-                ImageDICOM(*NbFichiers - nouveau);
-                slider->setValue(*NbFichiers - nouveau);
-                slider3->setValue(nouveau2);
+            if (*souris3D == 0) { //Si souris 3D désactivée
+                //Affichage des nouvelles images avec maj des sliders
+                ImageDICOM3(NouvelleImageCoupe3);
+                ImageDICOM(*NbFichiers - NouvelleImageCoupe1);
+                slider1->setValue(*NbFichiers - NouvelleImageCoupe1);
+                slider3->setValue(NouvelleImageCoupe3);
             }
-            else if (*souris3D == 1) {
-                *NumImageTx = *NbFichiers - nouveau;
-                *NumImageTz = nouveau2;
-                valueMouse();
-                valueMouse3();
+            else if (*souris3D == 1) {//Si souris 3D activée
+                //Mémorisation des images sélectionnées au clic
+                *NumImageTx = *NbFichiers - NouvelleImageCoupe1;
+                *NumImageTz = NouvelleImageCoupe3;
+
+                //Affichage des nouvelles images
+                Action3DMouseTx();
+                Action3DMouseTz();
             }
 
         }
@@ -853,48 +865,62 @@ void Interface::affichetruc2(QMouseEvent* e)
     }
 
 }
-void Interface::affichetruc3(QMouseEvent* e)
+void Interface::MajClicCoupe3(QMouseEvent* e)
 {
-    if (*NbFichiers == 0)
+    if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
-    QPoint Visualisation3D = e->pos();
-    int posi_x = Visualisation3D.x();
-    int posi_y = Visualisation3D.y();
+
+    //Initialisation des tailles limites
+    int tailleLimite_X;
+    int tailleLimite_Y;
+
+    //Initialisation des numéros des deux nouvelles images
+    int NouvelleImageCoupe1;
+    int NouvelleImageCoupe2;
+
+    //Récupération des coordonées du clic
+    QPoint PositionClic = e->pos();
+    int posi_x = PositionClic.x();
+    int posi_y = PositionClic.y();
+
+    //Récupération des coordonées de la coupe 3
     QPoint coord = imageLabel3->pos();
     int label_x = coord.x();
     int label_y = coord.y();
-    int tailleLimite_X;
-    int tailleLimite_Y;
 
-    int nouveau;
-    int nouveau2;
-
+    //Condition de clic sur le bouton gauche
     if (e->button() == Qt::LeftButton) {
         if (*rows < 400 && *cols < 400) //Si image de petite taille
         {
+            //facteur 1.75 pour prendre en compte le zoom
             tailleLimite_X = (label_x + *NbFichiers * 1.75);
             tailleLimite_Y = (label_y + *rows * 1.75);
-            nouveau = (posi_x - label_x) / 1.75;
-            nouveau2 = (posi_y - label_y) / 1.75;
+            NouvelleImageCoupe1 = (posi_x - label_x) / 1.75;
+            NouvelleImageCoupe2 = (posi_y - label_y) / 1.75;
         }
-        else {
+        else { //Si grande image
             tailleLimite_X = (label_x + *NbFichiers);
             tailleLimite_Y = (label_y + *rows);
-            nouveau = (posi_x - label_x);
-            nouveau2 = (posi_y - label_y);
+            NouvelleImageCoupe1 = (posi_x - label_x);
+            NouvelleImageCoupe2 = (posi_y - label_y);
         }
+        //Conditon tant qu'on clic sur l'image
         if (posi_x > label_x && posi_x< tailleLimite_X && posi_y>label_y && posi_y < tailleLimite_Y) {
-            if (*souris3D == 0) {
-                ImageDICOM(*NbFichiers - nouveau);
-                ImageDICOM2(nouveau2);
-                slider->setValue(*NbFichiers - nouveau);
-                slider2->setValue(nouveau2);
+            if (*souris3D == 0) { //Si souris 3D désactivée
+                //Affichage des nouvelles images avec maj des sliders
+                ImageDICOM(*NbFichiers - NouvelleImageCoupe1);
+                ImageDICOM2(NouvelleImageCoupe2);
+                slider1->setValue(*NbFichiers - NouvelleImageCoupe1);
+                slider2->setValue(NouvelleImageCoupe2);
             }
-            else if (*souris3D == 1) {
-                *NumImageTx = *NbFichiers - nouveau;
-                *NumImageTy = nouveau2;
-                valueMouse();
-                valueMouse2();
+            else if (*souris3D == 1) { //Si souris 3D activée
+                //Mémorisation des images sélectionnées au clic
+                *NumImageTx = *NbFichiers - NouvelleImageCoupe1;
+                *NumImageTy = NouvelleImageCoupe2;
+
+                //Affichage des nouvelles images
+                Action3DMouseTx();
+                Action3DMouseTy();
             }
         }
 
@@ -902,148 +928,260 @@ void Interface::affichetruc3(QMouseEvent* e)
 
 }
 
-void Interface::changeAffichage() //Affectation de la valeur correspondant a la couleur
+/*--------------------------------------------------------------------------
+* Fonctions : AffichageOriginal(), AffichageJet(), AffichageBone(),
+* AffichageCivids(), AffichageTurbo(), AffichageHot(), AffichageParula(),
+* AffichageTwilightShifted()
+*
+* Description : Affectation de la valeur correspondant à la couleur
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::AffichageOriginal()
 {
-    if (*NbFichiers == 0) //S'il n'y a pas de fichier on se casse
+    if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
-    if (*visible % 2 == 0) //Une fois sur deux on affiche
+
+    if (*visible % 2 == 0) //On affiche une fois sur deux le slider intensité
     {
         layout->removeWidget(sliderIntensite);
         sliderIntensite->setVisible(false);
     }
+    //Incrémentation pour la visibilité ou non du slider
+    *visible += 1;
+
+    //Retour à l'intensité originale
     sliderIntensite->setValue(0);
     *IntensiteVariableCoupe1, * IntensiteVariableCoupe2, * IntensiteVariableCoupe3 = 0;
-    *NbCouleurs = 0; //valeur de condition couleur
-    ImageDICOM(slider->value()); //Affichage de l'image
-    ImageDICOM2(slider2->value());//Affichage de l'image
-    ImageDICOM3(slider3->value());//Affichage de l'image
-    *visible += 1;
+
+    //Valeur de condition couleur
+    *NbCouleurs = 0; //0 = Nuance de gris
+
+    //Affichage des images
+    ImageDICOM(slider1->value()); 
+    ImageDICOM2(slider2->value());
+    ImageDICOM3(slider3->value());
+
+    
 }
-void Interface::changeAffichage1() //Affectation de la valeur correspondant a la couleur
+void Interface::AffichageJet()
 {
-    if (*NbFichiers == 0)//S'il n'y a pas de fichier on se casse
+    if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
-    *NbCouleurs = 1;//valeur de condition couleur
-    ImageDICOM(slider->value());//Affichage de l'image
-    ImageDICOM2(slider2->value());//Affichage de l'image
-    ImageDICOM3(slider3->value());//Affichage de l'image
+
+    //Valeur de condition couleur
+    *NbCouleurs = 1; //1 = jet
+
+    //Affichage des images
+    ImageDICOM(slider1->value());
+    ImageDICOM2(slider2->value());
+    ImageDICOM3(slider3->value());
 }
-void Interface::changeAffichage2()//Affectation de la valeur correspondant a la couleur
+void Interface::AffichageBone()
 {
-    if (*NbFichiers == 0)//S'il n'y a pas de fichier on se casse
+    if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
-    *NbCouleurs = 2;//valeur de condition couleur
-    ImageDICOM(slider->value());//Affichage de l'image
-    ImageDICOM2(slider2->value());//Affichage de l'image
-    ImageDICOM3(slider3->value());//Affichage de l'image
-}
-void Interface::changeAffichage3()//Affectation de la valeur correspondant a la couleur
-{
-    if (*NbFichiers == 0)//S'il n'y a pas de fichier on se casse
-        return;
-    *NbCouleurs = 3;//valeur de condition couleur
-    ImageDICOM(slider->value());//Affichage de l'image
-    ImageDICOM2(slider2->value());//Affichage de l'image
-    ImageDICOM3(slider3->value());//Affichage de l'image
-}
-void Interface::changeAffichage4()//Affectation de la valeur correspondant a la couleur
-{
-    if (*NbFichiers == 0)//S'il n'y a pas de fichier on se casse
-        return;
-    *NbCouleurs = 4;//valeur de condition couleur
-    ImageDICOM(slider->value());//Affichage de l'image
+
+    //Valeur de condition couleur
+    *NbCouleurs = 2;//2 = Bone
+
+    //Affichage des images
+    ImageDICOM(slider1->value());//Affichage de l'image
     ImageDICOM2(slider2->value());//Affichage de l'image
     ImageDICOM3(slider3->value());//Affichage de l'image
 }
-void Interface::changeAffichage5()//Affectation de la valeur correspondant a la couleur
+void Interface::AffichageCivids()
 {
-    if (*NbFichiers == 0)//S'il n'y a pas de fichier on se casse
+    if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
-    *NbCouleurs = 5;//valeur de condition couleur
-    ImageDICOM(slider->value());//Affichage de l'image
-    ImageDICOM2(slider2->value());//Affichage de l'image
-    ImageDICOM3(slider3->value());//Affichage de l'image
+
+    //Valeur de condition couleur
+    *NbCouleurs = 3;//3 = Civids
+
+    //Affichage des images
+    ImageDICOM(slider1->value());
+    ImageDICOM2(slider2->value());
+    ImageDICOM3(slider3->value());
 }
-void Interface::changeAffichage6()//Affectation de la valeur correspondant a la couleur
+void Interface::AffichageTurbo()//Affectation de la valeur correspondant a la couleur
 {
-    if (*NbFichiers == 0)//S'il n'y a pas de fichier on se casse
+    if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
-    *NbCouleurs = 6;//valeur de condition couleur
-    ImageDICOM(slider->value());//Affichage de l'image
-    ImageDICOM2(slider2->value());//Affichage de l'image
-    ImageDICOM3(slider3->value());//Affichage de l'image
+
+    //Valeur de condition couleur
+    *NbCouleurs = 4;//4 = Turbo
+
+    //Affichage des images
+    ImageDICOM(slider1->value());
+    ImageDICOM2(slider2->value());
+    ImageDICOM3(slider3->value());
 }
-void Interface::changeAffichage7()//Affectation de la valeur correspondant a la couleur
+void Interface::AffichageHot()//Affectation de la valeur correspondant a la couleur
 {
-    if (*NbFichiers == 0)//S'il n'y a pas de fichier on se casse
+    if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
-    *NbCouleurs = 7;//valeur de condition couleur
-    ImageDICOM(slider->value());//Affichage de l'image
-    ImageDICOM2(slider2->value());//Affichage de l'image
-    ImageDICOM3(slider3->value());//Affichage de l'image
+
+    //Valeur de condition couleur
+    *NbCouleurs = 5;//5 = Hot
+
+    //Affichage des images
+    ImageDICOM(slider1->value());
+    ImageDICOM2(slider2->value());
+    ImageDICOM3(slider3->value());
+}
+void Interface::AffichageParula()//Affectation de la valeur correspondant a la couleur
+{
+    if (*NbFichiers == 0) //Condition d'existence du dossier
+        return;
+
+    //Valeur de condition couleur
+    *NbCouleurs = 6;//6 = Parula
+
+    //Affichage des images
+    ImageDICOM(slider1->value());
+    ImageDICOM2(slider2->value());
+    ImageDICOM3(slider3->value());
+}
+void Interface::AffichageTwilightShifted()//Affectation de la valeur correspondant a la couleur
+{
+    if (*NbFichiers == 0) //Condition d'existence du dossier
+        return;
+
+    //Valeur de condition couleur
+    *NbCouleurs = 7;//7 = Twilight Shifted
+
+    //Affichage des images
+    ImageDICOM(slider1->value());
+    ImageDICOM2(slider2->value());
+    ImageDICOM3(slider3->value());
 }
 
-void Interface::value(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+/*--------------------------------------------------------------------------
+* Fonctions : ChangementIntensite()
+*
+* Description : Prend en argument la valeur du slider quand il y a un changement
+*
+* Arguments : valueIntensite : valeur du slider intensité
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::ChangementIntensite(int valueIntensite)
 {
-    
-    ImageDICOM(v); //Appel de la fonction ImageDICOM pour afficher une image dicom
-    SpinBox1->setValue(slider->value());
+    //Changement de la valeur max d'intensité de référence
+    *IntensiteVariableCoupe1 = *IntensiteMaxInitCoupe1 + valueIntensite;
+    *IntensiteVariableCoupe2 = *IntensiteMaxInitCoupe2 + valueIntensite;
+    *IntensiteVariableCoupe3 = *IntensiteMaxInitCoupe3 + valueIntensite;
+
+    //Affichage des images
+    ImageDICOM(slider1->value());
+    ImageDICOM2(slider2->value());
+    ImageDICOM3(slider3->value());
 }
-void Interface::value2(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+
+/*--------------------------------------------------------------------------
+* Fonctions : ActionSlider1(), ActionSlider2(), ActionSlider3()
+*
+* Description : Prend en argument la valeur du slider quand il y a un changement
+* et affiche cette valeur dans le spinBox et affiche image correspondante
+*
+* Arguments : valueSlider1, valueSlider2, valueSlider3 : valeurs des sliders 
+* position
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::ActionSlider1(int valueSlider1)
 {
-    ImageDICOM2(v);
+    //Appel de la fonction ImageDICOM pour afficher une image dicom
+    ImageDICOM(valueSlider1);
+    //Maj du SpinBox
+    SpinBox1->setValue(slider1->value());
+}
+void Interface::ActionSlider2(int valueSlider2)
+{
+    //Appel de la fonction ImageDICOM pour afficher une image dicom
+    ImageDICOM2(valueSlider2);
+    //Maj du SpinBox
     SpinBox2->setValue(slider2->value());
 }
-void Interface::value3(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+void Interface::ActionSlider3(int valueSlider3)
 {
-    ImageDICOM3(v);
+    //Appel de la fonction ImageDICOM pour afficher une image dicom
+    ImageDICOM3(valueSlider3);
+    //Maj du SpinBox
     SpinBox3->setValue(slider3->value());
 }
-void Interface::value4(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+
+/*--------------------------------------------------------------------------
+* Fonctions : ActionSpin1(), ActionSpin2(), ActionSpin3()
+*
+* Description : Affichage de l'image et mise à jour du slider en fonction de 
+* la valeur indiquée dans le SpinBox
+*
+* Arguments : valueSpin1, valueSpin2, valueSpin3 : valeurs des saisies dans 
+* les spinBoxs
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::ActionSpin1(int valueSpin1)
 {
-    *IntensiteVariableCoupe1 = *IntensiteMaxInitCoupe1 + v;//changement de la valeur max d'intensité de référence
-    *IntensiteVariableCoupe2 = *IntensiteMaxInitCoupe2 + v;//changement de la valeur max d'intensité de référence
-    *IntensiteVariableCoupe3 = *IntensiteMaxInitCoupe3 + v;//changement de la valeur max d'intensité de référence
-    ImageDICOM(slider->value());//Affichage de l'image
-    ImageDICOM2(slider2->value());//Affichage de l'image
-    ImageDICOM3(slider3->value());//Affichage de l'image
+    //Appel de la fonction ImageDICOM pour afficher une image dicom
+    ImageDICOM(valueSpin1); 
+    //Maj du slider
+    slider1->setValue(SpinBox1->value());
 }
-void Interface::valueSpin(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+void Interface::ActionSpin2(int valueSpin2) //Récuperer la valeur du curseur lorsqu'il est déplacé
 {
-    ImageDICOM(v); //Appel de la fonction ImageDICOM pour afficher une image dicom
-    slider->setValue(SpinBox1->value());
-}
-void Interface::valueSpin2(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
-{
-    ImageDICOM2(v); //Appel de la fonction ImageDICOM pour afficher une image dicom
+    //Appel de la fonction ImageDICOM pour afficher une image dicom
+    ImageDICOM2(valueSpin2); 
+    //Maj du slider
     slider2->setValue(SpinBox2->value());
 }
-void Interface::valueSpin3(int v) //Récuperer la valeur du curseur lorsqu'il est déplacé
+void Interface::ActionSpin3(int valueSpin3) //Récuperer la valeur du curseur lorsqu'il est déplacé
 {
-    ImageDICOM3(v); //Appel de la fonction ImageDICOM pour afficher une image dicom
+    //Appel de la fonction ImageDICOM pour afficher une image dicom
+    ImageDICOM3(valueSpin3); 
+    //Maj du slider
     slider3->setValue(SpinBox3->value());
 }
-void Interface::valueMouse() {
 
-    
+/*--------------------------------------------------------------------------
+* Fonctions : Action3DMouseTx(), Action3DMouseTy(), Action3DMouseTz()
+*
+* Description : Navigation avec la souris 3D selon les axes x, y et z dans
+* les 3 coupes
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::Action3DMouseTx() {
+    //Condition d'utilisation de la souris
     int value = *souris3D;
-    if (value == 0)
+    if (value == 0) //Si souris 3D off
         return;
-    int NbMaxImages;
+    //Récupération du nombre d'images suivant la position de la coupe sagittale
+    int NbImages;
     switch (*coupe)
     {
     case 1:
-        NbMaxImages = *NbFichiers;
+        NbImages = *NbFichiers;
         break;
     case 2:
-        NbMaxImages = *cols;
+        NbImages = *cols;
         break;
     case 3:
-        NbMaxImages = *cols;
+        NbImages = *cols;
         break;
     }
+
+    //Récupération du numéro de l'image précédemment affichée
     int i = *NumImageTx;
-    if ((i > 0) && (i < NbMaxImages)) {
+
+    //Condition de navigation entre 0 et le nombre d'images
+    if ((i > 0) && (i < NbImages)) {
+        //Affichage des images selon position de la coupe sagittale
         switch (*coupe)
         {
         case 1:
@@ -1055,20 +1193,21 @@ void Interface::valueMouse() {
         case 3:
             ImageDICOM3(i);
             break;
-        }        
-            if ((pTx > 5) &&(pTx >= * lastTxValue) && (pTx<20)){
-                i=i-1;
-            }
-            else if ((pTx >= 20) && (pTx >= * lastTxValue) && (pTx < 300)) {
-                i = i-3;
-            }
-           
-            else if ((pTx < -5) && (pTx <= * lastTxValue) && (pTx > -20)) {
-                i=i+1;
-            }
-            else if ((pTx <= -20) && (pTx <= *lastTxValue) && (pTx > -300)) {
-                i = i+3;
-            }
+        }
+
+        //Conditions de navigation dans les images
+        if ((pTx > 5) &&(pTx >= * lastTxValue) && (pTx<20)){
+            i=i-1;
+        }
+        else if ((pTx >= 20) && (pTx >= * lastTxValue) && (pTx < 300)) {
+            i = i-3;
+        }
+        else if ((pTx < -5) && (pTx <= * lastTxValue) && (pTx > -20)) {
+            i=i+1;
+        }
+        else if ((pTx <= -20) && (pTx <= *lastTxValue) && (pTx > -300)) {
+            i = i+3;
+        }
     }
     
     else if(i <= 0 ){
@@ -1077,14 +1216,12 @@ void Interface::valueMouse() {
     else if (i >= *NbFichiers) {
         i = *NbFichiers - 1;
     }
-    else if (pTx >= 0 && pTx<50) {
 
-        return;
-    }
+    //Mise à jour du slider en fonction de la postion de la coupe sagittale
     switch (*coupe)
     {
     case 1:
-        slider->setValue(i);
+        slider1->setValue(i);
         break;
     case 2:
         slider3->setValue(i);
@@ -1093,30 +1230,39 @@ void Interface::valueMouse() {
         slider3->setValue(i);
         break;
     }
+    //Mémorisation du numéro d'image
     *NumImageTx = i;
+
+    //Mémorisation de la dernière valeur TX prise par la souris 3D
     *lastTxValue = pTx;
 }
-void Interface::valueMouse2() {
-
-    
+void Interface::Action3DMouseTy() {
+    //Condition d'utilisation de la souris
     int value = *souris3D;
     if (value == 0)
         return;
-    int NbMaxImages;
+
+    //Récupération du nombre d'images suivant la position de la coupe transversale
+    int NbImages;
     switch (*coupe)
     {
     case 1:
-        NbMaxImages=*rows;
+        NbImages=*rows;
         break;
     case 2:
-        NbMaxImages = *NbFichiers;
+        NbImages = *NbFichiers;
         break;
     case 3:
-        NbMaxImages = *rows;
+        NbImages = *rows;
         break;
     }
+
+    //Récupération du numéro de l'image précédemment affichée
     int i = *NumImageTy;
-    if ((i > 0) && (i < NbMaxImages)) {
+
+    //Condition de navigation entre 0 et le nombre d'images
+    if ((i > 0) && (i < NbImages)) {
+        //Affichage des images selon position de la coupe tranversale
         switch (*coupe)
         {
         case 1:
@@ -1129,13 +1275,14 @@ void Interface::valueMouse2() {
             ImageDICOM2(i);
             break;
         }
+
+        //Conditions de navigation dans les images
         if ((pTy > 5) && (pTy >= * lastTyValue) && (pTy < 20)) {
             i = i - 1;
         }
         else if ((pTy >= 20) && (pTy >= * lastTyValue) && (pTy < 150)) {
             i = i - 2;
         }
-        
         else if ((pTy < -5) && (pTy <= *lastTyValue) && (pTy > -20)) {
             i = i + 1;
         }
@@ -1144,7 +1291,6 @@ void Interface::valueMouse2() {
         }
         
     }
-
     else if (i <= 0) {
         i = 1;
     }
@@ -1152,45 +1298,56 @@ void Interface::valueMouse2() {
         i = *cols - 1;
     }
     else if (pTy == 0 && pTy < 50) {
-
         return;
     }
+
+    //Mise à jour du slider en fonction de la postion de la coupe transversale
     switch (*coupe)
     {
     case 1:
         slider2->setValue(i);
         break;
     case 2:
-        slider->setValue(i);
+        slider1->setValue(i);
         break;
     case 3:
         slider2->setValue(i);
         break;
     }
+
+    //Mémorisation du numéro d'image
     *NumImageTy = i;
+
+    //Mémorisation de la dernière valeur TY prise par la souris 3D
     *lastTyValue = pTy;
 }
-void Interface::valueMouse3() {
-
-    
+void Interface::Action3DMouseTz() {
+    //Condition d'utilisation de la souris
     int value = *souris3D;
     if (value == 0)
         return;
-    int NbMaxImages;
+
+    //Récupération du nombre d'images suivant la position de la coupe coronale
+    int NbImages;
     switch (*coupe)
     {
     case 1:
-        NbMaxImages = *cols;
+        NbImages = *cols;
         break;
     case 2:
-        NbMaxImages = *rows;
+        NbImages = *rows;
         break;
     case 3:
-        NbMaxImages = *NbFichiers;
+        NbImages = *NbFichiers;
         break;
     }
+
+    //Récupération du numéro de l'image précédemment affichée
     int i = *NumImageTz;
-    if ((i > 0) && (i < NbMaxImages)) {
+
+    //Condition de navigation entre 0 et le nombre d'images
+    if ((i > 0) && (i < NbImages)) {
+        //Affichage des images selon position de la coupe coronal
         switch (*coupe)
         {
         case 1:
@@ -1203,13 +1360,14 @@ void Interface::valueMouse3() {
             ImageDICOM(i);
             break;
         }
+
+        //Conditions de navigation dans les images
         if ((pTz > 5) && (pTz >= * lastTzValue) && (pTz <20)) {
             i = i - 1;
         }
         else if ((pTz >= 20) && (pTz >= * lastTzValue) && (pTz < 250)) {
             i = i - 2;
         }
-        
         else if ((pTz < -5) && (pTz <= *lastTzValue) && (pTz > -20)) {
             i = i + 1;
         }
@@ -1226,9 +1384,10 @@ void Interface::valueMouse3() {
         i = *cols - 1;
     }
     else if (pTz == 0 && pTy < 50) {
-
         return;
     }
+
+    //Mise à jour du slider en fonction de la postion de la coupe coronale
     switch (*coupe)
     {
     case 1:
@@ -1238,22 +1397,45 @@ void Interface::valueMouse3() {
         slider2->setValue(i);
         break;
     case 3:
-        slider->setValue(i);
+        slider1->setValue(i);
         break;
-    }    
+    }
+
+    //Mémorisation du numéro d'image
     *NumImageTz = i;
+    
+    //Mémorisation de la dernière valeur TZ prise par la souris 3D
     *lastTzValue = pTz;
 }
-void Interface::valueMouse_int() {
+
+/*--------------------------------------------------------------------------
+* Fonctions : Action3DMouseIntensite()
+*
+* Description : Modification de l'intensité des 3 coupes avec la souris 3D 
+* selon l'axe de rotation y 
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::Action3DMouseIntensite() {
+    //Condition d'utilisation de la souris et si clic sur bouton droit de la souris 3D
     int value = *souris3D;
-    int inte = Intensite;
-    if ((value == 0)||(inte==0))
+    int inte = Intensite; //vaut 1 au 1er clic et 0 au 2e clic sur bouton droite
+    if ((value == 0) || (inte == 0)) {
         return;
-    int v = pRy;
+    }
+
+    //Affichage curseur d'intensité
+    sliderIntensite->setVisible(true);//rendre visible le curseur
+
+    //Récupération de la valeur d'intensité précédente
     int i = *variationIntensite;
-    int lim = 500;
+
+    int lim = 500;//Limite de variation de l'intensité
+
+    //Condition pour rester dans les limites de variation de l'intensité
     if ((i > -lim) && (i < lim)) {
-<<<<<<< HEAD
         //Changement de la valeur max d'intensité de référence pour chaque coupe
         *IntensiteVariableCoupe1 = *IntensiteMaxInitCoupe1 + i;
         *IntensiteVariableCoupe2 = *IntensiteMaxInitCoupe2 + i;
@@ -1266,20 +1448,9 @@ void Interface::valueMouse_int() {
         
         //Conditions de modification de l'intensité
         if ((pRy > 5) && (pRy >= *lastRyValue)&&(pRy<lim)) {
-=======
-        *IntensiteVariableCoupe1 = *IntensiteMaxInitCoupe1 + i;//changement de la valeur max d'intensité de référence
-        *IntensiteVariableCoupe2 = *IntensiteMaxInitCoupe2 + i;//changement de la valeur max d'intensité de référence
-        *IntensiteVariableCoupe3 = *IntensiteMaxInitCoupe2 + i;//changement de la valeur max d'intensité de référence
-
-        valueMouse();
-        valueMouse2();
-        valueMouse3();
-        if ((v > 5) && (v >= *lastRyValue)&&(v<lim)) {
->>>>>>> parent of 9416f80... Commentaire + Int
             i=i+50;
         }
-
-        else if ((v < -5) && (v <= *lastRyValue) && (v> -lim)) {
+        else if ((pRy < -5) && (pRy <= *lastRyValue) && (pRy> -lim)) {
             i = i-50;
         }
     }
@@ -1289,10 +1460,15 @@ void Interface::valueMouse_int() {
     else if (i >= lim) {
         i = lim-1;
     }
+
+    //Mise à jour du slider intensité
     sliderIntensite->setValue(i);
 
+    //Mémorisation de la valeur d'intensité
     *variationIntensite = i;
-    *lastRyValue = v;
+
+    //Mémorisation de la dernière valeur RY prise par la souris 3D
+    *lastRyValue = pRy;
 }
 
 //----------Coupe coronale------------------
@@ -1324,7 +1500,10 @@ void Interface::ImageDICOM3(int v)
     for (int i = 0; i < l; i++)
         for (int j = 0; j < c; j++)
         {
-            image.at<unsigned char>(i, j) = (Valeurdefinitif2[k] * 255) / valMax; //Association de la valeur au bon endroit de l'image
+            if (valMax == 0)
+                image.at<unsigned char>(i, j) = Valeurdefinitif2[k]; //Association de la valeur au bon endroit de l'image
+            else
+                image.at<unsigned char>(i, j) = (Valeurdefinitif2[k] * 255) / valMax; //Association de la valeur au bon endroit de l'image            k++;
             k++;
         }
     rotate(image, image, cv::ROTATE_90_CLOCKWISE); //Rotation de 90° de l'image
@@ -1426,6 +1605,8 @@ void Interface::ImageDICOM3(int v)
 
     if (*Mode == 0)
     {
+        //SpinBox3->setValue(slider3->value());
+
         imageLabel3->setPixmap(QPixmap::fromImage(dest).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
         imageLabel3->setMaximumSize(l, c);
         layout->addWidget(imageLabel3, 1, 2, Qt::AlignHCenter);//Ajout du layout à l'image
@@ -1463,7 +1644,10 @@ void Interface::ImageDICOM2(int v)
     for (int i = 0; i < l; i++)
         for (int j = 0; j < c; j++)
         {
-            image.at<unsigned char>(i, j) = (Valeurdefinitif[k] * 255) / valMax; //Association de la valeur au bon endroit de l'image
+            if (valMax==0)
+                image.at<unsigned char>(i, j) = Valeurdefinitif[k]; //Association de la valeur au bon endroit de l'image
+            else
+                image.at<unsigned char>(i, j) = (Valeurdefinitif[k] * 255) / valMax; //Association de la valeur au bon endroit de l'image
             k++;
         }
     rotate(image, image, cv::ROTATE_90_CLOCKWISE);//Rotation de 90° de l'image
@@ -1565,6 +1749,8 @@ void Interface::ImageDICOM2(int v)
 
     if (*Mode == 0)
     {
+        //SpinBox2->setValue(slider2->value());
+
         imageLabel2->setPixmap(QPixmap::fromImage(dest).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
         imageLabel2->setMaximumSize(l, c);
         layout->addWidget(imageLabel2, 1, 1, Qt::AlignHCenter);//Ajout du layout à l'image
@@ -1595,7 +1781,10 @@ void Interface::ImageDICOM(int v)//Ouverture, lecture et affichage image "*.dcm"
     for (int i = 0; i < l; i++)
         for (int j = 0; j < c; j++)
         {
-            image.at<unsigned char>(i, j) = ((*allpixels)[k] * 255) / valMax; //Association de la valeur au bon endroit de l'image
+            if (valMax==0)
+                image.at<unsigned char>(i, j) = (*allpixels)[k]; //Association de la valeur au bon endroit de l'image
+            else
+                image.at<unsigned char>(i, j) = ((*allpixels)[k] * 255) / valMax; //Association de la valeur au bon endroit de l'image
             k++;
         }
     switch (*NbCouleurs)
@@ -1696,6 +1885,14 @@ void Interface::ImageDICOM(int v)//Ouverture, lecture et affichage image "*.dcm"
     }
     if (*Mode == 0)
     {
+        /*if (SpinBox1->value() != slider1->value()){
+            slider1->setValue(SpinBox1->value());
+        }
+        else {
+            SpinBox1->setValue(slider1->value());
+
+        }*/
+
         imageLabel1->setPixmap(QPixmap::fromImage(dest).scaled(QSize(c, l), Qt::IgnoreAspectRatio)); //Ajoute au layout
         imageLabel1->setMaximumSize(c, l);
         layout->addWidget(imageLabel1, 1, 0, Qt::AlignHCenter);//Ajout du layout à l'image
@@ -1729,7 +1926,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     imageLabel4 = new QLabel(); //init label
     imageLabel5 = new QLabel();//init label
     imageLabel6 = new QLabel();//init label
-    slider = new QSlider(Qt::Horizontal);//init curseur
+    slider1 = new QSlider(Qt::Horizontal);//init curseur
     slider2 = new QSlider(Qt::Horizontal);//init curseur
     slider3 = new QSlider(Qt::Horizontal);//init curseur
     sliderIntensite = new QSlider(Qt::Horizontal);//init curseur
@@ -1759,16 +1956,16 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     rows = new qint16;//lignes en orientation init ici
     souris3D = new qint16;
     Outils->addAction("Activer/Desactiver souris 3D", this, SLOT(UtiliserSouris3D()));
-    Affichage->addAction("ORIGINAL", this, SLOT(changeAffichage()));//Action pour couleur
-    Affichage->addAction("JET", this, SLOT(changeAffichage1()));//Action pour couleur
-    Affichage->addAction("BONE", this, SLOT(changeAffichage2()));//Action pour couleur
-    Affichage->addAction("CIVIDS", this, SLOT(changeAffichage3()));//Action pour couleur
-    Affichage->addAction("TURBO", this, SLOT(changeAffichage4()));//Action pour couleur
-    Affichage->addAction("HOT", this, SLOT(changeAffichage5()));//Action pour couleur
-    Affichage->addAction("PARULA", this, SLOT(changeAffichage6()));//Action pour couleur
-    Affichage->addAction("TWILIGHT SHIFTED", this, SLOT(changeAffichage7()));//Action pour couleur
-    Affichage->addAction("Modifier Intensite", this, SLOT(AfficherCurseurIntensite()));//Action d'affichage slider
-    Affichage->addAction("Passer en visualisation 3D", this, SLOT(AppercuVisualisation3D()));//Action d'affichage slider
+    Affichage->addAction("ORIGINAL", this, SLOT(AffichageOriginal()));//Action pour couleur
+    Affichage->addAction("JET", this, SLOT(AffichageJet()));//Action pour couleur
+    Affichage->addAction("BONE", this, SLOT(AffichageBone()));//Action pour couleur
+    Affichage->addAction("CIVIDS", this, SLOT(AffichageCivids()));//Action pour couleur
+    Affichage->addAction("TURBO", this, SLOT(AffichageTurbo()));//Action pour couleur
+    Affichage->addAction("HOT", this, SLOT(AffichageHot()));//Action pour couleur
+    Affichage->addAction("PARULA", this, SLOT(AffichageParula()));//Action pour couleur
+    Affichage->addAction("TWILIGHT SHIFTED", this, SLOT(AffichageTwilightShifted()));//Action pour couleur
+    Affichage->addAction("Modifier Intensite", this, SLOT(AfficherCurseurIntensite()));//Action d'affichage slider1
+    Affichage->addAction("Passer en visualisation 3D", this, SLOT(AppercuVisualisation3D()));//Action d'affichage slider1
     Info->addAction("Informations patient", this, SLOT(displayTags()));//Connexion menu action
     file->addAction("Ouvrir", this, SLOT(ouvrirFichiers()));//Connexion menu action
     file->addAction("Supprimer", this, SLOT(Supprimer()));//Connexion menu action
@@ -1790,23 +1987,24 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     setWindowIcon(QIcon("icon.png"));//Mettre un Icon a la fenetre
     
 
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(value(int)));// Connexion du slider a fonction
-    connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(value2(int)));// Connexion du slider a fonction
-    connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(value3(int)));// Connexion du slider a fonction
-    connect(sliderIntensite, SIGNAL(valueChanged(int)), this, SLOT(value4(int)));// Connexion du slider a fonction
    
-    connect(SpinBox1, SIGNAL(valueChanged(int)), this, SLOT(valueSpin(int)));// Connexion du slider a fonction
-    connect(SpinBox2, SIGNAL(valueChanged(int)), this, SLOT(valueSpin2(int)));// Connexion du slider a fonction
-    connect(SpinBox3, SIGNAL(valueChanged(int)), this, SLOT(valueSpin3(int)));// Connexion du slider a fonction
+    connect(sliderIntensite, SIGNAL(valueChanged(int)), this, SLOT(ChangementIntensite(int)));// Connexion du slider1 a fonction
+    connect(slider1, SIGNAL(valueChanged(int)), this, SLOT(ActionSlider1(int)));// Connexion du slider1 a fonction
+    connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(ActionSlider2(int)));// Connexion du slider1 a fonction
+    connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(ActionSlider3(int)));// Connexion du slider1 a fonction
+
+    connect(SpinBox1, SIGNAL(valueChanged(int)), this, SLOT(ActionSpin1(int)));// Connexion du slider1 a fonction
+    connect(SpinBox2, SIGNAL(valueChanged(int)), this, SLOT(ActionSpin2(int)));// Connexion du slider1 a fonction
+    connect(SpinBox3, SIGNAL(valueChanged(int)), this, SLOT(ActionSpin3(int)));// Connexion du slider1 a fonction
 
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(MajClicCoupe1(QMouseEvent*)));
-    connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc2(QMouseEvent*)));
-    connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(affichetruc3(QMouseEvent*)));
+    connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(MajClicCoupe2(QMouseEvent*)));
+    connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(MajClicCoupe3(QMouseEvent*)));
        
-    connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse2()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse3()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(valueMouse_int()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTx()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTy()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTz()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseIntensite()));
     connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
 
 
@@ -1814,6 +2012,8 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     SaveAs(this->winId());
 
 }
+
+
 void Interface::mousePressEvent(QMouseEvent* e)//Definition du signal clic
 {
     emit clic(e);
