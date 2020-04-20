@@ -1,105 +1,122 @@
 #include "Read_data_3Dmouse.h"
-//Version Ok
+
+//Définition des variables globales
 HDC          hdc;
 SiHdl        devHdl;
-TCHAR devicename[100] = _T("");
+TCHAR        devicename[100] = _T("");
 HWND         hWndMain;
 HWND         hWnd3D;
-
-
-INT pTx, pTy, pTz, pRx, pRy, pRz;
-INT Intensite=0;
-INT prevInt;
-INT clicD=0, clicG=0;
+INT          pTx, pTy, pTz, pRx, pRy, pRz;
+INT          Intensite=0;
+INT          prevInt;
+INT          clicD=0, clicG=0;
 
 /*--------------------------------------------------------------------------
-* Fonction: SbInit()
+* Fonction : SbInit()
 *
 * Description : Initialisation de la souris 3D
 *
 * Arguments : aucun
 *
 * Valeur retournée : res : résultat de SiOpen, =0 si erreur =1 si ça marche
-*
 *--------------------------------------------------------------------------*/
 int SbInit()
 {
-    int res;                             /* result of SiOpen, to be returned  */
-    SiOpenDataEx oData;                    /* OS Independent data to open ball  */
+    int res; //résultat de SiOpen, à retourner
+    SiOpenDataEx oData; //Données indépendantes du système d'exploitation
 
-    /*init the SpaceWare input library */
+    //Initialisation de la bibliothèque d'entrées SpaceWare
     if (SiInitialize() == SPW_DLL_LOAD_ERROR)
     {
+        //Message d'erreur
         QMessageBox error;
-        error.setText("Error: Could not load SiAppDll dll files"); //Ajout à la boite QMessageBox
-        error.exec();//affichage boite de dialogue
+        error.setText("Erreur : Impossible de charger la librairie SiAppDll"); //Ajout à la boite QMessageBox
+        error.exec(); //Affichage boite de dialogue
     }
 
-    SiOpenWinInitEx(&oData, hWndMain);    /* init Win. platform specific data  */
+    //Initialisation des données spécifiques à la platfomre Windows
+    SiOpenWinInitEx(&oData, hWndMain); 
 
-    // Tell the driver we want to receive V3DCMDs instead of V3DKeys
+    //Dit au pilote que nous voulons recevoir des V3DCMD au lieu de V3DKeys
     SiOpenWinAddHintBoolEnum(&oData, SI_HINT_USESV3DCMDS, SPW_TRUE);
 
-    // Tell the driver we need a min driver version of 17.5.5.  
-    // This could be used to tell the driver that it needs to be upgraded before it can run this application correctly.
+    //Dit au driver que nous avons besoin d'une version minimale du driver de 17.5.5.
+    //Cela pourrait être utilisé pour indiquer au driver qu'il doit être mis à niveau avant de pouvoir exécuter correctement cette application.
     SiOpenWinAddHintStringEnum(&oData, SI_HINT_DRIVERVERSION, L"17.5.5");
 
-    /* open data, which will check for device type and return the device handle
-    to be used by this function */
+    //Ouverture des données
     if ((devHdl = SiOpenEx(L"Logiciel de navigation 3D dans les images IRM", SI_ANY_DEVICE, SI_NO_MASK, SI_EVENT, &oData)) == NULL)
     {
-        SiTerminate();  /* called to shut down the SpaceWare input library */
-        res = 0;        /* could not open device */
+        SiTerminate();  //Appelé pour fermer la bibliothèque d'entrée SpaceWare
+        
+        //Impossible d'ouvrir l'appareil
+        res = 0;
         return res;
-        cout << "Sorry - pb SbInit.\n" << endl;
+
+        //Message d'erreur
+        QMessageBox error;
+        error.setText("Erreur : Problème avec l'initialisation de la souris 3D"); //Ajout à la boite QMessageBox
+        error.exec(); //Affichage boite de dialogue
     }
     else
     {
         SiDeviceName devName;
         SiGetDeviceName(devHdl, &devName);
-        _stprintf_s(devicename, SPW_NUM_ELEMENTS_IN(devicename), _T("%S"), devName.name);
-
-        res = 1;        /* opened device succesfully */
+        
+        //Appareil ouvert avec succès
+        res = 1;
         return res;
     }
 
 }
 
-void DispatchLoopNT()
+/*--------------------------------------------------------------------------
+* Fonction : DispatchLoopNT()
+*
+* Description : Contient la boucle de message principale qui vérifie 
+* constamment les événements de souris 3D et les gère de manière appropriée
+*
+* Arguments : aucun
+*
+* Valeur retournée :  msg.wparam : événement passé à la fenêtre
+*--------------------------------------------------------------------------*/
+int DispatchLoopNT()
 {
-    MSG            msg;      /* incoming message to be evaluated */
-    BOOL           handled;  /* is message handled yet */
-    SiSpwEvent     Event;    /* SpaceWare Event */
-    SiGetEventData EData;    /* SpaceWare Event Data */
+    MSG            msg; //Message entrant à évaluer
+    BOOL           handled; //Le message est-il encore géré ?
+    SiSpwEvent     Event; //Événement SpaceWare
+    SiGetEventData EData; //Données d'événement SpaceWare
+    
+    //Initialisation du handled
+    handled = SPW_FALSE; 
 
-    handled = SPW_FALSE;     /* init handled */
-
-    /* start message loop */
+    //Boucle de message
     while (GetMessage(&msg, NULL, 0, 0))
     {
         handled = SPW_FALSE;
 
-        /* init Window platform specific data for a call to SiGetEvent */
+        //Init des données spécifiques à la plateforme Windows pour un appel à SiGetEvent
         SiGetEventWinInit(&EData, msg.message, msg.wParam, msg.lParam);
 
-        /* check whether msg was a 3D mouse event and process it */
+        //Vérification si le msg était un événement de souris 3D et le traiter
         if (SiGetEvent(devHdl, SI_AVERAGE_EVENTS, &EData, &Event) == SI_IS_EVENT)
         {
             if (Event.type == SI_MOTION_EVENT)
             {
-                SbMotionEvent(&Event);        /* process 3D mouse motion event */
-
+                //Processus événement de mouvements de la souris 3D
+                SbMotionEvent(&Event);
             }
             else if (Event.type == SI_CMD_EVENT)
             {
-                HandleV3DCMDEvent(&Event); /* V3DCMD_* events */
+                //Processus événement des boutons de la souris 3D
+                BoutonsEvent(&Event); //V3DCMD_* events
             }
 
-
-            handled = SPW_TRUE;              /* 3D mouse event handled */
+            //Événement de souris 3D géré
+            handled = SPW_TRUE;
         }
 
-        /* not a 3D mouse event, let windows handle it */
+        //Si c'est pas un événement de souris 3D, laissez Windows le gérer
         if (handled == SPW_FALSE)
         {
             TranslateMessage(&msg);
@@ -107,29 +124,42 @@ void DispatchLoopNT()
         }
     }
 
-    //return((int)msg.wParam);
+    return((int)msg.wParam);
 }
 
-
-LRESULT WINAPI HandleNTEvent(HWND hWnd, unsigned msg, WPARAM wParam,
+/*--------------------------------------------------------------------------
+* Fonction : HandleNTEvent()
+*
+* Description : Gestion des divers événements de la fenêtre
+*
+* Arguments : hWnd : handle de la fenêtre   
+*             msg : message à traiter
+*             wParam : Paramètre msg 32 bits
+*             lParam : Paramètre msg 32 bits
+*
+* Valeur retournée :  msg.wparam : programme terminé
+*--------------------------------------------------------------------------*/
+/*LRESULT WINAPI HandleNTEvent(HWND hWnd, unsigned msg, WPARAM wParam,
     LPARAM lParam)
 {
-    PAINTSTRUCT ps;           /* used to paint the client area of a window */
-    LONG addr;                /* address of our window */
+    PAINTSTRUCT ps; //Utilisé pour peindre la zone client d'une fenêtre
+    LONG addr; //Adresse de la fenêtre
 
-    addr = GetClassLong(hWnd, 0);  /* get address */
+    //Obtenir l'adresse de la fenêtre
+    addr = GetClassLong(hWnd, 0);
 
     switch (msg)
     {
     case WM_ACTIVATEAPP:
         hdc = GetDC(hWnd);
 
-
-        /*release our window handle */
+        //Libération du handle de la fenêtre
         ReleaseDC(hWnd, hdc);
+
     case WM_KEYDOWN:
+
     case WM_KEYUP:
-        /* user hit a key to close program */
+        //L'utilisateur a appuyé sur une touche pour fermer le programme
         if (wParam == VK_ESCAPE)
         {
             SendMessage(hWndMain, WM_CLOSE, 0, 0l);
@@ -137,7 +167,7 @@ LRESULT WINAPI HandleNTEvent(HWND hWnd, unsigned msg, WPARAM wParam,
         break;
 
     case WM_PAINT:
-        /* time to paint the window */
+        //Temps de peindre la fenêtre
         if (addr)
         {
             hdc = BeginPaint(hWndMain, &ps);
@@ -147,7 +177,7 @@ LRESULT WINAPI HandleNTEvent(HWND hWnd, unsigned msg, WPARAM wParam,
         break;
 
     case WM_CLOSE:
-        /* cleanup the object info created */
+        //Nettoyer les informations d'objet créées
 
         break;
 
@@ -157,36 +187,49 @@ LRESULT WINAPI HandleNTEvent(HWND hWnd, unsigned msg, WPARAM wParam,
     }
     return DefWindowProc(hWnd, msg, wParam, lParam);
 
-}
+}*/
 
-
-
+/*--------------------------------------------------------------------------
+* Fonction : SbMotionEvent()
+*
+* Description : Récupération des informations de mouvement et stokage dans 
+* des variables globales
+*
+* Arguments : *pEvent : Contient des données d'un événement de souris 3D
+*
+* Valeur retournée :  aucune
+*--------------------------------------------------------------------------*/
 void SbMotionEvent(SiSpwEvent* pEvent)
 {
-    //hdc = GetDC(hWndMain);
     pTx = pEvent->u.spwData.mData[SI_TX];
     pTy = pEvent->u.spwData.mData[SI_TY];
     pTz = pEvent->u.spwData.mData[SI_TZ];
     pRx = pEvent->u.spwData.mData[SI_RX];
     pRy = pEvent->u.spwData.mData[SI_RY];
     pRz = pEvent->u.spwData.mData[SI_RZ];
-
-    _RPT3(_CRT_WARN, "TX : %d   TY : %d   TZ : %d", pTx, pTy, pTz);
-    _RPT3(_CRT_WARN, " RX : %d   RY : %d   RZ : %d\n", pRx, pRy, pRz);
 }
 
-void HandleV3DCMDEvent(SiSpwEvent* pEvent)
+/*--------------------------------------------------------------------------
+* Fonction : BoutonsEvent()
+*
+* Description : Récupération des événement liés aux boutons de la souris 3D
+*
+* Arguments : *pEvent : Contient des données d'un événement de souris 3D
+*
+* Valeur retournée :  aucune
+*--------------------------------------------------------------------------*/
+void BoutonsEvent(SiSpwEvent* pEvent)
 {
     
     hdc = GetDC(hWndMain);
     switch (pEvent->u.cmdEventData.functionNumber)
     {
+    //Bouton de gauche
     case V3DCMD_KEY_F1:
-        //_RPT1(_CRT_WARN, "BG : %d\n", pEvent->u.cmdEventData.pressed);
         clicG= pEvent->u.cmdEventData.pressed;
-
         break;
-     
+
+    //Bouton de droite
     case V3DCMD_KEY_F2:
         clicD = pEvent->u.cmdEventData.pressed;
         if (pEvent->u.cmdEventData.pressed == 1) {
@@ -199,10 +242,8 @@ void HandleV3DCMDEvent(SiSpwEvent* pEvent)
             }
             prevInt = Intensite;
         }
-        
         break;
     default:
-        _RPT1(_CRT_WARN, "Unhandled V3DCMD : number = % d\n", pEvent->u.cmdEventData.functionNumber );
         break;
     }
 }

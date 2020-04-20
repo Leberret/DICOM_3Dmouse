@@ -1,8 +1,8 @@
 #include "Scene3D.h"
 #include "DICOM_3Dmouse.h"
-//Version Ok
+
 //Appel des variables globales externes
-extern int Coupe, Min, Max;
+extern INT         Coupe, Min, Max;
 
 /*--------------------------------------------------------------------------
 * Fonction : init()

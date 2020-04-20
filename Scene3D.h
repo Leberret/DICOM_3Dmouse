@@ -1,5 +1,5 @@
 #pragma once
-//Version Ok
+
 // Includes
 #include <iostream>
 #include <QGuiApplication>
@@ -18,9 +18,9 @@
 using namespace std;
 
 //Variables globales externes
-extern int Coupe, Min, Max;
-extern INT pTx, pTy, pTz, pRx, pRy, pRz;
-extern HWND hWnd3D;
+extern INT			Coupe, Min, Max;
+extern INT			pTx, pTy, pTz, pRx, pRy, pRz;
+extern HWND			hWnd3D;
 
 //Class My3DScene.
 class My3DScene : public Qt3DExtras::Qt3DWindow

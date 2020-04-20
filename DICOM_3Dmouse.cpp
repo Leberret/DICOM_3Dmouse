@@ -1,8 +1,8 @@
 #include "DICOM_3Dmouse.h"
 #include "Scene3D.h"
-//Version Ok
+
 //Initialisation des variables globales
-INT Coupe, Min, Max;
+INT         Coupe, Min, Max;
 
 
 /*--------------------------------------------------------------------------
@@ -2084,7 +2084,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     imageMin = new qint16;
     imageMax = new qint16;
     CoupeVisu = new qint16;
-    NbFichiers = new qint16;//Init du nb de fichier
+    NbFichiers = new qint16;
     visible = new qint16;
     lastTxValue = new qint16;
     NumImageTx = new qint16;
@@ -2096,19 +2096,19 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     variationIntensite = new qint16;
     coupe = new qint16;
     Mode = new qint16;
-
-    cols = new qint16;//Colones en orientation init ici
-    rows = new qint16;//lignes en orientation init ici
+    cols = new qint16;//Colones
+    rows = new qint16;//Lignes
     souris3D = new qint16;
 
     pathFolderSave = new QString();
+
     layout = new QGridLayout;//Init layout
-    imageLabel1 = new QLabel(); //init label
 
     SpinBox1 = new QSpinBox();
     SpinBox2 = new QSpinBox();
     SpinBox3 = new QSpinBox();
 
+    imageLabel1 = new QLabel(); //init label
     imageLabel2 = new QLabel();//init label
     imageLabel3 = new QLabel();//init label
     imageLabel4 = new QLabel(); //init label
@@ -2129,17 +2129,19 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
 
     menu = new QMenuBar();//Initialisation Barre de menus
 
-    //fenetre active pour détection souris
+    //Indentifiant de la fenêtre pour détection souris 3D
     hWndMain = (HWND)this->winId();
 
     //Initialisation Timer pour actualiser les evenements souris3D
     QTimer* timer = new QTimer(this);
 
+    //Création des menus de la barre de menu
     file = new QMenu("&Fichiers");//init menu fichiers
     Info = new QMenu("&Informations");//init menu infos
     Affichage = new QMenu("&Affichage");//Init menu affichage
     Outils = new QMenu("&Outils");//Init menu outils
 
+    //Ajout des actions aux menus
     Outils->addAction("Activer/Desactiver souris 3D", this, SLOT(UtiliserSouris3D()));
     Affichage->addAction("ORIGINAL", this, SLOT(AffichageOriginal()));//Action pour couleur
     Affichage->addAction("JET", this, SLOT(AffichageJet()));//Action pour couleur
@@ -2155,34 +2157,41 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     file->addAction("Ouvrir", this, SLOT(ouvrirFichiers()));//Connexion menu action
     file->addAction("Supprimer", this, SLOT(Supprimer()));//Connexion menu action
 
-    menu->addMenu(file);//Ajout menu a bar de menus
-    menu->addMenu(Info);//Ajout menu a bar de menus
-    menu->addMenu(Affichage);//Ajout menu a bar de menus
-    menu->addMenu(Outils);//Ajout menu a bar de menus
+    //Ajout des menus à la barre de menu
+    menu->addMenu(file);
+    menu->addMenu(Info);
+    menu->addMenu(Affichage);
+    menu->addMenu(Outils);
 
-    layout->setMenuBar(menu);//Ajout du menu au layout
-    layout->setAlignment(Qt::AlignHCenter);
+    //Ajout du menu au layout
+    layout->setMenuBar(menu);
 
+    //Paramétrage du layout
+    layout->setAlignment(Qt::AlignHCenter);//Centrage de tous les éléments du layout
     setWindowState(windowState() | Qt::WindowMaximized);//Fenetre en plein ecran
     setLayout(layout);//Mise en place du layout
     setWindowTitle("Logiciel de navigation 3D dans les images IRM");//titre fenetre
     setWindowIcon(QIcon("icon.png"));//Mettre un Icon a la fenetre
     
 
-   //Mise en place des connexion entre l'interface et les actions à réaliser
-    connect(sliderIntensite, SIGNAL(valueChanged(int)), this, SLOT(ChangementIntensite(int)));// Connexion du slider1 a fonction
-    connect(slider1, SIGNAL(valueChanged(int)), this, SLOT(ActionSlider1(int)));// Connexion du slider1 a fonction
-    connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(ActionSlider2(int)));// Connexion du slider1 a fonction
-    connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(ActionSlider3(int)));// Connexion du slider1 a fonction
+    //----------Mise en place des connexions entre l'interface et les actions à réaliser----------
+    //Variation de la position des curseurs
+    connect(sliderIntensite, SIGNAL(valueChanged(int)), this, SLOT(ChangementIntensite(int)));
+    connect(slider1, SIGNAL(valueChanged(int)), this, SLOT(ActionSlider1(int)));
+    connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(ActionSlider2(int)));
+    connect(slider3, SIGNAL(valueChanged(int)), this, SLOT(ActionSlider3(int)));
 
-    connect(SpinBox1, SIGNAL(valueChanged(int)), this, SLOT(ActionSpin1(int)));// Connexion du slider1 a fonction
-    connect(SpinBox2, SIGNAL(valueChanged(int)), this, SLOT(ActionSpin2(int)));// Connexion du slider1 a fonction
-    connect(SpinBox3, SIGNAL(valueChanged(int)), this, SLOT(ActionSpin3(int)));// Connexion du slider1 a fonction
+    //Saisie manuelle du numéro des images
+    connect(SpinBox1, SIGNAL(valueChanged(int)), this, SLOT(ActionSpin1(int)));
+    connect(SpinBox2, SIGNAL(valueChanged(int)), this, SLOT(ActionSpin2(int)));
+    connect(SpinBox3, SIGNAL(valueChanged(int)), this, SLOT(ActionSpin3(int)));
 
+    //Clic sur une des coupes
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(MajClicCoupe1(QMouseEvent*)));
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(MajClicCoupe2(QMouseEvent*)));
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(MajClicCoupe3(QMouseEvent*)));
-       
+    
+    //Actualisation des données de la souris en fonction du timer
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTx()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTy()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTz()));
@@ -2191,7 +2200,8 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
 
     //Temps d'intervalle entre actualisations : ici 10ms
     timer->start(10);
-    SaveAs(this->winId());
+
+    //SaveAs(this->winId());
 
 }
 
@@ -2230,7 +2240,7 @@ bool Interface::DoubleClics() {
 /*--------------------------------------------------------------------------
 * Fonctions : SaveAs()
 *
-* Description : Permet de screenshooter la fenêtre et de l'enregistrer
+* Description : Permet de screenshoter la fenêtre et de l'enregistrer
 *
 * Arguments : winId : Identifiant de la fenêtre
 *
@@ -2273,9 +2283,10 @@ void Interface::SaveAs(WId winId) {
 /*--------------------------------------------------------------------------
 * Fonctions : closeEvent()
 *
-* Description : 
+* Description : Appel de la fonction Supprimer qui permet de supprimer le 
+* dossier image et son contenu lors de la fermeture de la fenêtre principale
 *
-* Arguments : event : 
+* Arguments : event : évenement de fermeture de la fenêtre
 *
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/

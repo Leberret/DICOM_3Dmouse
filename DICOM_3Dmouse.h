@@ -1,4 +1,6 @@
 #pragma once
+
+//Includes
 #include <QtWidgets/QMainWindow>
 #include "ui_DICOM_3Dmouse.h"
 #include <QApplication>
@@ -8,13 +10,9 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-//Version Ok
 #include <QFileDialog>
 #include "utils.h"
-
 #include <QMenuBar>
-#include <iostream>
-
 #include <opencv2/opencv.hpp>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -24,13 +22,12 @@
 #include "Scene3D.h"
 #include <direct.h>
 
-
+//Appel des variables globales externes
 extern HWND         hWndMain;
-extern int Coupe, Min, Max;
-
-extern INT pTx, pTy, pTz, pRx, pRy, pRz;
-extern INT Intensite,prevInt;
-extern INT clicD, clicG;
+extern INT			Coupe, Min, Max;
+extern INT			pTx, pTy, pTz, pRx, pRy, pRz;
+extern INT			Intensite,prevInt;
+extern INT			clicD, clicG;
 
 
 class Interface : public QWidget
@@ -39,17 +36,18 @@ class Interface : public QWidget
 
 public:
 	Interface();
-	
 	void mousePressEvent(QMouseEvent* e);
 	void closeEvent(QCloseEvent* event);
 
 signals:
 	void clic(QMouseEvent* e);
+
 public slots:
-	void GestionImages(int v);//Ouverture, lecture et affichage image "*.dcm"
-	void GestionImagesLignes(int v);//Ouverture, lecture et affichage image "*.dcm"
-	void GestionImagesColonnes(int v);//Ouverture, lecture et affichage image "*.dcm"
-	void ouvrirFichiers(); //Ouvrir le dossier l'image en fonction du positionnement du curseur
+	//------------------Interface 2D-------------------------
+	void ouvrirFichiers();
+	void GestionImages(int v);
+	void GestionImagesLignes(int v);
+	void GestionImagesColonnes(int v);
 	bool DoubleClics();
 	void SaveAs(WId winId);
 	void UtiliserSouris3D();
@@ -62,17 +60,13 @@ public slots:
 	void AffichageParula();
 	void AffichageTwilightShifted();
 	void AfficherCurseurIntensite();
-	
-
-	void ChangementIntensite(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
-
+	void ChangementIntensite(int k);
 	void ActionSlider1(int k);
 	void ActionSlider2(int k);
 	void ActionSlider3(int k);
-
-	void ActionSpin1(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
-	void ActionSpin2(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
-	void ActionSpin3(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void ActionSpin1(int k);
+	void ActionSpin2(int k);
+	void ActionSpin3(int k);
 	void displayTags();
 	void Action3DMouseTx();
 	void Action3DMouseTy();
@@ -84,7 +78,7 @@ public slots:
 	void InfoCoupes();
 	void Enregistre();
 
-	// 3D
+	//------------------Interface 3D-------------------------
 	void FirstImage(QString k);
 	void LastImage(QString k);
 	void AfficheIntensiteTransparence();
@@ -93,6 +87,7 @@ public slots:
 	void Supprimer();
 
 private:
+	//------------------Interface 2D-------------------------
 	QLabel* imageLabel1;
 	QLabel* imageLabel2;
 	QLabel* imageLabel3;
@@ -113,11 +108,9 @@ private:
 	QMenu* Outils;
 	QStringList* Listechemin;
 	QVector<int>* allpixels;
-	//--------------------------
 	QSpinBox* SpinBox1;
 	QSpinBox* SpinBox2;
 	QSpinBox* SpinBox3;
-	//-------------------------
 	qint16* cols;
 	qint16* rows;
 	qint16* NbFichiers;
@@ -141,14 +134,14 @@ private:
 	qint16* coupe;
 	qint16* Mode;
 	qint16* IntensiteOnOff;
-	//-----------------interface AppercuVisualisation3D
+
+	//-----------------interface AppercuVisualisation3D--------------------------
 	QWidget* WidgetAppercu3D;
 	QLabel* LabelVisuImage;
 	QLabel* LabelSaisieMin;
 	QLabel* LabelSaisieMax;
 	QLabel* LabelSliderIntensite;
 	QLabel* LabelSliderTransparence;
-
 	QGridLayout* LayoutVisuImage;
 	QSlider* SliderVisuIntensite;
 	QSlider* SliderVisuTransparence;
