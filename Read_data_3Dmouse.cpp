@@ -11,6 +11,17 @@ INT pTx, pTy, pTz, pRx, pRy, pRz;
 INT Intensite=0;
 INT prevInt;
 INT clicD=0, clicG=0;
+
+/*--------------------------------------------------------------------------
+* Fonction: SbInit()
+*
+* Description : Initialisation de la souris 3D
+*
+* Arguments : aucun
+*
+* Valeur retournée : res : résultat de SiOpen, =0 si erreur =1 si ça marche
+*
+*--------------------------------------------------------------------------*/
 int SbInit()
 {
     int res;                             /* result of SiOpen, to be returned  */
