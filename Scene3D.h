@@ -1,5 +1,5 @@
 #pragma once
-
+//Version Ok
 // Includes
 #include <iostream>
 #include <QGuiApplication>

@@ -8,7 +8,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-
+//Version Ok
 #include <QFileDialog>
 #include "utils.h"
 
