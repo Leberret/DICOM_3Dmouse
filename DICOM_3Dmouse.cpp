@@ -2074,45 +2074,18 @@ void Interface::GestionImagesColonnes(int v)
 *--------------------------------------------------------------------------*/
 Interface::Interface() : QWidget() //Widget = fenetre principale
 {
+    //Création d'un dossier dans lequel mettre les images
     _mkdir("Images");
+
+    //Nouvelle scene 3D vide
     Visualisation3D = new My3DScene();
-    //--------------interface visualisation
+
+    //Initialisation variables globales
     imageMin = new qint16;
     imageMax = new qint16;
     CoupeVisu = new qint16;
-    *CoupeVisu = 0;
-    //------------------
-    hWndMain = (HWND)this->winId();
-    QTimer* timer = new QTimer(this);
-
-    pathFolderSave = new QString();
-    layout = new QGridLayout;//Init layout
-    imageLabel1 = new QLabel(); //init label
-    
-    SpinBox1 = new QSpinBox();
-    SpinBox2 = new QSpinBox();
-    SpinBox3 = new QSpinBox();
-
-    imageLabel2 = new QLabel();//init label
-    imageLabel3 = new QLabel();//init label
-    imageLabel4 = new QLabel(); //init label
-    imageLabel5 = new QLabel();//init label
-    imageLabel6 = new QLabel();//init label
-    slider1 = new QSlider(Qt::Horizontal);//init curseur
-    slider2 = new QSlider(Qt::Horizontal);//init curseur
-    slider3 = new QSlider(Qt::Horizontal);//init curseur
-    sliderIntensite = new QSlider(Qt::Horizontal);//init curseur
     NbFichiers = new qint16;//Init du nb de fichier
-    visible = new qint16;//Init du nb de fichier
-    menu = new QMenuBar();//Init Bar de menus
-
-    file = new QMenu("&Fichiers");//init menu fichiers
-    Info = new QMenu("&Informations");//init menu infos
-    Affichage = new QMenu("&Affichage");//Init menu affichage
-    Outils = new QMenu("&Outils");//Init menu outils
-
-
-
+    visible = new qint16;
     lastTxValue = new qint16;
     NumImageTx = new qint16;
     lastTyValue = new qint16;
@@ -2127,6 +2100,46 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     cols = new qint16;//Colones en orientation init ici
     rows = new qint16;//lignes en orientation init ici
     souris3D = new qint16;
+
+    pathFolderSave = new QString();
+    layout = new QGridLayout;//Init layout
+    imageLabel1 = new QLabel(); //init label
+
+    SpinBox1 = new QSpinBox();
+    SpinBox2 = new QSpinBox();
+    SpinBox3 = new QSpinBox();
+
+    imageLabel2 = new QLabel();//init label
+    imageLabel3 = new QLabel();//init label
+    imageLabel4 = new QLabel(); //init label
+    imageLabel5 = new QLabel();//init label
+    imageLabel6 = new QLabel();//init label
+
+    slider1 = new QSlider(Qt::Horizontal);//init curseur
+    slider2 = new QSlider(Qt::Horizontal);//init curseur
+    slider3 = new QSlider(Qt::Horizontal);//init curseur
+    sliderIntensite = new QSlider(Qt::Horizontal);//init curseur
+
+    
+    *CoupeVisu = 0;//Init a 0 : coupe 1
+    *NbFichiers = 0; //Initialise a 0 pour ne pas avoir de pb de memoires
+    *visible = 0;//NumImageTx orientation pour savoir si affichage sliderIntensite
+    *souris3D = 0;
+    *Mode = 0;
+
+    menu = new QMenuBar();//Initialisation Barre de menus
+
+    //fenetre active pour détection souris
+    hWndMain = (HWND)this->winId();
+
+    //Initialisation Timer pour actualiser les evenements souris3D
+    QTimer* timer = new QTimer(this);
+
+    file = new QMenu("&Fichiers");//init menu fichiers
+    Info = new QMenu("&Informations");//init menu infos
+    Affichage = new QMenu("&Affichage");//Init menu affichage
+    Outils = new QMenu("&Outils");//Init menu outils
+
     Outils->addAction("Activer/Desactiver souris 3D", this, SLOT(UtiliserSouris3D()));
     Affichage->addAction("ORIGINAL", this, SLOT(AffichageOriginal()));//Action pour couleur
     Affichage->addAction("JET", this, SLOT(AffichageJet()));//Action pour couleur
@@ -2142,24 +2155,21 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     file->addAction("Ouvrir", this, SLOT(ouvrirFichiers()));//Connexion menu action
     file->addAction("Supprimer", this, SLOT(Supprimer()));//Connexion menu action
 
-    *NbFichiers = 0; //Initialise a 0 pour ne pas avoir de pb de memoires
-    *visible = 0;//NumImageTx orientation pour savoir si affichage sliderIntensite
-    *souris3D = 0;
-    *Mode = 0;
-
     menu->addMenu(file);//Ajout menu a bar de menus
     menu->addMenu(Info);//Ajout menu a bar de menus
     menu->addMenu(Affichage);//Ajout menu a bar de menus
     menu->addMenu(Outils);//Ajout menu a bar de menus
+
     layout->setMenuBar(menu);//Ajout du menu au layout
     layout->setAlignment(Qt::AlignHCenter);
+
     setWindowState(windowState() | Qt::WindowMaximized);//Fenetre en plein ecran
     setLayout(layout);//Mise en place du layout
     setWindowTitle("Logiciel de navigation 3D dans les images IRM");//titre fenetre
     setWindowIcon(QIcon("icon.png"));//Mettre un Icon a la fenetre
     
 
-   
+   //Mise en place des connexion entre l'interface et les actions à réaliser
     connect(sliderIntensite, SIGNAL(valueChanged(int)), this, SLOT(ChangementIntensite(int)));// Connexion du slider1 a fonction
     connect(slider1, SIGNAL(valueChanged(int)), this, SLOT(ActionSlider1(int)));// Connexion du slider1 a fonction
     connect(slider2, SIGNAL(valueChanged(int)), this, SLOT(ActionSlider2(int)));// Connexion du slider1 a fonction
@@ -2179,7 +2189,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseIntensite()));
     connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
 
-
+    //Temps d'intervalle entre actualisations : ici 10ms
     timer->start(10);
     SaveAs(this->winId());
 
