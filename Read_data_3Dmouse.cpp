@@ -7,8 +7,8 @@ TCHAR        devicename[100] = _T("");
 HWND         hWndMain;
 HWND         hWnd3D;
 INT          pTx, pTy, pTz, pRx, pRy, pRz;
-INT          Intensite=0;
-INT          prevInt;
+INT          Intensite=0,prevInt;
+INT          OnOffSouris3D=0,prevOnOffSouris3D;
 INT          clicD=0, clicG=0;
 
 /*--------------------------------------------------------------------------
@@ -227,6 +227,17 @@ void BoutonsEvent(SiSpwEvent* pEvent)
     //Bouton de gauche
     case V3DCMD_KEY_F1:
         clicG= pEvent->u.cmdEventData.pressed;
+        if (pEvent->u.cmdEventData.pressed == 1) {
+            int i = prevOnOffSouris3D;
+            if ((i == 0) && (clicD == 0)) {
+                OnOffSouris3D = 1;
+            }
+            else {
+                OnOffSouris3D = 0;
+            }
+            prevOnOffSouris3D = OnOffSouris3D;
+        }
+
         break;
 
     //Bouton de droite

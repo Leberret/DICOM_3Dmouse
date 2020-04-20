@@ -85,6 +85,9 @@ void Interface::AppercuVisualisation3D()
 
     *Mode = 3; //Mode 3 = Appercu
 
+    //Passage en noir et blanc par défaut pour la visualisation
+    *NbCouleurs = 0;
+
     //Appercu en fonction de la coupe selectionnée
     switch (*CoupeVisu)
     {
@@ -585,6 +588,9 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
     //Initialisation de la variables globale souris3D
     *souris3D = 0; //souris3D non active
 
+    //Initialisation de la variables globale MenuSouris3D
+    *MenuSouris3D = 0; //Le menu On/Off de la souris3D n'a pas la main
+
     //Initialisation de la liste des chemins de fichier
     Listechemin = new QStringList();//Liste de QString
 
@@ -593,9 +599,32 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
 
     //Stockage des chemins de fichier
     QDirIterator direction(*pathFolder, QDir::Files | QDir::NoSymLinks);// Obtenir l'arborescence des fichiers
-    while (direction.hasNext()) //tant qu'il reste des dossier dans le fichier
-        *Listechemin << direction.next(); //Ajout de tous les chemins dans une liste
+    //Conditions d'existance des fichiers dans le dossier
+    if (!direction.hasNext()) {
+        QMessageBox ErreurFichier;
+        ErreurFichier.setText("Le dossier est incorrect");
+        ErreurFichier.exec();
+        delete Listechemin;//Réinitialisation du chemin d'accès
+        ouvrirFichiers();//Rappel de la fonction
+        return;//Quitter l'appel actuel
+    }
 
+    //Création booléen 
+    bool i = false;
+
+    //tant qu'il reste des fichiers dans le dossier
+    while (direction.hasNext()) {
+        /*if (!direction.fileName().endsWith("dcm") && i) {//Si le format n'est DCM et que booléen est vrai
+            QMessageBox ErreurFichier;
+            ErreurFichier.setText("Le format des fichiers sélectionnés n'est pas DICOM");
+            ErreurFichier.exec();
+            delete Listechemin;//Réinitialisation du chemin d'accès 
+            ouvrirFichiers();//Rappel de la fonction
+            return;//Quitter l'appel actuel
+        }*/
+        *Listechemin << direction.next(); //Ajout de tous les chemins dans une liste
+        i = true;//Dès la première exécution le booléen passe en vrai
+    }
     //Mise en locale d'une variable globale
     QStringList Listchemin = *Listechemin;
 
@@ -722,11 +751,16 @@ void Interface::UtiliserSouris3D()
     //Mise en locale d'une variable globale
     int value = *souris3D;
 
+    //Le menu On/Off de la souris3D a la main
+    *MenuSouris3D = 1;
+
     //Condition On/Off
-    if (value == 0)
+    if (value == 0) {
         *souris3D = 1;
-    else
+    }
+    else {
         *souris3D = 0;
+    }
 }
 
 /*--------------------------------------------------------------------------
@@ -2099,7 +2133,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     cols = new qint16;//Colones
     rows = new qint16;//Lignes
     souris3D = new qint16;
-
+    MenuSouris3D = new qint16;
     pathFolderSave = new QString();
 
     layout = new QGridLayout;//Init layout
@@ -2197,6 +2231,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTz()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseIntensite()));
     connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(ClicGauche()));
 
     //Temps d'intervalle entre actualisations : ici 10ms
     timer->start(10);
@@ -2236,6 +2271,31 @@ bool Interface::DoubleClics() {
     else
         return FALSE;
 }
+
+/*--------------------------------------------------------------------------
+* Fonctions : ClicGauche()
+*
+* Description : Active ou non la souris 3D avec clic sur le bouton gauche de 
+* la souris 3D
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::ClicGauche(){
+    //Conditon si le bouton cliqué
+    if (OnOffSouris3D == 1) { //Au premier clic
+        *souris3D = 1; //Activation de la souris 3D
+        *MenuSouris3D = 0; //Le menu On/Off de la souris3D n'a pas la main
+    }
+    else{ //Au deuxième clic
+        if (*MenuSouris3D == 1) //Si le menu On/Off de la souris3D a la main
+            return;
+        else //sinon
+            *souris3D = 0;
+   }
+}
+
 
 /*--------------------------------------------------------------------------
 * Fonctions : SaveAs()
