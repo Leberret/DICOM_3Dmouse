@@ -29,7 +29,7 @@ extern HWND         hWndMain;
 extern int Coupe, Min, Max;
 
 extern INT pTx, pTy, pTz, pRx, pRy, pRz;
-extern INT Intensite,prevInt;
+extern INT Intensite;
 extern INT clicD, clicG;
 
 
@@ -39,48 +39,44 @@ class Interface : public QWidget
 
 public:
 	Interface();
-	
+	void ImageDICOM(int v);//Ouverture, lecture et affichage image "*.dcm"
+	void ImageDICOM2(int v);//Ouverture, lecture et affichage image "*.dcm"
+	void ImageDICOM3(int v);//Ouverture, lecture et affichage image "*.dcm"
 	void mousePressEvent(QMouseEvent* e);
 	void closeEvent(QCloseEvent* event);
 
 signals:
 	void clic(QMouseEvent* e);
 public slots:
-	void ImageDICOM(int v);//Ouverture, lecture et affichage image "*.dcm"
-	void ImageDICOM2(int v);//Ouverture, lecture et affichage image "*.dcm"
-	void ImageDICOM3(int v);//Ouverture, lecture et affichage image "*.dcm"
+	void Initialisation();
 	void ouvrirFichiers(); //Ouvrir le dossier l'image en fonction du positionnement du curseur
 	bool DoubleClics();
 	void SaveAs(WId winId);
 	void UtiliserSouris3D();
-	void AffichageOriginal();
-	void AffichageJet();
-	void AffichageBone();
-	void AffichageCivids();
-	void AffichageTurbo();
-	void AffichageHot();
-	void AffichageParula();
-	void AffichageTwilightShifted();
+	void changeAffichage();
+	void changeAffichage1();
+	void changeAffichage2();
+	void changeAffichage3();
+	void changeAffichage4();
+	void changeAffichage5();
+	void changeAffichage6();
+	void changeAffichage7();
 	void AfficherCurseurIntensite();
-	
-
-	void ChangementIntensite(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
-
-	void ActionSlider1(int k);
-	void ActionSlider2(int k);
-	void ActionSlider3(int k);
-
-	void ActionSpin1(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
-	void ActionSpin2(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
-	void ActionSpin3(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void value(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void value2(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void value3(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void value4(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void valueSpin(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void valueSpin2(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
+	void valueSpin3(int k);//Récuperer la valeur du curseur lorsqu'il est déplacé
 	void displayTags();
-	void Action3DMouseTx();
-	void Action3DMouseTy();
-	void Action3DMouseTz();
-	void Action3DMouseIntensite();
+	void valueMouse();
+	void valueMouse2();
+	void valueMouse3();
+	void valueMouse_int();
 	void MajClicCoupe1(QMouseEvent* e);
-	void MajClicCoupe2(QMouseEvent* e);
-	void MajClicCoupe3(QMouseEvent* e);
+	void affichetruc2(QMouseEvent* e);
+	void affichetruc3(QMouseEvent* e);
 	void InfoCoupes();
 	void Enregistre();
 
@@ -102,7 +98,7 @@ private:
 	QString* pathFolder;
 	QString* pathFolderSave;
 	QGridLayout* layout;
-	QSlider* slider1;
+	QSlider* slider;
 	QSlider* slider2;
 	QSlider* slider3;
 	QSlider* sliderIntensite;
@@ -140,7 +136,7 @@ private:
 	qint16* souris3D;
 	qint16* coupe;
 	qint16* Mode;
-	qint16* IntensiteOnOff;
+
 	//-----------------interface AppercuVisualisation3D
 	QWidget* WidgetAppercu3D;
 	QLabel* LabelVisuImage;

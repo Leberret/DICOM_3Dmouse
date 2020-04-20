@@ -8,7 +8,7 @@ HWND         hWnd3D;
 
 INT pTx, pTy, pTz, pRx, pRy, pRz;
 INT Intensite=0;
-INT prevInt;
+INT prevInt = 0;
 INT clicD=0, clicG=0;
 int SbInit()
 {
@@ -178,6 +178,8 @@ void HandleV3DCMDEvent(SiSpwEvent* pEvent)
     case V3DCMD_KEY_F2:
         clicD = pEvent->u.cmdEventData.pressed;
         if (pEvent->u.cmdEventData.pressed == 1) {
+            
+            //_RPT1(_CRT_WARN, "BD : %d\n", pEvent->u.cmdEventData.pressed);
             int i = prevInt;
             if ((i == 0)&&(clicG==0)) {
                 Intensite = 1;

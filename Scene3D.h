@@ -55,7 +55,6 @@ private:
 	
 public slots:
 	void mouse3DMove();
-	void SupprimerRam();
 
 public:
 	My3DScene();

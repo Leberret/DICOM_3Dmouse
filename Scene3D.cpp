@@ -359,24 +359,6 @@ void My3DScene::mouse3DMove()
 }
 
 /*--------------------------------------------------------------------------
-* Fonction : SupprimerRam()
-*
-* Description : Permet de libérer de la mémoire vive lorsque l'on ferme l'interface 3D
-*
-* Arguments : Aucun
-*
-* Valeur retournée : Aucune
-*--------------------------------------------------------------------------*/
-void My3DScene::SupprimerRam() {
-    //Condition de présence ou non de l'interface 3D
-    if (this->isVisible())
-        return;
-    else
-        delete this;
-}
-
-
-/*--------------------------------------------------------------------------
 * Fonction : My3DScene()
 *
 * Description : Initialisation de la scène et de la souris et construction de la fenêtre
@@ -401,6 +383,5 @@ My3DScene::My3DScene()
     //Appel de la fonction mouse3DMove toutes les 10ms
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &My3DScene::mouse3DMove);
-    connect(timer, &QTimer::timeout, this, &My3DScene::SupprimerRam);
     timer->start(10);
 }
