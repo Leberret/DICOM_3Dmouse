@@ -1,4 +1,5 @@
 #include "Read_data_3Dmouse.h"
+//Version Ok
 HDC          hdc;
 SiHdl        devHdl;
 TCHAR devicename[100] = _T("");

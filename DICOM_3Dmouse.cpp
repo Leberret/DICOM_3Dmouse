@@ -1,6 +1,6 @@
 #include "DICOM_3Dmouse.h"
 #include "Scene3D.h"
-
+//Version Ok
 //Initialisation des variables globales
 INT Coupe, Min, Max;
 
