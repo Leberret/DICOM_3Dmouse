@@ -89,13 +89,13 @@ void Interface::AppercuVisualisation3D()
     switch (*CoupeVisu)
     {
     case 0:
-        ImageDICOM(slider1->value());
+        GestionImages(slider1->value());
         break;
     case 1:
-        ImageDICOM2(slider2->value());
+        GestionImagesLignes(slider2->value());
         break;
     case 2:
-        ImageDICOM3(slider3->value());
+        GestionImagesColonnes(slider3->value());
         break;
     }
     *Mode = 0; //Mode 0 = retour du mode à l'état initial
@@ -171,7 +171,7 @@ void Interface::LastImage(QString SaisieMax)
     {
     case 0:
         if (*imageMax < *NbFichiers && *imageMax >= 0)
-            ImageDICOM(*imageMax);
+            GestionImages(*imageMax);
         else {
             MessageErreur.exec();
             return;
@@ -180,7 +180,7 @@ void Interface::LastImage(QString SaisieMax)
         break;
     case 1:
         if (*imageMax < *rows && *imageMax > 0)
-            ImageDICOM2(*imageMax);
+            GestionImagesLignes(*imageMax);
         else {
             MessageErreur.exec();
             return;
@@ -188,7 +188,7 @@ void Interface::LastImage(QString SaisieMax)
         break;
     case 2:
         if (*imageMax < *cols && *imageMax > 0)
-            ImageDICOM3(*imageMax);
+            GestionImagesColonnes(*imageMax);
         else {
             MessageErreur.exec();
             return;
@@ -228,19 +228,19 @@ void Interface::FirstImage(QString SaisieMin)
     {
     case 0:
         if (*imageMin >= 0 && *imageMin < *NbFichiers)
-            ImageDICOM(*imageMin);
+            GestionImages(*imageMin);
         else
             return;
         break;
     case 1:
         if (*imageMin >= 1 && *imageMin < *cols)
-            ImageDICOM2(*imageMin);
+            GestionImagesLignes(*imageMin);
         else
             return;
         break;
     case 2:
         if (*imageMin >= 1 && *imageMin < *rows)
-            ImageDICOM3(*imageMin);
+            GestionImagesColonnes(*imageMin);
         else
             return;
         break;
@@ -267,13 +267,13 @@ void Interface::AfficheIntensiteTransparence()
     switch (*CoupeVisu)
     {
     case 0:
-        ImageDICOM(slider1->value());
+        GestionImages(slider1->value());
         break;
     case 1:
-        ImageDICOM2(slider2->value());
+        GestionImagesLignes(slider2->value());
         break;
     case 2:
-        ImageDICOM3(slider3->value());
+        GestionImagesColonnes(slider3->value());
         break;
     }
     *Mode = 0; //Mode 0 = retour du mode à l'état initial 
@@ -300,13 +300,13 @@ void Interface::SelectCoupes(int valeurCoupe)
     switch (*CoupeVisu)
     {
     case 0:
-        ImageDICOM(slider1->value());
+        GestionImages(slider1->value());
         break;
     case 1:
-        ImageDICOM2(slider2->value());
+        GestionImagesLignes(slider2->value());
         break;
     case 2:
-        ImageDICOM3(slider3->value());
+        GestionImagesColonnes(slider3->value());
         break;
     }
     *Mode = 0;
@@ -353,21 +353,21 @@ void Interface::Enregistre()
     case 1:
         for (cpt; cpt <= Max; cpt++) {
             progress.setValue(cpt);
-            ImageDICOM(cpt);
+            GestionImages(cpt);
         }
         progress.setValue(Max);
         break;
     case 2:
         for (cpt; cpt <= Max; cpt++) {
             progress.setValue(cpt);
-            ImageDICOM2(cpt);
+            GestionImagesLignes(cpt);
         }
         progress.setValue(Max);
         break;
     case 3:
         for (cpt; cpt <= Max; cpt++) {
             progress.setValue(cpt);
-            ImageDICOM3(cpt);
+            GestionImagesColonnes(cpt);
         }
         progress.setValue(Max);
         break;
@@ -375,9 +375,9 @@ void Interface::Enregistre()
 
     *Mode = 0; //Mode 0 = retour du mode à l'état initial 
 
-    ImageDICOM(slider1->value());
-    ImageDICOM2(slider2->value());
-    ImageDICOM3(slider3->value());
+    GestionImages(slider1->value());
+    GestionImagesLignes(slider2->value());
+    GestionImagesColonnes(slider3->value());
 
     //Libération de la mémoire
     delete WidgetAppercu3D;
@@ -677,9 +677,9 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
     InfoCoupes();
 
     //Affichage des images selon les curseurs
-    ImageDICOM(slider1->value());
-    ImageDICOM2(slider2->value());
-    ImageDICOM3(slider3->value());
+    GestionImages(slider1->value());
+    GestionImagesLignes(slider2->value());
+    GestionImagesColonnes(slider3->value());
 
     //En cas de réouverture de fichier slider d'intensité masqué
     layout->removeWidget(sliderIntensite);//Pas de widgets intensité
@@ -782,8 +782,8 @@ void Interface::MajClicCoupe1(QMouseEvent* e)
 
             if (*souris3D == 0) { //Si souris 3D désactivée
                 //Affichage des nouvelles images avec maj des sliders
-                ImageDICOM3(NouvelleImageCoupe3);
-                ImageDICOM2(NouvelleImageCoupe2);
+                GestionImagesColonnes(NouvelleImageCoupe3);
+                GestionImagesLignes(NouvelleImageCoupe2);
                 slider3->setValue(NouvelleImageCoupe3);
                 slider2->setValue(NouvelleImageCoupe2);
             }
@@ -845,8 +845,8 @@ void Interface::MajClicCoupe2(QMouseEvent* e)
         if (posi_x > label_x && posi_x< tailleLimite_X && posi_y>label_y && posi_y < tailleLimite_Y) {
             if (*souris3D == 0) { //Si souris 3D désactivée
                 //Affichage des nouvelles images avec maj des sliders
-                ImageDICOM3(NouvelleImageCoupe3);
-                ImageDICOM(*NbFichiers - NouvelleImageCoupe1);
+                GestionImagesColonnes(NouvelleImageCoupe3);
+                GestionImages(*NbFichiers - NouvelleImageCoupe1);
                 slider1->setValue(*NbFichiers - NouvelleImageCoupe1);
                 slider3->setValue(NouvelleImageCoupe3);
             }
@@ -908,8 +908,8 @@ void Interface::MajClicCoupe3(QMouseEvent* e)
         if (posi_x > label_x && posi_x< tailleLimite_X && posi_y>label_y && posi_y < tailleLimite_Y) {
             if (*souris3D == 0) { //Si souris 3D désactivée
                 //Affichage des nouvelles images avec maj des sliders
-                ImageDICOM(*NbFichiers - NouvelleImageCoupe1);
-                ImageDICOM2(NouvelleImageCoupe2);
+                GestionImages(*NbFichiers - NouvelleImageCoupe1);
+                GestionImagesLignes(NouvelleImageCoupe2);
                 slider1->setValue(*NbFichiers - NouvelleImageCoupe1);
                 slider2->setValue(NouvelleImageCoupe2);
             }
@@ -960,9 +960,9 @@ void Interface::AffichageOriginal()
     *NbCouleurs = 0; //0 = Nuance de gris
 
     //Affichage des images
-    ImageDICOM(slider1->value()); 
-    ImageDICOM2(slider2->value());
-    ImageDICOM3(slider3->value());
+    GestionImages(slider1->value()); 
+    GestionImagesLignes(slider2->value());
+    GestionImagesColonnes(slider3->value());
 
     
 }
@@ -975,9 +975,9 @@ void Interface::AffichageJet()
     *NbCouleurs = 1; //1 = jet
 
     //Affichage des images
-    ImageDICOM(slider1->value());
-    ImageDICOM2(slider2->value());
-    ImageDICOM3(slider3->value());
+    GestionImages(slider1->value());
+    GestionImagesLignes(slider2->value());
+    GestionImagesColonnes(slider3->value());
 }
 void Interface::AffichageBone()
 {
@@ -988,9 +988,9 @@ void Interface::AffichageBone()
     *NbCouleurs = 2;//2 = Bone
 
     //Affichage des images
-    ImageDICOM(slider1->value());//Affichage de l'image
-    ImageDICOM2(slider2->value());//Affichage de l'image
-    ImageDICOM3(slider3->value());//Affichage de l'image
+    GestionImages(slider1->value());//Affichage de l'image
+    GestionImagesLignes(slider2->value());//Affichage de l'image
+    GestionImagesColonnes(slider3->value());//Affichage de l'image
 }
 void Interface::AffichageCivids()
 {
@@ -1001,9 +1001,9 @@ void Interface::AffichageCivids()
     *NbCouleurs = 3;//3 = Civids
 
     //Affichage des images
-    ImageDICOM(slider1->value());
-    ImageDICOM2(slider2->value());
-    ImageDICOM3(slider3->value());
+    GestionImages(slider1->value());
+    GestionImagesLignes(slider2->value());
+    GestionImagesColonnes(slider3->value());
 }
 void Interface::AffichageTurbo()//Affectation de la valeur correspondant a la couleur
 {
@@ -1014,9 +1014,9 @@ void Interface::AffichageTurbo()//Affectation de la valeur correspondant a la co
     *NbCouleurs = 4;//4 = Turbo
 
     //Affichage des images
-    ImageDICOM(slider1->value());
-    ImageDICOM2(slider2->value());
-    ImageDICOM3(slider3->value());
+    GestionImages(slider1->value());
+    GestionImagesLignes(slider2->value());
+    GestionImagesColonnes(slider3->value());
 }
 void Interface::AffichageHot()//Affectation de la valeur correspondant a la couleur
 {
@@ -1027,9 +1027,9 @@ void Interface::AffichageHot()//Affectation de la valeur correspondant a la coul
     *NbCouleurs = 5;//5 = Hot
 
     //Affichage des images
-    ImageDICOM(slider1->value());
-    ImageDICOM2(slider2->value());
-    ImageDICOM3(slider3->value());
+    GestionImages(slider1->value());
+    GestionImagesLignes(slider2->value());
+    GestionImagesColonnes(slider3->value());
 }
 void Interface::AffichageParula()//Affectation de la valeur correspondant a la couleur
 {
@@ -1040,9 +1040,9 @@ void Interface::AffichageParula()//Affectation de la valeur correspondant a la c
     *NbCouleurs = 6;//6 = Parula
 
     //Affichage des images
-    ImageDICOM(slider1->value());
-    ImageDICOM2(slider2->value());
-    ImageDICOM3(slider3->value());
+    GestionImages(slider1->value());
+    GestionImagesLignes(slider2->value());
+    GestionImagesColonnes(slider3->value());
 }
 void Interface::AffichageTwilightShifted()//Affectation de la valeur correspondant a la couleur
 {
@@ -1053,9 +1053,9 @@ void Interface::AffichageTwilightShifted()//Affectation de la valeur corresponda
     *NbCouleurs = 7;//7 = Twilight Shifted
 
     //Affichage des images
-    ImageDICOM(slider1->value());
-    ImageDICOM2(slider2->value());
-    ImageDICOM3(slider3->value());
+    GestionImages(slider1->value());
+    GestionImagesLignes(slider2->value());
+    GestionImagesColonnes(slider3->value());
 }
 
 /*--------------------------------------------------------------------------
@@ -1075,9 +1075,9 @@ void Interface::ChangementIntensite(int valueIntensite)
     *IntensiteVariableCoupe3 = *IntensiteMaxInitCoupe3 + valueIntensite;
 
     //Affichage des images
-    ImageDICOM(slider1->value());
-    ImageDICOM2(slider2->value());
-    ImageDICOM3(slider3->value());
+    GestionImages(slider1->value());
+    GestionImagesLignes(slider2->value());
+    GestionImagesColonnes(slider3->value());
 }
 
 /*--------------------------------------------------------------------------
@@ -1093,22 +1093,22 @@ void Interface::ChangementIntensite(int valueIntensite)
 *--------------------------------------------------------------------------*/
 void Interface::ActionSlider1(int valueSlider1)
 {
-    //Appel de la fonction ImageDICOM pour afficher une image dicom
-    ImageDICOM(valueSlider1);
+    //Appel de la fonction GestionImages pour afficher une image dicom
+    GestionImages(valueSlider1);
     //Maj du SpinBox
     SpinBox1->setValue(slider1->value());
 }
 void Interface::ActionSlider2(int valueSlider2)
 {
-    //Appel de la fonction ImageDICOM pour afficher une image dicom
-    ImageDICOM2(valueSlider2);
+    //Appel de la fonction GestionImages pour afficher une image dicom
+    GestionImagesLignes(valueSlider2);
     //Maj du SpinBox
     SpinBox2->setValue(slider2->value());
 }
 void Interface::ActionSlider3(int valueSlider3)
 {
-    //Appel de la fonction ImageDICOM pour afficher une image dicom
-    ImageDICOM3(valueSlider3);
+    //Appel de la fonction GestionImages pour afficher une image dicom
+    GestionImagesColonnes(valueSlider3);
     //Maj du SpinBox
     SpinBox3->setValue(slider3->value());
 }
@@ -1126,22 +1126,22 @@ void Interface::ActionSlider3(int valueSlider3)
 *--------------------------------------------------------------------------*/
 void Interface::ActionSpin1(int valueSpin1)
 {
-    //Appel de la fonction ImageDICOM pour afficher une image dicom
-    ImageDICOM(valueSpin1); 
+    //Appel de la fonction GestionImages pour afficher une image dicom
+    GestionImages(valueSpin1); 
     //Maj du slider
     slider1->setValue(SpinBox1->value());
 }
 void Interface::ActionSpin2(int valueSpin2) //Récuperer la valeur du curseur lorsqu'il est déplacé
 {
-    //Appel de la fonction ImageDICOM pour afficher une image dicom
-    ImageDICOM2(valueSpin2); 
+    //Appel de la fonction GestionImages pour afficher une image dicom
+    GestionImagesLignes(valueSpin2); 
     //Maj du slider
     slider2->setValue(SpinBox2->value());
 }
 void Interface::ActionSpin3(int valueSpin3) //Récuperer la valeur du curseur lorsqu'il est déplacé
 {
-    //Appel de la fonction ImageDICOM pour afficher une image dicom
-    ImageDICOM3(valueSpin3); 
+    //Appel de la fonction GestionImages pour afficher une image dicom
+    GestionImagesColonnes(valueSpin3); 
     //Maj du slider
     slider3->setValue(SpinBox3->value());
 }
@@ -1185,13 +1185,13 @@ void Interface::Action3DMouseTx() {
         switch (*coupe)
         {
         case 1:
-            ImageDICOM(i);
+            GestionImages(i);
             break;
         case 2:
-            ImageDICOM3(i);
+            GestionImagesColonnes(i);
             break;
         case 3:
-            ImageDICOM3(i);
+            GestionImagesColonnes(i);
             break;
         }
 
@@ -1266,13 +1266,13 @@ void Interface::Action3DMouseTy() {
         switch (*coupe)
         {
         case 1:
-            ImageDICOM2(i);
+            GestionImagesLignes(i);
             break;
         case 2:
-            ImageDICOM(i);
+            GestionImages(i);
             break;
         case 3:
-            ImageDICOM2(i);
+            GestionImagesLignes(i);
             break;
         }
 
@@ -1351,13 +1351,13 @@ void Interface::Action3DMouseTz() {
         switch (*coupe)
         {
         case 1:
-            ImageDICOM3(i);
+            GestionImagesColonnes(i);
             break;
         case 2:
-            ImageDICOM2(i);
+            GestionImagesLignes(i);
             break;
         case 3:
-            ImageDICOM(i);
+            GestionImages(i);
             break;
         }
 
@@ -1471,42 +1471,68 @@ void Interface::Action3DMouseIntensite() {
     *lastRyValue = pRy;
 }
 
-//----------Coupe coronale------------------
-void Interface::ImageDICOM3(int v)
+/*--------------------------------------------------------------------------
+* Fonctions : GestionImages(), GestionImagesLignes(), GestionImagesColonnes()
+*
+* Description : Lecture du vecteur global, gestion de l'intensité des pixels,
+* création des images et association des valeurs de pixels et aperçu, enregistrment
+* ou affichage de l'image sélectionnée
+*
+* Arguments : NumeroImage : Numéro de l'image à afficher
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::GestionImages(int NumeroImage)
 {
-    Mat image = Mat::zeros(*NbFichiers - 1, *rows, CV_8UC1);//Image de la taille obtenue avec data
+    //Création d'un image vide de la taille obtenue dans OuvrirFichier
+    Mat image = Mat::zeros(*rows, *cols, CV_8UC1);
+
+    //Mise en local des dimensions de l'image recréée
     int l = image.rows;
     int c = image.cols;
-    *IntensiteMaxInitCoupe3 = 0;//globale
-    int valMax = 0;//Locale
-    int k = 0;
-    vector<int>Valeurdefinitif2; //Nouveau vecteur contenant les pixels de l'image
-    for (int nb = v; nb < (*allpixels).size(); nb += *cols)//Condition pour avoir l'image selon la bonne coupe 
-    {
-        Valeurdefinitif2.push_back((*allpixels)[nb]);//Vecteur definitif avec valeurs de l'image a afficher (tel colonnes de chaque image)
-    }
-    for (k = 0; k < Valeurdefinitif2.size(); k++) //Boucle pour avoir val max intensité
-    {
-        if (Valeurdefinitif2[k] > * IntensiteMaxInitCoupe3 && Valeurdefinitif2[k] < 2500)
-            *IntensiteMaxInitCoupe3 = Valeurdefinitif2[k];//Isolement de l'intensité max
-    }
 
-    QImage dest; //Init QImage a ajouter a la fenetre Qt
-    k = 0;
-    if (*IntensiteVariableCoupe3 == 0)//Si il n'y a pas de changement de l'intensité
-        valMax = *IntensiteMaxInitCoupe3; //Val max conservée
+    //Initialisation de l'intensité max
+    int valMax = 0;
+
+    //Valeur d'intensité de comparaison selon les cas de figure
+    *IntensiteMaxInitCoupe1 = 0;
+
+    //Navigation dans toute l'image prise en argument
+    int k = 0;
+    for (k = (*cols * *rows) * NumeroImage; k < (*cols * *rows) * (NumeroImage + 1); k++)
+    {
+        //Condition d'isolement de l'intensité max
+        if ((*allpixels)[k] > * IntensiteMaxInitCoupe1 && (*allpixels)[k] < 6000)
+            *IntensiteMaxInitCoupe1 = (*allpixels)[k];
+    }
+    //Init d'une QImage à ajouter a la fenetre Qt, dans laquelle ira la matrice
+    QImage dest;
+
+    //Conditions de modification de l'intensité
+    if (*IntensiteVariableCoupe1 == 0)//Si il n'y a pas de changement de l'intensité
+        valMax = *IntensiteMaxInitCoupe1;//Val max conservée
     else
-        valMax = *IntensiteVariableCoupe3;//Sinon modifiée
+        valMax = *IntensiteVariableCoupe1;//Sinon modifié
+
+    //Récupération de l'emplacement dans le vecteur global de la première valeur de l'image prise en argument 
+    k = (*cols * *rows) * NumeroImage;
+
+    //Reconstrution de l'image dans la matrice
     for (int i = 0; i < l; i++)
         for (int j = 0; j < c; j++)
         {
-            if (valMax == 0)
-                image.at<unsigned char>(i, j) = Valeurdefinitif2[k]; //Association de la valeur au bon endroit de l'image
-            else
-                image.at<unsigned char>(i, j) = (Valeurdefinitif2[k] * 255) / valMax; //Association de la valeur au bon endroit de l'image            k++;
-            k++;
+            if (valMax==0) //On évite la division par 0
+                //Association de la valeur au bon endroit de l'image
+                image.at<unsigned char>(i, j) = (*allpixels)[k]; 
+
+            else //Normalisation de l'image sur une échelle 0-255
+                //Association de la valeur au bon endroit de l'image
+                image.at<unsigned char>(i, j) = ((*allpixels)[k] * 255) / valMax; 
+
+            k++; //Décalage d'une valeur dans le vecteur global
         }
-    rotate(image, image, cv::ROTATE_90_CLOCKWISE); //Rotation de 90° de l'image
+
+    //Application de la couleur et convertion en format adapté
     switch (*NbCouleurs)
     {
     case 0:
@@ -1541,116 +1567,168 @@ void Interface::ImageDICOM3(int v)
         dest = QImage((uchar*)image.data, image.cols, image.rows, image.step, QImage::Format_BGR888); //Conversion d'un MAT en QImage
         break;
     }
+
+    //Changement de la longueur des colonnes et des lignes
     if (l < 400 && c < 400) //Si image de petite taille
     {
         l = 1.75 * l;//Coeff de 1.75
         c = 1.75 * c;//Coeff de 1.75
     }
+
+    //Transformation et enregistrement des images au format .png
     if (*Mode == 1 && *NbCouleurs == 0)
     {
+        //Création d'une matrice vide
         Mat input_bgra;
+
+        //Copie et conversion de l'image en niveau de gris vers BGRA
         cvtColor(image, input_bgra, COLOR_GRAY2BGRA);
 
+        //Navigation dans toute l'image prise en argument
         for (int y = 0; y < input_bgra.rows; ++y)
             for (int x = 0; x < input_bgra.cols; ++x)
             {
+                //Création d'un vecteur contenant les 4 composantes du pixel
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
-                // if pixel is white
+
+                //Si la valeur du pixel < à l'intensité choisi par l'utilisateur
                 if (image.at<unsigned char>(y, x) < SliderVisuTransparence->value())
                 {
-                    // set alpha to zero:
+                    // Mise à 0 de alpha pour rendre transparent
                     pixel[3] = 0;
                 }
+
+                //Si la valeur du pixel > à l'intensité choisi par l'utilisateur
                 else {
+                    //Diminution de l'intensité pour éviter d'avoir une image trop transparente
                     pixel[0] -= SliderVisuIntensite->value();
                     pixel[1] -= SliderVisuIntensite->value();
                     pixel[2] -= SliderVisuIntensite->value();
-                    pixel[3] = 1;
+
+                    pixel[3] = 1; //Rendre visible le pixel
                 }
             }
+
+        //Enregistrement au format png en fonction du numéro de l'image
         string cheminimage;
         string format = ".PNG";
-        string numero = to_string(v);
-        cheminimage = "Images/Coupe3_" + numero + format;
+        string numero = to_string(NumeroImage);
+        cheminimage = "Images/Coupe1_" + numero + format;
         imwrite(cheminimage, input_bgra);
+
     }
-    if (*Mode == 3 && *NbCouleurs == 0 && *CoupeVisu == 2)
+
+    //Transformation et aperçu d'une image
+    if (*Mode == 3 && *NbCouleurs == 0 && *CoupeVisu == 0)
     {
+        //Création d'une matrice vide
         Mat input_bgra;
+
+        //Copie et conversion de l'image en niveau de gris vers BGRA
         cvtColor(image, input_bgra, COLOR_GRAY2BGRA);
+
+        //Navigation dans toute l'image prise en argument
         for (int y = 0; y < input_bgra.rows; ++y)
             for (int x = 0; x < input_bgra.cols; ++x)
             {
+                //Création d'un vecteur contenant les 4 composantes du pixel
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
-                // if pixel is white
+
+                //Si la valeur du pixel < à l'intensité choisi par l'utilisateur
                 if (image.at<unsigned char>(y, x) < SliderVisuTransparence->value())
                 {
-                    // set alpha to zero:
+                    //Mise en blanc de ce qui sera transparent lors de l'enregistrement
                     pixel[0] = 255;
                     pixel[1] = 255;
                     pixel[2] = 255;
+
+                    // Mise à 1 de alpha pour rendre visible
                     pixel[3] = 1;
                 }
                 else {
+                    //Diminution de l'intensité pour éviter d'avoir une image trop transparente
                     pixel[0] -= SliderVisuIntensite->value();
                     pixel[1] -= SliderVisuIntensite->value();
                     pixel[2] -= SliderVisuIntensite->value();
+
+                    // Mise à 1 de alpha pour rendre visible
                     pixel[3] = 1;
                 }
             }
+
+        //Convesion et affichage de l'image dans la fenêtre visualisation 3D
         QImage visu = QImage((uchar*)input_bgra.data, input_bgra.cols, input_bgra.rows, input_bgra.step, QImage::Format_RGBX8888); //Conversion d'un MAT en QImage
-        LabelVisuImage->setPixmap(QPixmap::fromImage(visu).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
+        LabelVisuImage->setPixmap(QPixmap::fromImage(visu).scaled(QSize(c, l), Qt::IgnoreAspectRatio)); //Ajoute au layout
         LayoutVisuImage->addWidget(LabelVisuImage, 0, 0, 1, 3, Qt::AlignHCenter);//Ajout du layout à l'image
     }
 
+    //Affichage de l'image dans la fenêtre principale
     if (*Mode == 0)
     {
-        //SpinBox3->setValue(slider3->value());
-
-        imageLabel3->setPixmap(QPixmap::fromImage(dest).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
-        imageLabel3->setMaximumSize(l, c);
-        layout->addWidget(imageLabel3, 1, 2, Qt::AlignHCenter);//Ajout du layout à l'image
+        imageLabel1->setPixmap(QPixmap::fromImage(dest).scaled(QSize(c, l), Qt::IgnoreAspectRatio)); //Ajoute au layout
+        imageLabel1->setMaximumSize(c, l);
+        layout->addWidget(imageLabel1, 1, 0, Qt::AlignHCenter);//Ajout du layout à l'image
     }
-}
-//-------------------Coupe Axiale------------------------
-void Interface::ImageDICOM2(int v)
-{
 
+}
+void Interface::GestionImagesLignes(int NumeroImage)
+{
+    //Création d'un image vide de la taille obtenue dans OuvrirFichier
     Mat image = Mat::zeros(*NbFichiers - 1, *cols, CV_8UC1);//Image de la taille obtenue avec data
+    
+    //Mise en local des dimensions de l'image recréée
     int l = image.rows;
     int c = image.cols;
-    *IntensiteMaxInitCoupe2 = 0;//globale
+
+    //Initialisation de l'intensité max
     int valMax = 0;//locale
+
+    //Valeur d'intensité de comparaison selon les cas de figure
+    *IntensiteMaxInitCoupe2 = 0;//globale
+    
+    //Navigation dans toute l'image prise en argument
     int k = 0;
     vector<int> Valeurdefinitif;
     for (int changementImag = 0; changementImag < (*allpixels).size(); changementImag += (*cols * *rows))
-        for (int nb = changementImag + (v * *cols - 1); nb < changementImag + ((v + 1) * *cols - 1); nb++)//Condition pour avoir l'image selon la bonne coupe (tel ligne)
+        for (int nb = changementImag + (NumeroImage * *cols - 1); nb < changementImag + ((NumeroImage + 1) * *cols - 1); nb++)//Condition pour avoir l'image selon la bonne coupe (tel ligne)
         {
             Valeurdefinitif.push_back((*allpixels)[nb]);
         }
     for (k = 0; k < Valeurdefinitif.size(); k++)
     {
+        //Condition d'isolement de l'intensité max
         if (Valeurdefinitif[k] > * IntensiteMaxInitCoupe2 && Valeurdefinitif[k] < 2500)
             *IntensiteMaxInitCoupe2 = Valeurdefinitif[k];//Isolement de l'intensité max
     }
 
-    QImage dest;//Init QImage a ajouter a la fenetre Qt
-    k = 0;
+    //Init d'une QImage à ajouter a la fenetre Qt, dans laquelle ira la matrice
+    QImage dest;
+
+    //Conditions de modification de l'intensité
     if (*IntensiteVariableCoupe2 == 0)//Si il n'y a pas de changement de l'intensité
         valMax = *IntensiteMaxInitCoupe2;//Val max conservée
     else
         valMax = *IntensiteVariableCoupe2; //Sinon modifiée
 
+    k = 0;
+
+    //Reconstrution de l'image dans la matrice
     for (int i = 0; i < l; i++)
         for (int j = 0; j < c; j++)
         {
-            if (valMax==0)
-                image.at<unsigned char>(i, j) = Valeurdefinitif[k]; //Association de la valeur au bon endroit de l'image
-            else
-                image.at<unsigned char>(i, j) = (Valeurdefinitif[k] * 255) / valMax; //Association de la valeur au bon endroit de l'image
-            k++;
+            if (valMax==0) //On évite la division par 0
+                //Association de la valeur au bon endroit de l'image
+                image.at<unsigned char>(i, j) = Valeurdefinitif[k];
+            else  //Normalisation de l'image sur une échelle 0-255
+                //Association de la valeur au bon endroit de l'image
+                image.at<unsigned char>(i, j) = (Valeurdefinitif[k] * 255) / valMax;
+            k++;//Décalage d'une valeur dans le vecteur global
         }
-    rotate(image, image, cv::ROTATE_90_CLOCKWISE);//Rotation de 90° de l'image
+
+    //Rotation de 90° de l'image
+    rotate(image, image, cv::ROTATE_90_CLOCKWISE);
+
+    //Application de la couleur et convertion en format adapté
     switch (*NbCouleurs)
     {
     case 0:
@@ -1685,68 +1763,101 @@ void Interface::ImageDICOM2(int v)
         dest = QImage((uchar*)image.data, image.cols, image.rows, image.step, QImage::Format_BGR888); //Conversion d'un MAT en QImage
         break;
     }
+
+    //Changement de la longueur des colonnes et des lignes
     if (l < 400 && c < 400) //Si image de petite taille
     {
         l = 1.75 * l;//Coeff de 1.75
         c = 1.75 * c;//Coeff de 1.75
     }
+    
+    //Transformation et enregistrement des images au format .png
     if (*Mode == 1 && *NbCouleurs == 0)
     {
+        //Création d'une matrice vide
         Mat input_bgra;
+        
+        //Copie et conversion de l'image en niveau de gris vers BGRA
         cvtColor(image, input_bgra, COLOR_GRAY2BGRA);
 
+        //Navigation dans toute l'image prise en argument
         for (int y = 0; y < input_bgra.rows; ++y)
             for (int x = 0; x < input_bgra.cols; ++x)
             {
+                //Création d'un vecteur contenant les 4 composantes du pixel
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
-                // if pixel is white
+
+                //Si la valeur du pixel < à l'intensité choisi par l'utilisateur
                 if (image.at<unsigned char>(y, x) < SliderVisuTransparence->value())
                 {
-                    // set alpha to zero:
+                    // Mise à 0 de alpha pour rendre transparent
                     pixel[3] = 0;
                 }
+                
+                //Si la valeur du pixel > à l'intensité choisi par l'utilisateur
                 else {
+                    //Diminution de l'intensité pour éviter d'avoir une image trop transparente
                     pixel[0] -= SliderVisuIntensite->value();
                     pixel[1] -= SliderVisuIntensite->value();
                     pixel[2] -= SliderVisuIntensite->value();
-                    pixel[3] = 1;
+
+                    pixel[3] = 1; //Rendre visible le pixel
                 }
             }
+
+        //Enregistrement au format png en fonction du numéro de l'image
         string cheminimage;
         string format = ".PNG";
-        string numero = to_string(v);
+        string numero = to_string(NumeroImage);
         cheminimage = "Images/Coupe2_" + numero + format;
         imwrite(cheminimage, input_bgra);
     }
+
+    //Transformation et aperçu d'une image
     if (*Mode == 3 && *NbCouleurs == 0 && *CoupeVisu == 1)
     {
+        //Création d'une matrice vide
         Mat input_bgra;
+        
+        //Copie et conversion de l'image en niveau de gris vers BGRA
         cvtColor(image, input_bgra, COLOR_GRAY2BGRA);
+        
+        //Navigation dans toute l'image prise en argument
         for (int y = 0; y < input_bgra.rows; ++y)
             for (int x = 0; x < input_bgra.cols; ++x)
             {
+                //Création d'un vecteur contenant les 4 composantes du pixel
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
-                // if pixel is white
+                
+                //Si la valeur du pixel < à l'intensité choisi par l'utilisateur
                 if (image.at<unsigned char>(y, x) < SliderVisuTransparence->value())
                 {
-                    // set alpha to zero:
+                    //Mise en blanc de ce qui sera transparent lors de l'enregistrement
                     pixel[0] = 255;
                     pixel[1] = 255;
                     pixel[2] = 255;
+
+                    // Mise à 1 de alpha pour rendre visible
                     pixel[3] = 1;
                 }
                 else {
+                    //Diminution de l'intensité pour éviter d'avoir une image trop transparente
                     pixel[0] -= SliderVisuIntensite->value();
                     pixel[1] -= SliderVisuIntensite->value();
                     pixel[2] -= SliderVisuIntensite->value();
+                    
+                    // Mise à 1 de alpha pour rendre visible
                     pixel[3] = 1;
                 }
             }
+
+        //Convesion et affichage de l'image dans la fenêtre visualisation 3D
         QImage visu = QImage((uchar*)input_bgra.data, input_bgra.cols, input_bgra.rows, input_bgra.step, QImage::Format_RGBX8888); //Conversion d'un MAT en QImage
         LabelVisuImage->setPixmap(QPixmap::fromImage(visu).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
         LayoutVisuImage->addWidget(LabelVisuImage, 0, 0, 1, 3, Qt::AlignHCenter);//Ajout du layout à l'image
     }
 
+    //Affichage de l'image dans la fenêtre principale
     if (*Mode == 0)
     {
         //SpinBox2->setValue(slider2->value());
@@ -1757,36 +1868,65 @@ void Interface::ImageDICOM2(int v)
     }
 
 }
-//------------------Coupe sagittale------------------------------
-void Interface::ImageDICOM(int v)//Ouverture, lecture et affichage image "*.dcm"
+void Interface::GestionImagesColonnes(int v)
 {
-    Mat image = Mat::zeros(*rows, *cols, CV_8UC1);//Image de la taille obtenue avec data
+    //Création d'un image vide de la taille obtenue dans OuvrirFichier
+    Mat image = Mat::zeros(*NbFichiers - 1, *rows, CV_8UC1);
+
+    //Mise en local des dimensions de l'image recréée
     int l = image.rows;
     int c = image.cols;
-    int valMax = 0;
-    *IntensiteMaxInitCoupe1 = 0;
-    int k = 0;
-    for (k = (*cols * *rows) * v; k < (*cols * *rows) * (v + 1); k++)
-    {
-        if ((*allpixels)[k] > * IntensiteMaxInitCoupe1 && (*allpixels)[k] < 6000)
-            *IntensiteMaxInitCoupe1 = (*allpixels)[k];//Isolement de l'intensité max
-    }
-    QImage dest;//Init QImage a ajouter a la fenetre Qt
-    k = (*cols * *rows) * v;
-    if (*IntensiteVariableCoupe1 == 0)//Si il n'y a pas de changement de l'intensité
-        valMax = *IntensiteMaxInitCoupe1;//Val max conservée
-    else
-        valMax = *IntensiteVariableCoupe1;//Sinon modifié
 
+    //Initialisation de l'intensité max
+    int valMax = 0;//Locale
+
+    //Valeur d'intensité de comparaison selon les cas de figure
+    *IntensiteMaxInitCoupe3 = 0;//globale
+    
+    //Navigation dans toute l'image prise en argument
+    int k = 0;
+    vector<int>Valeurdefinitif2; //Nouveau vecteur contenant les pixels de l'image
+    for (int nb = v; nb < (*allpixels).size(); nb += *cols)//Condition pour avoir l'image selon la bonne coupe 
+    {
+        Valeurdefinitif2.push_back((*allpixels)[nb]);//Vecteur definitif avec valeurs de l'image a afficher (tel colonnes de chaque image)
+    }
+    for (k = 0; k < Valeurdefinitif2.size(); k++) //Boucle pour avoir val max intensité
+    {
+        //Condition d'isolement de l'intensité max
+        if (Valeurdefinitif2[k] > * IntensiteMaxInitCoupe3 && Valeurdefinitif2[k] < 2500)
+            *IntensiteMaxInitCoupe3 = Valeurdefinitif2[k];
+    }
+
+    //Init d'une QImage à ajouter a la fenetre Qt, dans laquelle ira la matrice
+    QImage dest;
+
+    //Conditions de modification de l'intensité
+    if (*IntensiteVariableCoupe3 == 0)//Si il n'y a pas de changement de l'intensité
+        valMax = *IntensiteMaxInitCoupe3; //Val max conservée
+    else
+        valMax = *IntensiteVariableCoupe3;//Sinon modifiée
+
+    k = 0;
+
+    //Reconstrution de l'image dans la matrice
     for (int i = 0; i < l; i++)
         for (int j = 0; j < c; j++)
         {
-            if (valMax==0)
-                image.at<unsigned char>(i, j) = (*allpixels)[k]; //Association de la valeur au bon endroit de l'image
-            else
-                image.at<unsigned char>(i, j) = ((*allpixels)[k] * 255) / valMax; //Association de la valeur au bon endroit de l'image
-            k++;
+            if (valMax == 0)//On évite la division par 0
+                //Association de la valeur au bon endroit de l'image
+                image.at<unsigned char>(i, j) = Valeurdefinitif2[k];
+
+            else //Normalisation de l'image sur une échelle 0-255
+                //Association de la valeur au bon endroit de l'image
+                image.at<unsigned char>(i, j) = (Valeurdefinitif2[k] * 255) / valMax;
+
+            k++; //Décalage d'une valeur dans le vecteur global
         }
+    
+    //Rotation de 90° de l'image
+    rotate(image, image, cv::ROTATE_90_CLOCKWISE);
+
+    //Application de la couleur et convertion en format adapté
     switch (*NbCouleurs)
     {
     case 0:
@@ -1821,85 +1961,117 @@ void Interface::ImageDICOM(int v)//Ouverture, lecture et affichage image "*.dcm"
         dest = QImage((uchar*)image.data, image.cols, image.rows, image.step, QImage::Format_BGR888); //Conversion d'un MAT en QImage
         break;
     }
+
+    //Changement de la longueur des colonnes et des lignes
     if (l < 400 && c < 400) //Si image de petite taille
     {
         l = 1.75 * l;//Coeff de 1.75
         c = 1.75 * c;//Coeff de 1.75
     }
+
+    //Transformation et enregistrement des images au format .png
     if (*Mode == 1 && *NbCouleurs == 0)
     {
+        //Création d'une matrice vide
         Mat input_bgra;
+        
+        //Copie et conversion de l'image en niveau de gris vers BGRA
         cvtColor(image, input_bgra, COLOR_GRAY2BGRA);
 
+        //Navigation dans toute l'image prise en argument
         for (int y = 0; y < input_bgra.rows; ++y)
             for (int x = 0; x < input_bgra.cols; ++x)
             {
+                //Création d'un vecteur contenant les 4 composantes du pixel
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
-                // if pixel is white
+
+                //Si la valeur du pixel < à l'intensité choisi par l'utilisateur
                 if (image.at<unsigned char>(y, x) < SliderVisuTransparence->value())
                 {
-                    // set alpha to zero:
+                    // Mise à 0 de alpha pour rendre transparent
                     pixel[3] = 0;
                 }
+
+                //Si la valeur du pixel > à l'intensité choisi par l'utilisateur
                 else {
+                    //Diminution de l'intensité pour éviter d'avoir une image trop transparente
                     pixel[0] -= SliderVisuIntensite->value();
                     pixel[1] -= SliderVisuIntensite->value();
                     pixel[2] -= SliderVisuIntensite->value();
-                    pixel[3] = 1;
+                    
+                    pixel[3] = 1; //Rendre visible le pixel
                 }
             }
+        
+        //Enregistrement au format png en fonction du numéro de l'image
         string cheminimage;
         string format = ".PNG";
         string numero = to_string(v);
-        cheminimage = "Images/Coupe1_" + numero + format;
+        cheminimage = "Images/Coupe3_" + numero + format;
         imwrite(cheminimage, input_bgra);
-
     }
-    if (*Mode == 3 && *NbCouleurs == 0 && *CoupeVisu == 0)
+    
+    //Transformation et aperçu d'une image
+    if (*Mode == 3 && *NbCouleurs == 0 && *CoupeVisu == 2)
     {
+        //Création d'une matrice vide
         Mat input_bgra;
+        
+        //Copie et conversion de l'image en niveau de gris vers BGRA
         cvtColor(image, input_bgra, COLOR_GRAY2BGRA);
+        
+        //Navigation dans toute l'image prise en argument
         for (int y = 0; y < input_bgra.rows; ++y)
             for (int x = 0; x < input_bgra.cols; ++x)
             {
+                //Création d'un vecteur contenant les 4 composantes du pixel
                 cv::Vec4b& pixel = input_bgra.at<cv::Vec4b>(y, x);
-                // if pixel is white
+
+                //Si la valeur du pixel < à l'intensité choisi par l'utilisateur
                 if (image.at<unsigned char>(y, x) < SliderVisuTransparence->value())
                 {
-                    // set alpha to zero:
+                    //Mise en blanc de ce qui sera transparent lors de l'enregistrement
                     pixel[0] = 255;
                     pixel[1] = 255;
                     pixel[2] = 255;
+
+                    // Mise à 1 de alpha pour rendre visible
                     pixel[3] = 1;
                 }
                 else {
+                    //Diminution de l'intensité pour éviter d'avoir une image trop transparente
                     pixel[0] -= SliderVisuIntensite->value();
                     pixel[1] -= SliderVisuIntensite->value();
                     pixel[2] -= SliderVisuIntensite->value();
+                    
+                    // Mise à 1 de alpha pour rendre visible
                     pixel[3] = 1;
                 }
             }
+        //Convesion et affichage de l'image dans la fenêtre visualisation 3D
         QImage visu = QImage((uchar*)input_bgra.data, input_bgra.cols, input_bgra.rows, input_bgra.step, QImage::Format_RGBX8888); //Conversion d'un MAT en QImage
-        LabelVisuImage->setPixmap(QPixmap::fromImage(visu).scaled(QSize(c, l), Qt::IgnoreAspectRatio)); //Ajoute au layout
+        LabelVisuImage->setPixmap(QPixmap::fromImage(visu).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
         LayoutVisuImage->addWidget(LabelVisuImage, 0, 0, 1, 3, Qt::AlignHCenter);//Ajout du layout à l'image
     }
+
+    //Affichage de l'image dans la fenêtre principale
     if (*Mode == 0)
     {
-        /*if (SpinBox1->value() != slider1->value()){
-            slider1->setValue(SpinBox1->value());
-        }
-        else {
-            SpinBox1->setValue(slider1->value());
-
-        }*/
-
-        imageLabel1->setPixmap(QPixmap::fromImage(dest).scaled(QSize(c, l), Qt::IgnoreAspectRatio)); //Ajoute au layout
-        imageLabel1->setMaximumSize(c, l);
-        layout->addWidget(imageLabel1, 1, 0, Qt::AlignHCenter);//Ajout du layout à l'image
+        imageLabel3->setPixmap(QPixmap::fromImage(dest).scaled(QSize(l, c), Qt::IgnoreAspectRatio)); //Ajoute au layout
+        imageLabel3->setMaximumSize(l, c);
+        layout->addWidget(imageLabel3, 1, 2, Qt::AlignHCenter);//Ajout du layout à l'image
     }
-
 }
 
+/*--------------------------------------------------------------------------
+* Fonctions : Interface()
+*
+* Description : Construction de la fenêtre principale
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
 Interface::Interface() : QWidget() //Widget = fenetre principale
 {
     _mkdir("Images");
@@ -2013,23 +2185,47 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
 
 }
 
-
-void Interface::mousePressEvent(QMouseEvent* e)//Definition du signal clic
-{
+/*--------------------------------------------------------------------------
+* Fonctions : mousePressEvent()
+*
+* Description : Definition du signal clic
+*
+* Arguments : e : évenement de la souris classique
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::mousePressEvent(QMouseEvent* e){
     emit clic(e);
 }
+
+/*--------------------------------------------------------------------------
+* Fonctions : DoubleClics()
+*
+* Description : Retourne TRUE ou FALSE si les 2 boutons de la souris 3D sont 
+* pressé enssemble ou non
+*
+* Arguments : aucun
+*
+* Valeur retournée : TRUE or FALSE
+*--------------------------------------------------------------------------*/
 bool Interface::DoubleClics() {
+    //Conditon de double clics
     if ((clicD == 1) && (clicG == 1)) {
-        
         return TRUE;
-        //clicD = 0;
-        //clicG = 0;
     }
     else
         return FALSE;
-    
 }
 
+/*--------------------------------------------------------------------------
+* Fonctions : SaveAs()
+*
+* Description : Permet de screenshooter la fenêtre et de l'enregistrer
+*
+* Arguments : winId : Identifiant de la fenêtre
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
 void Interface::SaveAs(WId winId) {
     if (DoubleClics() == TRUE) {
         
@@ -2063,6 +2259,16 @@ void Interface::SaveAs(WId winId) {
     
     }
 }
+
+/*--------------------------------------------------------------------------
+* Fonctions : closeEvent()
+*
+* Description : 
+*
+* Arguments : event : 
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
 void Interface::closeEvent(QCloseEvent* event)
 {
     Supprimer();

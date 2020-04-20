@@ -46,9 +46,9 @@ public:
 signals:
 	void clic(QMouseEvent* e);
 public slots:
-	void ImageDICOM(int v);//Ouverture, lecture et affichage image "*.dcm"
-	void ImageDICOM2(int v);//Ouverture, lecture et affichage image "*.dcm"
-	void ImageDICOM3(int v);//Ouverture, lecture et affichage image "*.dcm"
+	void GestionImages(int v);//Ouverture, lecture et affichage image "*.dcm"
+	void GestionImagesLignes(int v);//Ouverture, lecture et affichage image "*.dcm"
+	void GestionImagesColonnes(int v);//Ouverture, lecture et affichage image "*.dcm"
 	void ouvrirFichiers(); //Ouvrir le dossier l'image en fonction du positionnement du curseur
 	bool DoubleClics();
 	void SaveAs(WId winId);
