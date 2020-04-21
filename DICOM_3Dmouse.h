@@ -26,8 +26,8 @@
 extern HWND         hWndMain;
 extern INT			Coupe, Min, Max;
 extern INT			pTx, pTy, pTz, pRx, pRy, pRz;
-extern INT			Intensite, prevInt, clicD, clicG, OnOffSouris3D;
-
+extern INT			Intensite, prevInt, OnOffSouris3D;
+extern INT			clicD, clicG;
 
 class Interface : public QWidget
 {
@@ -47,9 +47,9 @@ public slots:
 	void GestionImages(int v);
 	void GestionImagesLignes(int v);
 	void GestionImagesColonnes(int v);
-	//bool DoubleClics();
+	void DoubleClics();
 	void ClicGauche();
-	void SaveAs(WId winId);
+	void SaveAs();
 	void UtiliserSouris3D();
 	void AffichageOriginal();
 	void AffichageJet();

@@ -1519,10 +1519,10 @@ void Interface::Action3DMouseIntensite(){
         Action3DMouseTz();
         
         //Conditions de modification de l'intensité
-        if ((pRy > 5) && (pRy >= *lastRyValue)&&(pRy<lim)) {
+        if ((-pRy > 5) && (-pRy >= *lastRyValue)&&(-pRy<lim)) {
             i=i+30;
         }
-        else if ((pRy < -5) && (pRy <= *lastRyValue) && (pRy> -lim)) {
+        else if ((-pRy < -5) && (-pRy <= *lastRyValue) && (-pRy> -lim)) {
             i = i-30;
         }
     }
@@ -1540,7 +1540,7 @@ void Interface::Action3DMouseIntensite(){
     *variationIntensite = i;
 
     //Mémorisation de la dernière valeur RY prise par la souris 3D
-    *lastRyValue = pRy;
+    *lastRyValue = -pRy;
 }
 
 /*--------------------------------------------------------------------------
@@ -2140,45 +2140,54 @@ void Interface::GestionImagesColonnes(int v)
 *
 * Description : Permet de screenshoter la fenêtre et de l'enregistrer
 *
-* Arguments : winId : Identifiant de la fenêtre
+* Arguments : aucun
 *
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
-void Interface::SaveAs(WId winId) {
-    if ((clicD == 1) && (clicG == 1)) {
-        QMessageBox cc;
-        cc.setText("screenshot");
-        cc.exec();
-        //qApp->beep(); // Signal the screenshoot
+void Interface::SaveAs() {
+    qApp->beep(); // Signal the screenshoot
+    
+    //Initialisation des tailles limites
+    int tailleLimite_X;
+    int tailleLimite_Y;
+
+    //Récupération des coordonées de la SpinBox1
+    QPoint coords = SpinBox1->pos();
+    int spinbox_y = coords.y();
+    
+    //Récupération des coordonées de la coupe 1
+    QPoint coord1 = imageLabel1->pos();
+    int label1_x = coord1.x();
+
+    //Récupération des coordonées de la coupe 3
+    QPoint coord3 = imageLabel3->pos();
+    int label3_x = coord3.x();
+    int label3_y = coord3.y();
+
+    if (*rows < 400 && *cols < 400) //Si image de petite taille
+    {
+        //facteur 1.75 pour prendre en compte le zoom
+        tailleLimite_X = (label3_x + *NbFichiers * 1.75);
+        tailleLimite_Y = (label3_y + *rows * 1.75);
+    }
+    else { //Si grande image
+        tailleLimite_X = (label3_x + *NbFichiers);
+        tailleLimite_Y = (label3_y + *rows);
+    }
+
+    //définition de la hauteur et de la largeur de capture
+    int hauteur_capture = tailleLimite_Y - spinbox_y;
+    int largeur_capture = tailleLimite_X - label1_x;
 
     // Prise du screenshoot
+    QPixmap pixmap = QPixmap::grabWindow(this->winId(), 0, spinbox_y, -1, hauteur_capture);
+    
+    //Fenêtre d'enregistrement
+    QString filePath = QFileDialog::getSaveFileName(this,tr("Enregistrer sous"),"../Screenshot_1.png", tr("Images (*.png *.xpm *.jpg)"));
 
-        //QScreen* screen = qApp->primaryScreen();
+    //Sauvegarde de l'image
+    pixmap.save(filePath);
 
-
-        //QApplication::beep();
-
-        //QPixmap pixmap = screen->grabWindow(winId,0,0,-1,-1);
-        //QPixmap pixmap = QScreen::grabWindow(winId, 0, 0, -1, -1);
-
-
-        /*QString filePath = QFileDialog::getOpenFileName(
-            this,
-            tr("Open File"),
-            "",
-            tr("JPEG (*.jpg *.jpeg);;PNG (*.png)")
-            );*/
-
-            //QString filePath = "E:/Documents/Etudes_M1/Projet_M1/myscreen2.png";
-            //pixmap.save(filePath);
-
-
-    }
-    else {
-        QMessageBox cc;
-        cc.setText("pas screenshot");
-        cc.exec();
-    }
 }
 
 
@@ -2279,6 +2288,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     Info->addAction("Informations patient", this, SLOT(displayTags()));//Connexion menu action
     file->addAction("Ouvrir", this, SLOT(ouvrirFichiers()));//Connexion menu action
     file->addAction("Supprimer", this, SLOT(Supprimer()));//Connexion menu action
+    file->addAction("Enregistrer sous", this, SLOT(SaveAs()));//Connexion menu action
 
     //Ajout des menus à la barre de menu
     menu->addMenu(file);
@@ -2319,15 +2329,11 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTy()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTz()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseIntensite()));
-    //connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
     connect(timer, SIGNAL(timeout()), this, SLOT(ClicGauche()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(SaveAs(this->winId)));
-
+    
     //Temps d'intervalle entre actualisations : ici 10ms
     timer->start(10);
-
-    //SaveAs(this->winId());
-
 }
 
 /*--------------------------------------------------------------------------
@@ -2346,21 +2352,23 @@ void Interface::mousePressEvent(QMouseEvent* e){
 /*--------------------------------------------------------------------------
 * Fonctions : DoubleClics()
 *
-* Description : Retourne TRUE ou FALSE si les 2 boutons de la souris 3D sont 
+* Description : Appel SaveAs si les 2 boutons de la souris 3D sont 
 * pressé enssemble ou non
 *
 * Arguments : aucun
 *
-* Valeur retournée : TRUE or FALSE
+* Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
-/*bool Interface::DoubleClics() {
-    //Conditon de double clics
+void Interface::DoubleClics() {
+    //Condition de double clics
     if ((clicD == 1) && (clicG == 1)) {
-        return true;
+        SaveAs();
+        clicD = 0;
+        clicG = 0;
     }
     else
-        return false;
-}*/
+        return;
+}
 
 /*--------------------------------------------------------------------------
 * Fonctions : ClicGauche()
