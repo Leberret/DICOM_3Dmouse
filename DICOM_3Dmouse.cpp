@@ -724,7 +724,7 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
 }
 
 /*--------------------------------------------------------------------------
-* Fonction : AfficherCurseurIntensite()
+* Fonction : UtiliserCurseurIntensite()
 *
 * Description : Affichage du curseur de variation d'intensité
 *
@@ -732,20 +732,21 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
 *
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
-void Interface::AfficherCurseurIntensite()
+void Interface::UtiliserCurseurIntensite()
 {
 
     if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
     sliderIntensite->setRange(-500, 500); //Nuances d'intensité
     sliderIntensite->setValue(*variationIntensite);//Init a 0 -> valMax réelle
+    layout->addWidget(sliderIntensite, 3, 0, 1, 3);//Position
 
     //Mise en locale d'une variable globale
     int value = *OnOffIntensite;
 
-    *MenuIntensite = 1; //Le menu On de la modification d'intensité a la main
+    *MenuIntensite = 1; //Le menu de modification d'intensité a la main
 
-    //Condition On/Off
+    //Conditions On/Off
     if (value == 0) {
         *OnOffIntensite = 1;
         sliderIntensite->setVisible(true);//rendre visible le curseur
@@ -754,7 +755,6 @@ void Interface::AfficherCurseurIntensite()
         *OnOffIntensite = 0;
         sliderIntensite->setVisible(false);//rendre invisible le curseur
     }
-    layout->addWidget(sliderIntensite, 3, 0, 1, 3);//Position
 
 }
 
@@ -1485,30 +1485,24 @@ void Interface::Action3DMouseIntensite(){
     int value = *souris3D;
     int inte = Intensite; //vaut 1 au 1er clic et 0 au 2e clic sur bouton droite
     if ((value == 0) || (inte == 0)) {
-        if (*MenuIntensite == 1)
+        if (*MenuIntensite == 1) //Si le menu a la main
             return;
-        else {
+        else { //sinon
             sliderIntensite->setVisible(false);//rendre invisible le curseur
             return;
         }
     }
-    *MenuIntensite = 0;
 
-    int i;
-    if (*MenuIntensite == 1) {
-        //Récupération de la valeur d'intensité précédente
-        //i = sliderIntensite->value();
-        return;
-    }
+    *MenuIntensite = 0; //La souris 3D à la main pour modifier l'intensité
 
-    else {
-        //Récupération de la valeur d'intensité précédente
-        i = *variationIntensite;
+    //Récupération de la valeur d'intensité précédente
+    int i = *variationIntensite;
 
-        //Affichage curseur d'intensité
-        sliderIntensite->setVisible(true);//rendre visible le curseur
-    }
-    
+    //Affichage curseur d'intensité
+    sliderIntensite->setRange(-500, 500); //Nuances d'intensité
+    sliderIntensite->setValue(*variationIntensite);//Init a 0 -> valMax réelle
+    layout->addWidget(sliderIntensite, 3, 0, 1, 3);//Position
+    sliderIntensite->setVisible(true);//rendre visible le curseur
 
     int lim = 500;//Limite de variation de l'intensité
 
@@ -1526,10 +1520,10 @@ void Interface::Action3DMouseIntensite(){
         
         //Conditions de modification de l'intensité
         if ((pRy > 5) && (pRy >= *lastRyValue)&&(pRy<lim)) {
-            i=i+50;
+            i=i+30;
         }
         else if ((pRy < -5) && (pRy <= *lastRyValue) && (pRy> -lim)) {
-            i = i-50;
+            i = i-30;
         }
     }
     else if (i <= -lim) {
@@ -2142,6 +2136,53 @@ void Interface::GestionImagesColonnes(int v)
 }
 
 /*--------------------------------------------------------------------------
+* Fonctions : SaveAs()
+*
+* Description : Permet de screenshoter la fenêtre et de l'enregistrer
+*
+* Arguments : winId : Identifiant de la fenêtre
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::SaveAs(WId winId) {
+    if ((clicD == 1) && (clicG == 1)) {
+        QMessageBox cc;
+        cc.setText("screenshot");
+        cc.exec();
+        //qApp->beep(); // Signal the screenshoot
+
+    // Prise du screenshoot
+
+        //QScreen* screen = qApp->primaryScreen();
+
+
+        //QApplication::beep();
+
+        //QPixmap pixmap = screen->grabWindow(winId,0,0,-1,-1);
+        //QPixmap pixmap = QScreen::grabWindow(winId, 0, 0, -1, -1);
+
+
+        /*QString filePath = QFileDialog::getOpenFileName(
+            this,
+            tr("Open File"),
+            "",
+            tr("JPEG (*.jpg *.jpeg);;PNG (*.png)")
+            );*/
+
+            //QString filePath = "E:/Documents/Etudes_M1/Projet_M1/myscreen2.png";
+            //pixmap.save(filePath);
+
+
+    }
+    else {
+        QMessageBox cc;
+        cc.setText("pas screenshot");
+        cc.exec();
+    }
+}
+
+
+/*--------------------------------------------------------------------------
 * Fonctions : Interface()
 *
 * Description : Construction de la fenêtre principale
@@ -2223,7 +2264,9 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     Outils = new QMenu("&Outils");//Init menu outils
 
     //Ajout des actions aux menus
-    Outils->addAction("Activer/Desactiver souris 3D", this, SLOT(UtiliserSouris3D()));
+    Outils->addAction("Activer/Desactiver Souris 3D", this, SLOT(UtiliserSouris3D()));
+    Outils->addAction("Activer/Desactiver Intensite", this, SLOT(UtiliserCurseurIntensite()));//Action d'affichage slider1
+
     Affichage->addAction("ORIGINAL", this, SLOT(AffichageOriginal()));//Action pour couleur
     Affichage->addAction("JET", this, SLOT(AffichageJet()));//Action pour couleur
     Affichage->addAction("BONE", this, SLOT(AffichageBone()));//Action pour couleur
@@ -2232,7 +2275,6 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     Affichage->addAction("HOT", this, SLOT(AffichageHot()));//Action pour couleur
     Affichage->addAction("PARULA", this, SLOT(AffichageParula()));//Action pour couleur
     Affichage->addAction("TWILIGHT SHIFTED", this, SLOT(AffichageTwilightShifted()));//Action pour couleur
-    Affichage->addAction("Modifier Intensite", this, SLOT(AfficherCurseurIntensite()));//Action d'affichage slider1
     Affichage->addAction("Passer en visualisation 3D", this, SLOT(AppercuVisualisation3D()));//Action d'affichage slider1
     Info->addAction("Informations patient", this, SLOT(displayTags()));//Connexion menu action
     file->addAction("Ouvrir", this, SLOT(ouvrirFichiers()));//Connexion menu action
@@ -2277,8 +2319,9 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTy()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTz()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseIntensite()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
+    //connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
     connect(timer, SIGNAL(timeout()), this, SLOT(ClicGauche()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(SaveAs(this->winId)));
 
     //Temps d'intervalle entre actualisations : ici 10ms
     timer->start(10);
@@ -2310,14 +2353,14 @@ void Interface::mousePressEvent(QMouseEvent* e){
 *
 * Valeur retournée : TRUE or FALSE
 *--------------------------------------------------------------------------*/
-bool Interface::DoubleClics() {
+/*bool Interface::DoubleClics() {
     //Conditon de double clics
     if ((clicD == 1) && (clicG == 1)) {
-        return TRUE;
+        return true;
     }
     else
-        return FALSE;
-}
+        return false;
+}*/
 
 /*--------------------------------------------------------------------------
 * Fonctions : ClicGauche()
@@ -2344,48 +2387,6 @@ void Interface::ClicGauche(){
 }
 
 
-/*--------------------------------------------------------------------------
-* Fonctions : SaveAs()
-*
-* Description : Permet de screenshoter la fenêtre et de l'enregistrer
-*
-* Arguments : winId : Identifiant de la fenêtre
-*
-* Valeur retournée : aucune
-*--------------------------------------------------------------------------*/
-void Interface::SaveAs(WId winId) {
-    if (DoubleClics() == TRUE) {
-        
-        QMessageBox cc;
-
-        cc.setText("screenshot");
-        cc.exec();
-        //qApp->beep(); // Signal the screenshoot
-
-    // Prise du screenshoot
-
-        //QScreen* screen = qApp->primaryScreen();
-    
-
-        //QApplication::beep();
-
-        //QPixmap pixmap = screen->grabWindow(winId,0,0,-1,-1);
-        //QPixmap pixmap = QScreen::grabWindow(winId, 0, 0, -1, -1);
-
-
-        /*QString filePath = QFileDialog::getOpenFileName(
-            this,
-            tr("Open File"),
-            "",
-            tr("JPEG (*.jpg *.jpeg);;PNG (*.png)")
-            );*/
-
-        QString filePath = "E:/Documents/Etudes_M1/Projet_M1/myscreen2.png";
-        //pixmap.save(filePath);
-        
-    
-    }
-}
 
 /*--------------------------------------------------------------------------
 * Fonctions : closeEvent()

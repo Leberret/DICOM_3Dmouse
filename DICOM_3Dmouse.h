@@ -47,7 +47,7 @@ public slots:
 	void GestionImages(int v);
 	void GestionImagesLignes(int v);
 	void GestionImagesColonnes(int v);
-	bool DoubleClics();
+	//bool DoubleClics();
 	void ClicGauche();
 	void SaveAs(WId winId);
 	void UtiliserSouris3D();
@@ -59,7 +59,7 @@ public slots:
 	void AffichageHot();
 	void AffichageParula();
 	void AffichageTwilightShifted();
-	void AfficherCurseurIntensite();
+	void UtiliserCurseurIntensite();
 	void ChangementIntensite(int k);
 	void ActionSlider1(int k);
 	void ActionSlider2(int k);
