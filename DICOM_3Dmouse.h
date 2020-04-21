@@ -132,6 +132,8 @@ private:
 	qint16* variationIntensite;
 	qint16* souris3D;
 	qint16* MenuSouris3D;
+	qint16* OnOffIntensite;
+	qint16* MenuIntensite;
 	qint16* coupe;
 	qint16* Mode;
 	qint16* IntensiteOnOff;

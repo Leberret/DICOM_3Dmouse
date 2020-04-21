@@ -590,6 +590,12 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
 
     //Initialisation de la variables globale MenuSouris3D
     *MenuSouris3D = 0; //Le menu On/Off de la souris3D n'a pas la main
+    
+    //Initialisation de la variables globale OnOffIntensite
+    *OnOffIntensite = 0; //Modifacation intensité non active
+    
+    //Initialisation de la variables globale MenuIntensite
+    *MenuIntensite = 0; //Le menu On/Off de la modification d'intensité n'a pas la main
 
     //Initialisation de la liste des chemins de fichier
     Listechemin = new QStringList();//Liste de QString
@@ -601,29 +607,17 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
     QDirIterator direction(*pathFolder, QDir::Files | QDir::NoSymLinks);// Obtenir l'arborescence des fichiers
     //Conditions d'existance des fichiers dans le dossier
     if (!direction.hasNext()) {
-        QMessageBox ErreurFichier;
-        ErreurFichier.setText("Le dossier est incorrect");
-        ErreurFichier.exec();
+        QMessageBox ErreurDossier;
+        ErreurDossier.setText("Le dossier est incorrect");
+        ErreurDossier.exec();
         delete Listechemin;//Réinitialisation du chemin d'accès
         ouvrirFichiers();//Rappel de la fonction
         return;//Quitter l'appel actuel
     }
 
-    //Création booléen 
-    bool i = false;
-
     //tant qu'il reste des fichiers dans le dossier
     while (direction.hasNext()) {
-        /*if (!direction.fileName().endsWith("dcm") && i) {//Si le format n'est DCM et que booléen est vrai
-            QMessageBox ErreurFichier;
-            ErreurFichier.setText("Le format des fichiers sélectionnés n'est pas DICOM");
-            ErreurFichier.exec();
-            delete Listechemin;//Réinitialisation du chemin d'accès 
-            ouvrirFichiers();//Rappel de la fonction
-            return;//Quitter l'appel actuel
-        }*/
         *Listechemin << direction.next(); //Ajout de tous les chemins dans une liste
-        i = true;//Dès la première exécution le booléen passe en vrai
     }
     //Mise en locale d'une variable globale
     QStringList Listchemin = *Listechemin;
@@ -631,13 +625,21 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
     //Récupération du nombre total de fichiers dans le dossier
     *NbFichiers = Listchemin.length();
 
+    //Création barre de chargement des images
+    QProgressDialog Chargement("Importation des images", "Cancel", 0, *NbFichiers, this);//Paramètres de la barre
+    Chargement.setWindowModality(Qt::WindowModal);
+    Chargement.setCancelButton(0);//Impossible d'annuler
+    Chargement.setMinimumDuration(0);//Pas de temps mini de chargement
     //Gestion d'ouverture et de lecture de tous les fichiers du dossier
     for (int NbFichier = 0; NbFichier < *NbFichiers; NbFichier++)
     {
+        //Ajout valeur barre de chargement
+        Chargement.setValue(NbFichier);
+
         *pathFolder = Listchemin[NbFichier]; //Selection du chemin selon la boucle
 
         //Convertion le QString* en const char * 
-        QByteArray b = pathFolder->toLocal8Bit(); 
+        QByteArray b = pathFolder->toLocal8Bit();
         const char* chemin = b.data();
 
         //Initialisation d'un fichier dcm
@@ -649,9 +651,13 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
         //Lecture du fichier
         dataDcm = readFile(chemin);//Lecture du fichier
 
-        if (dataDcm == NULL)//Condition d'existence du fichier
-            return;
-
+        if (dataDcm == NULL) {//Condition d'existence du fichier //C:/Users/lefur/Desktop/Cours/M1/Projet_Souris3D/IMAGES/BrainIRM/IMG0001.dcm
+            QMessageBox ErreurFichiers;
+            ErreurFichiers.setText("Le format est incohérent avec le format DICOM");
+            ErreurFichiers.exec();
+            ouvrirFichiers();//Rappel de l'ouverture des fichiers (nouvelle sélection)
+            return;//sortie de l'execution actuelle
+        }
         *rows = getUShortTagValue(0x00280010, dataDcm);//Nombre de lignes
         *cols = getUShortTagValue(0x00280011, dataDcm);//Nombre de colonnes
 
@@ -661,9 +667,11 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
         //Libération de la mémoire
         delete(dataDcm);
         delete(pixels);
-
     }
 
+    //Hors de la boucle for, ajout de la valeur max pour fin de chargement
+    Chargement.setValue(*NbFichiers);
+            
     //-----------------------Paramétrage et positionnement des outils------------------------
     SpinBox1->setButtonSymbols(QSpinBox::NoButtons);
     SpinBox2->setButtonSymbols(QSpinBox::NoButtons);
@@ -726,12 +734,28 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
 *--------------------------------------------------------------------------*/
 void Interface::AfficherCurseurIntensite()
 {
+
     if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
     sliderIntensite->setRange(-500, 500); //Nuances d'intensité
-    sliderIntensite->setValue(0);//Init a 0 -> valMax réelle
-    sliderIntensite->setVisible(true);//rendre visible le curseur
+    sliderIntensite->setValue(*variationIntensite);//Init a 0 -> valMax réelle
+
+    //Mise en locale d'une variable globale
+    int value = *OnOffIntensite;
+
+    *MenuIntensite = 1; //Le menu On de la modification d'intensité a la main
+
+    //Condition On/Off
+    if (value == 0) {
+        *OnOffIntensite = 1;
+        sliderIntensite->setVisible(true);//rendre visible le curseur
+    }
+    else {
+        *OnOffIntensite = 0;
+        sliderIntensite->setVisible(false);//rendre invisible le curseur
+    }
     layout->addWidget(sliderIntensite, 3, 0, 1, 3);//Position
+
 }
 
 /*--------------------------------------------------------------------------
@@ -1108,10 +1132,14 @@ void Interface::ChangementIntensite(int valueIntensite)
     *IntensiteVariableCoupe2 = *IntensiteMaxInitCoupe2 + valueIntensite;
     *IntensiteVariableCoupe3 = *IntensiteMaxInitCoupe3 + valueIntensite;
 
+    //Mémorisation de la valeur de variation
+    *variationIntensite = valueIntensite;
+
     //Affichage des images
     GestionImages(slider1->value());
     GestionImagesLignes(slider2->value());
     GestionImagesColonnes(slider3->value());
+
 }
 
 /*--------------------------------------------------------------------------
@@ -1452,19 +1480,35 @@ void Interface::Action3DMouseTz() {
 *
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
-void Interface::Action3DMouseIntensite() {
+void Interface::Action3DMouseIntensite(){
     //Condition d'utilisation de la souris et si clic sur bouton droit de la souris 3D
     int value = *souris3D;
     int inte = Intensite; //vaut 1 au 1er clic et 0 au 2e clic sur bouton droite
     if ((value == 0) || (inte == 0)) {
+        if (*MenuIntensite == 1)
+            return;
+        else {
+            sliderIntensite->setVisible(false);//rendre invisible le curseur
+            return;
+        }
+    }
+    *MenuIntensite = 0;
+
+    int i;
+    if (*MenuIntensite == 1) {
+        //Récupération de la valeur d'intensité précédente
+        //i = sliderIntensite->value();
         return;
     }
 
-    //Affichage curseur d'intensité
-    sliderIntensite->setVisible(true);//rendre visible le curseur
+    else {
+        //Récupération de la valeur d'intensité précédente
+        i = *variationIntensite;
 
-    //Récupération de la valeur d'intensité précédente
-    int i = *variationIntensite;
+        //Affichage curseur d'intensité
+        sliderIntensite->setVisible(true);//rendre visible le curseur
+    }
+    
 
     int lim = 500;//Limite de variation de l'intensité
 
@@ -1494,7 +1538,7 @@ void Interface::Action3DMouseIntensite() {
     else if (i >= lim) {
         i = lim-1;
     }
-
+    
     //Mise à jour du slider intensité
     sliderIntensite->setValue(i);
 
@@ -2134,6 +2178,9 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     rows = new qint16;//Lignes
     souris3D = new qint16;
     MenuSouris3D = new qint16;
+    OnOffIntensite = new qint16;
+    MenuIntensite = new qint16;
+
     pathFolderSave = new QString();
 
     layout = new QGridLayout;//Init layout
