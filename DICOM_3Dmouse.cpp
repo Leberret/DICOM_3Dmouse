@@ -1544,6 +1544,99 @@ void Interface::Action3DMouseIntensite(){
 }
 
 /*--------------------------------------------------------------------------
+* Fonctions : DoubleClics()
+*
+* Description : Appel SaveAs si les 2 boutons de la souris 3D sont 
+* pressé enssemble ou non
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::DoubleClics() {
+    //Condition de double clics
+    if ((clicD == 1) && (clicG == 1)) {
+        SaveAs();
+        clicD = 0;
+        clicG = 0;
+    }
+    else
+        return;
+}
+
+/*--------------------------------------------------------------------------
+* Fonctions : ClicGauche()
+*
+* Description : Active ou non la souris 3D avec clic sur le bouton gauche de 
+* la souris 3D
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::ClicGauche(){
+    //Conditon si le bouton cliqué
+    if (OnOffSouris3D == 1) { //Au premier clic
+        *souris3D = 1; //Activation de la souris 3D
+        *MenuSouris3D = 0; //Le menu On/Off de la souris3D n'a pas la main
+    }
+    else{ //Au deuxième clic
+        if (*MenuSouris3D == 1) //Si le menu On/Off de la souris3D a la main
+            return;
+        else //sinon
+            *souris3D = 0;
+   }
+}
+
+/*--------------------------------------------------------------------------
+* Fonctions : SaveAs()
+*
+* Description : Permet de screenshoter les trois coupes avec leur spinbox et 
+* de les enregistrer
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::SaveAs() {
+    qApp->beep(); // Signal the screenshoot
+    
+    //Initialisation de la hauteur des images
+    int tailleLimite_Y;
+
+
+    //Récupération des coordonées de la SpinBox1
+    QPoint coords = SpinBox1->pos();
+    int spinbox_y = coords.y();
+    
+    //Récupération des coordonées de la coupe 3
+    QPoint coord3 = imageLabel3->pos();
+    int label3_y = coord3.y();
+
+    if (*rows < 400 && *cols < 400) //Si image de petite taille
+    {
+        //facteur 1.75 pour prendre en compte le zoom
+        tailleLimite_Y = (label3_y + *rows * 1.75);
+    }
+    else { //Si grande image
+        tailleLimite_Y = (label3_y + *rows);
+    }
+
+    //définition de la hauteur et de la largeur de capture
+    int hauteur_capture = tailleLimite_Y - spinbox_y;
+
+    // Prise du screenshoot
+    QPixmap pixmap = QPixmap::grabWindow(this->winId(), 0, spinbox_y, -1, hauteur_capture);
+    
+    //Fenêtre d'enregistrement
+    QString filePath = QFileDialog::getSaveFileName(this,tr("Enregistrer sous"),"../Screenshot_1.png", tr("Images (*.png *.xpm *.jpg)"));
+
+    //Sauvegarde de l'image
+    pixmap.save(filePath);
+
+}
+
+/*--------------------------------------------------------------------------
 * Fonctions : GestionImages(), GestionImagesLignes(), GestionImagesColonnes()
 *
 * Description : Lecture du vecteur global, gestion de l'intensité des pixels,
@@ -2136,57 +2229,32 @@ void Interface::GestionImagesColonnes(int v)
 }
 
 /*--------------------------------------------------------------------------
-* Fonctions : SaveAs()
+* Fonctions : mousePressEvent()
 *
-* Description : Permet de screenshoter la fenêtre et de l'enregistrer
+* Description : Definition du signal clic
 *
-* Arguments : aucun
+* Arguments : e : évenement de la souris classique
 *
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
-void Interface::SaveAs() {
-    qApp->beep(); // Signal the screenshoot
-    
-    //Initialisation des tailles limites
-    int tailleLimite_X;
-    int tailleLimite_Y;
+void Interface::mousePressEvent(QMouseEvent* e){
+    emit clic(e);
+}
 
-    //Récupération des coordonées de la SpinBox1
-    QPoint coords = SpinBox1->pos();
-    int spinbox_y = coords.y();
-    
-    //Récupération des coordonées de la coupe 1
-    QPoint coord1 = imageLabel1->pos();
-    int label1_x = coord1.x();
-
-    //Récupération des coordonées de la coupe 3
-    QPoint coord3 = imageLabel3->pos();
-    int label3_x = coord3.x();
-    int label3_y = coord3.y();
-
-    if (*rows < 400 && *cols < 400) //Si image de petite taille
-    {
-        //facteur 1.75 pour prendre en compte le zoom
-        tailleLimite_X = (label3_x + *NbFichiers * 1.75);
-        tailleLimite_Y = (label3_y + *rows * 1.75);
-    }
-    else { //Si grande image
-        tailleLimite_X = (label3_x + *NbFichiers);
-        tailleLimite_Y = (label3_y + *rows);
-    }
-
-    //définition de la hauteur et de la largeur de capture
-    int hauteur_capture = tailleLimite_Y - spinbox_y;
-    int largeur_capture = tailleLimite_X - label1_x;
-
-    // Prise du screenshoot
-    QPixmap pixmap = QPixmap::grabWindow(this->winId(), 0, spinbox_y, -1, hauteur_capture);
-    
-    //Fenêtre d'enregistrement
-    QString filePath = QFileDialog::getSaveFileName(this,tr("Enregistrer sous"),"../Screenshot_1.png", tr("Images (*.png *.xpm *.jpg)"));
-
-    //Sauvegarde de l'image
-    pixmap.save(filePath);
+/*--------------------------------------------------------------------------
+* Fonctions : closeEvent()
+*
+* Description : Appel de la fonction Supprimer qui permet de supprimer le 
+* dossier image et son contenu lors de la fermeture de la fenêtre principale
+*
+* Arguments : event : évenement de fermeture de la fenêtre
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::closeEvent(QCloseEvent* event)
+{
+    Supprimer();
+    event->accept();
 
 }
 
@@ -2334,81 +2402,4 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     
     //Temps d'intervalle entre actualisations : ici 10ms
     timer->start(10);
-}
-
-/*--------------------------------------------------------------------------
-* Fonctions : mousePressEvent()
-*
-* Description : Definition du signal clic
-*
-* Arguments : e : évenement de la souris classique
-*
-* Valeur retournée : aucune
-*--------------------------------------------------------------------------*/
-void Interface::mousePressEvent(QMouseEvent* e){
-    emit clic(e);
-}
-
-/*--------------------------------------------------------------------------
-* Fonctions : DoubleClics()
-*
-* Description : Appel SaveAs si les 2 boutons de la souris 3D sont 
-* pressé enssemble ou non
-*
-* Arguments : aucun
-*
-* Valeur retournée : aucune
-*--------------------------------------------------------------------------*/
-void Interface::DoubleClics() {
-    //Condition de double clics
-    if ((clicD == 1) && (clicG == 1)) {
-        SaveAs();
-        clicD = 0;
-        clicG = 0;
-    }
-    else
-        return;
-}
-
-/*--------------------------------------------------------------------------
-* Fonctions : ClicGauche()
-*
-* Description : Active ou non la souris 3D avec clic sur le bouton gauche de 
-* la souris 3D
-*
-* Arguments : aucun
-*
-* Valeur retournée : aucune
-*--------------------------------------------------------------------------*/
-void Interface::ClicGauche(){
-    //Conditon si le bouton cliqué
-    if (OnOffSouris3D == 1) { //Au premier clic
-        *souris3D = 1; //Activation de la souris 3D
-        *MenuSouris3D = 0; //Le menu On/Off de la souris3D n'a pas la main
-    }
-    else{ //Au deuxième clic
-        if (*MenuSouris3D == 1) //Si le menu On/Off de la souris3D a la main
-            return;
-        else //sinon
-            *souris3D = 0;
-   }
-}
-
-
-
-/*--------------------------------------------------------------------------
-* Fonctions : closeEvent()
-*
-* Description : Appel de la fonction Supprimer qui permet de supprimer le 
-* dossier image et son contenu lors de la fermeture de la fenêtre principale
-*
-* Arguments : event : évenement de fermeture de la fenêtre
-*
-* Valeur retournée : aucune
-*--------------------------------------------------------------------------*/
-void Interface::closeEvent(QCloseEvent* event)
-{
-    Supprimer();
-    event->accept();
-
 }

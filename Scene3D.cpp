@@ -1,6 +1,6 @@
 #include "Scene3D.h"
 #include "DICOM_3Dmouse.h"
-//Version Ok
+
 //Appel des variables globales externes
 extern int Coupe, Min, Max;
 
@@ -241,17 +241,17 @@ void My3DScene::mouse3DMove()
 
     //--------------------------TX-------------------------------
     //Conditions de sensibilité de la souris 3D
-    if ((-pTx > 5) && (-pTx >= *precValueTX) && (-pTx < 20)) {
+    if ((pTx > 5) && (pTx >= *precValueTX) && (pTx < 20)) {
         h = h - 1;
     }
-    else if ((-pTx >= 20) && (-pTx >= *precValueTX) && (-pTx < 600)) {
+    else if ((pTx >= 20) && (pTx >= *precValueTX) && (pTx < 600)) {
         h = h - 3;
     }
 
-    else if ((-pTx < -5) && (-pTx <= *precValueTX) && (-pTx > -20)) {
+    else if ((pTx < -5) && (pTx <= *precValueTX) && (pTx > -20)) {
         h = h + 1;
     }
-    else if ((-pTx <= -20) && (-pTx <= *precValueTX) && (-pTx > -600)) {
+    else if ((pTx <= -20) && (pTx <= *precValueTX) && (pTx > -600)) {
         h = h + 3;
     }
 
@@ -259,7 +259,7 @@ void My3DScene::mouse3DMove()
     *compteurTX = h;
 
     //Mémorisation de la valeur pTx de la souris 3D
-    *precValueTX = -pTx; 
+    *precValueTX = pTx; 
 
 
     //--------------------------TY-------------------------------
@@ -287,17 +287,17 @@ void My3DScene::mouse3DMove()
 
     //--------------------------TZ-------------------------------
     //Conditions de sensibilité de la souris 3D
-    if ((pTz > 5) && (pTz >= *precValueTZ) && (pTz < 20)) {
+    if ((-pTz > 5) && (-pTz >= *precValueTZ) && (-pTz < 20)) {
         m = m - 1;
     }
-    else if ((pTz >= 20) && (pTz >= *precValueTZ) && (pTz < 600)) {
+    else if ((-pTz >= 20) && (-pTz >= *precValueTZ) && (-pTz < 600)) {
         m = m - 3;
     }
 
-    else if ((pTz < -5) && (pTz <= *precValueTZ) && (pTz > -20)) {
+    else if ((-pTz < -5) && (-pTz <= *precValueTZ) && (-pTz > -20)) {
         m = m + 1;
     }
-    else if ((pTz <= -20) && (pTz <= *precValueTZ) && (pTz > -600)) {
+    else if ((-pTz <= -20) && (-pTz <= *precValueTZ) && (-pTz > -600)) {
         m = m + 3;
     }
 
@@ -305,7 +305,7 @@ void My3DScene::mouse3DMove()
     *compteurTZ = m;
 
     //Mémorisation de la valeur pTz de la souris 3D
-    *precValueTZ = pTz;
+    *precValueTZ = -pTz;
 
 
     //--------------------------RX-------------------------------
@@ -314,17 +314,17 @@ void My3DScene::mouse3DMove()
         this->SceneTransform->setRotationX(i);
         
         //Conditions de sensibilité de la souris 3D
-        if ((-pRx > 5) && (-pRx >= *precValueRX) && (-pRx < 20)) {
+        if ((pRx > 5) && (pRx >= *precValueRX) && (pRx < 20)) {
             i = i - 1;
         }
-        else if ((-pRx >= 20) && (-pRx >= *precValueRX) && (-pRx < 600)) {
+        else if ((pRx >= 20) && (pRx >= *precValueRX) && (pRx < 600)) {
             i = i - 3;
         }
 
-        else if ((-pRx < -5) && (-pRx <= *precValueRX) && (-pRx > -20)) {
+        else if ((pRx < -5) && (pRx <= *precValueRX) && (pRx > -20)) {
             i = i + 1;
         }
-        else if ((-pRx <= -20) && (-pRx <= *precValueRX) && (-pRx > -600)) {
+        else if ((pRx <= -20) && (pRx <= *precValueRX) && (pRx > -600)) {
             i = i + 3;
         }
     }
@@ -340,7 +340,7 @@ void My3DScene::mouse3DMove()
     *compteurRX = i;
 
     //Mémorisation de la valeur pRx de la souris 3D
-    *precValueRX = -pRx;
+    *precValueRX = pRx;
 
     //--------------------------RY-------------------------------
     //Conditions pour avoir une valeur d'angle cohérente
@@ -382,17 +382,17 @@ void My3DScene::mouse3DMove()
     if ((k > -360) && (k < 360)) {
         this->SceneTransform->setRotationZ(k);
         //Conditions de sensibilité de la souris 3D
-        if ((pRz > 5) && (pRz >= *precValueRZ) && (pRz < 20)) {
+        if ((-pRz > 5) && (-pRz >= *precValueRZ) && (-pRz < 20)) {
             k = k - 1;
         }
-        else if ((pRz >= 20) && (pRz >= *precValueRZ) && (pRz < 600)) {
+        else if ((-pRz >= 20) && (-pRz >= *precValueRZ) && (-pRz < 600)) {
             k = k - 3;
         }
 
-        else if ((pRz < -5) && (pRz <= *precValueRZ) && (pRz > -20)) {
+        else if ((-pRz < -5) && (-pRz <= *precValueRZ) && (-pRz > -20)) {
             k = k + 1;
         }
-        else if ((pRz <= -20) && (pRz <= *precValueRZ) && (pRz > -600)) {
+        else if ((-pRz <= -20) && (-pRz <= *precValueRZ) && (-pRz > -600)) {
             k = k + 3;
         }
     }
@@ -408,13 +408,58 @@ void My3DScene::mouse3DMove()
     //Mémorisation de la valeur du NumImageTx
     *compteurRZ = k;
 
-    //Mémorisation de la valeur pRz de la souris 3D
-    *precValueRZ = pRz;
+    //Mémorisation de la valeur -pRz de la souris 3D
+    *precValueRZ = -pRz;
 
 
     //Ajout des composants à la scène
     scene.addComponent(this->SceneTransform);
     
+}
+
+/*--------------------------------------------------------------------------
+* Fonctions : DoubleClics()
+*
+* Description : Appel SaveAs si les 2 boutons de la souris 3D sont
+* pressé enssemble ou non
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void My3DScene::DoubleClics() {
+    //Condition de double clics
+    if ((clicD == 1) && (clicG == 1)) {
+        SaveAs();
+        clicD = 0;
+        clicG = 0;
+    }
+    else
+        return;
+}
+
+/*--------------------------------------------------------------------------
+* Fonctions : SaveAs()
+*
+* Description : Permet de screenshoter les trois coupes avec leur spinbox et
+* de les enregistrer
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void My3DScene::SaveAs() {
+    qApp->beep(); // Signal the screenshoot
+
+    // Prise du screenshoot
+    //QPixmap pixmap = QPixmap::grabWindow(this->winId, 0, 0, -1, -1);
+
+    //Fenêtre d'enregistrement
+    //QString filePath = QFileDialog::getSaveFileName(this, tr("Enregistrer sous"), "../Screenshot_1.png", tr("Images (*.png *.xpm *.jpg)"));
+
+    //Sauvegarde de l'image
+    //pixmap.save(filePath);
+
 }
 
 
@@ -431,7 +476,7 @@ My3DScene::My3DScene()
 {
 
     //Identifiant de la fenêtre
-    hWnd3D = (HWND)this->winId();
+    //hWnd3D = (HWND)this->winId();
 
     //Initialisation des variables globales
     init();
@@ -444,5 +489,7 @@ My3DScene::My3DScene()
     //Appel de la fonction mouse3DMove toutes les 10ms
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &My3DScene::mouse3DMove);
+    connect(timer, &QTimer::timeout, this, &My3DScene::DoubleClics);
+
     timer->start(10);
 }

@@ -15,6 +15,7 @@
 #include "qt3dwindow.h"
 #include "qorbitcameracontroller.h"
 
+
 using namespace std;
 
 //Variables globales externes
@@ -55,6 +56,8 @@ private:
 	
 public slots:
 	void mouse3DMove();
+	void SaveAs();
+	void DoubleClics();
 
 public:
 	My3DScene();
