@@ -23,7 +23,7 @@
 #include <direct.h>
 
 //Appel des variables globales externes
-extern HWND         hWndMain;
+extern HWND         hWndMain, hWnd;
 extern INT			Coupe, Min, Max;
 extern INT			pTx, pTy, pTz, pRx, pRy, pRz;
 extern INT			Intensite, prevInt, OnOffSouris3D;
