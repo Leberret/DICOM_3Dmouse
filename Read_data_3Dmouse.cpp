@@ -128,68 +128,6 @@ int DispatchLoopNT()
 }
 
 /*--------------------------------------------------------------------------
-* Fonction : HandleNTEvent()
-*
-* Description : Gestion des divers événements de la fenêtre
-*
-* Arguments : hWnd : handle de la fenêtre   
-*             msg : message à traiter
-*             wParam : Paramètre msg 32 bits
-*             lParam : Paramètre msg 32 bits
-*
-* Valeur retournée :  msg.wparam : programme terminé
-*--------------------------------------------------------------------------*/
-/*LRESULT WINAPI HandleNTEvent(HWND hWnd, unsigned msg, WPARAM wParam,
-    LPARAM lParam)
-{
-    PAINTSTRUCT ps; //Utilisé pour peindre la zone client d'une fenêtre
-    LONG addr; //Adresse de la fenêtre
-
-    //Obtenir l'adresse de la fenêtre
-    addr = GetClassLong(hWnd, 0);
-
-    switch (msg)
-    {
-    case WM_ACTIVATEAPP:
-        hdc = GetDC(hWnd);
-
-        //Libération du handle de la fenêtre
-        ReleaseDC(hWnd, hdc);
-
-    case WM_KEYDOWN:
-
-    case WM_KEYUP:
-        //L'utilisateur a appuyé sur une touche pour fermer le programme
-        if (wParam == VK_ESCAPE)
-        {
-            SendMessage(hWndMain, WM_CLOSE, 0, 0l);
-        }
-        break;
-
-    case WM_PAINT:
-        //Temps de peindre la fenêtre
-        if (addr)
-        {
-            hdc = BeginPaint(hWndMain, &ps);
-            EndPaint(hWndMain, &ps);
-        }
-
-        break;
-
-    case WM_CLOSE:
-        //Nettoyer les informations d'objet créées
-
-        break;
-
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return (0);
-    }
-    return DefWindowProc(hWnd, msg, wParam, lParam);
-
-}*/
-
-/*--------------------------------------------------------------------------
 * Fonction : SbMotionEvent()
 *
 * Description : Récupération des informations de mouvement et stokage dans 
