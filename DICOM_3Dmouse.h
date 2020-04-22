@@ -155,5 +155,4 @@ private:
 	qint16* CoupeVisu;
 	QPushButton* validerVisu;
 	QComboBox* comboBoxVisu;
-	My3DScene* Visualisation3D;
 };

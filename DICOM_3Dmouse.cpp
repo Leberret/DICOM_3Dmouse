@@ -1,5 +1,6 @@
 #include "DICOM_3Dmouse.h"
 #include "Scene3D.h"
+#include "Widget3D.h"
 
 //Initialisation des variables globales
 INT         Coupe, Min, Max;
@@ -55,10 +56,6 @@ void Interface::AppercuVisualisation3D()
 {
     if (*NbFichiers == 0) //Condition d'existance des images
         return;
-
-    delete Visualisation3D; //Libération de la mémoire
-
-    Visualisation3D = new My3DScene(); //Création d'une scène 3D vide
 
     *souris3D = 0; //souris3D non active
 
@@ -386,8 +383,7 @@ void Interface::Enregistre()
     delete WidgetAppercu3D;
 
     //Lancement interface 3D
-    Visualisation3D = new My3DScene();
-    Visualisation3D->show();
+    Widget3D* Scene3D = new Widget3D();
 }
 
 /*--------------------------------------------------------------------------
@@ -2272,9 +2268,6 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
 {
     //Création d'un dossier dans lequel mettre les images
     _mkdir("Images");
-
-    //Nouvelle scene 3D vide
-    Visualisation3D = new My3DScene();
 
     //Initialisation variables globales
     imageMin = new qint16;
