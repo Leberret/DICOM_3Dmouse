@@ -1,5 +1,6 @@
 #include "Scene3D.h"
 #include "DICOM_3Dmouse.h"
+#include "Widget3D.h"
 //Version Ok
 //Appel des variables globales externes
 extern int Coupe, Min, Max;
@@ -417,6 +418,19 @@ void My3DScene::mouse3DMove()
     
 }
 
+/*--------------------------------------------------------------------------
+* Fonction : Recentrer()
+*
+* Description : Recentrer l'objet 3D
+*
+* Arguments : Aucun
+*
+* Valeur retournée : Aucune
+*--------------------------------------------------------------------------*/
+void My3DScene::Recentrer()
+{
+    this->camera()->setViewCenter(QVector3D(0, 0.02 * (Max - Min) / 2, 0));//Position initiale
+}
 
 /*--------------------------------------------------------------------------
 * Fonction : My3DScene()
@@ -440,7 +454,6 @@ My3DScene::My3DScene()
     createObjects();
     createCamera();
     setRootEntity(&scene);
-
     //Appel de la fonction mouse3DMove toutes les 10ms
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &My3DScene::mouse3DMove);
