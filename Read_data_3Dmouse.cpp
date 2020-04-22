@@ -9,7 +9,7 @@ HWND         hWnd3D;
 INT          pTx, pTy, pTz, pRx, pRy, pRz;
 INT          Intensite=0,prevInt;
 INT          OnOffSouris3D=0,prevOnOffSouris3D;
-INT          clicD=0, clicG=0;
+INT          clicD = 0,clicG = 0;
 
 /*--------------------------------------------------------------------------
 * Fonction : SbInit()
@@ -226,10 +226,10 @@ void BoutonsEvent(SiSpwEvent* pEvent)
     {
     //Bouton de gauche
     case V3DCMD_KEY_F1:
-        clicG= pEvent->u.cmdEventData.pressed;
-        if (pEvent->u.cmdEventData.pressed == 1) {
+        clicG = pEvent->u.cmdEventData.pressed;
+        if ((pEvent->u.cmdEventData.pressed == 1) && (clicD == 0)) {
             int i = prevOnOffSouris3D;
-            if ((i == 0) && (clicD == 0)) {
+            if (i == 0) {
                 OnOffSouris3D = 1;
             }
             else {
@@ -243,9 +243,9 @@ void BoutonsEvent(SiSpwEvent* pEvent)
     //Bouton de droite
     case V3DCMD_KEY_F2:
         clicD = pEvent->u.cmdEventData.pressed;
-        if (pEvent->u.cmdEventData.pressed == 1) {
+        if ((pEvent->u.cmdEventData.pressed == 1) && (clicG==0)) {
             int i = prevInt;
-            if ((i == 0)&&(clicG==0)) {
+            if (i == 0) {
                 Intensite = 1;
             }
             else {
@@ -254,6 +254,7 @@ void BoutonsEvent(SiSpwEvent* pEvent)
             prevInt = Intensite;
         }
         break;
+
     default:
         break;
     }

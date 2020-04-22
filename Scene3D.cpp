@@ -358,6 +358,50 @@ void My3DScene::mouse3DMove()
     
 }
 
+/*--------------------------------------------------------------------------
+* Fonctions : DoubleClics()
+*
+* Description : Appel SaveAs si les 2 boutons de la souris 3D sont
+* pressé enssemble ou non
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void My3DScene::DoubleClics() {
+    //Condition de double clics
+    if ((clicD == 1) && (clicG == 1)) {
+        SaveAs();
+        clicD = 0;
+        clicG = 0;
+    }
+    else
+        return;
+}
+
+/*--------------------------------------------------------------------------
+* Fonctions : SaveAs()
+*
+* Description : Permet de screenshoter les trois coupes avec leur spinbox et
+* de les enregistrer
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void My3DScene::SaveAs() {
+    qApp->beep(); // Signal the screenshoot
+
+    // Prise du screenshoot
+    QPixmap pixmap = QPixmap::grabWindow(this->winId, 0, 0, -1, -1);
+
+    //Fenêtre d'enregistrement
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Enregistrer sous"), "../Screenshot_1.png", tr("Images (*.png *.xpm *.jpg)"));
+
+    //Sauvegarde de l'image
+    pixmap.save(filePath);
+
+}
 
 /*--------------------------------------------------------------------------
 * Fonction : My3DScene()
@@ -371,7 +415,7 @@ void My3DScene::mouse3DMove()
 My3DScene::My3DScene()
 {
     //Identifiant de la fenêtre
-    hWnd3D = (HWND)this->winId();
+    //hWnd3D = (HWND)this->winId();
 
     //Initialisation des variables globales
     init();
@@ -384,5 +428,7 @@ My3DScene::My3DScene()
     //Appel de la fonction mouse3DMove toutes les 10ms
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &My3DScene::mouse3DMove);
+    connect(timer, &QTimer::timeout, this, &My3DScene::DoubleClics);
+
     timer->start(10);
 }
