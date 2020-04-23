@@ -77,6 +77,7 @@ public slots:
 	void MajClicCoupe3(QMouseEvent* e);
 	void InfoCoupes();
 	void Enregistre();
+	void AIDE();
 
 	//------------------Interface 3D-------------------------
 	void FirstImage(QString k);

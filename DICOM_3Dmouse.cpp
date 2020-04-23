@@ -2269,7 +2269,29 @@ void Interface::closeEvent(QCloseEvent* event)
 
 }
 
-
+/*--------------------------------------------------------------------------
+* Fonctions : AIDE()
+*
+* Description : Affiche une fenêtre expliquant les diversses actions
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Interface::AIDE()
+{
+    QMessageBox aide;
+    aide.setWindowTitle("Aide utilisation logiciel avec Souris 3D");
+    QString n = "\n";
+    aide.setIcon(QMessageBox::Information);
+    aide.setText("Activer la navigation avec la souris 3D :"+n+
+        "   -> Presser sur le bouton de gauche de votre souris 3D."+n+
+        " Realiser une capture d'ecran :"+n+
+        "   -> Presser simultanement des deux boutons lateraux de votre souris 3D."+n+
+        " Modifier l'intensite :"+n+
+        "   -> Presser sur le bouton de droite de votre souris 3D");
+    aide.exec();
+}
 /*--------------------------------------------------------------------------
 * Fonctions : Interface()
 *
@@ -2347,7 +2369,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     Info = new QMenu("&Informations");//init menu infos
     Affichage = new QMenu("&Affichage");//Init menu affichage
     Outils = new QMenu("&Outils");//Init menu outils
-
+    
     //Ajout des actions aux menus
     Outils->addAction("Activer/Desactiver Souris 3D", this, SLOT(UtiliserSouris3D()));
     Outils->addAction("Activer/Desactiver Intensite", this, SLOT(UtiliserCurseurIntensite()));//Action d'affichage slider1
@@ -2371,6 +2393,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     menu->addMenu(Info);
     menu->addMenu(Affichage);
     menu->addMenu(Outils);
+    menu->addAction("Aide", this, SLOT(AIDE()));
 
     //Ajout du menu au layout
     layout->setMenuBar(menu);
