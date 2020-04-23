@@ -29,6 +29,7 @@ extern INT			Coupe, Min, Max;
 extern INT			pTx, pTy, pTz, pRx, pRy, pRz;
 extern INT			Intensite, prevInt, OnOffSouris3D;
 extern INT			clicD, clicG;
+extern INT			mode3D;
 
 class Widget3D : public QWidget
 {
@@ -44,7 +45,8 @@ public slots:
 	void centrage();
 	void Actu3D();
 	void SaveAs3D();
-	void DoubleClics();
+	void DoubleClics3D();
+	void ClicGauche3D();
 public:
 	QGridLayout* Layout;
 	QWidget* container;

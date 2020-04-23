@@ -4,7 +4,7 @@
 
 //Initialisation des variables globales
 INT         Coupe, Min, Max;
-
+INT			mode3D;
 
 /*--------------------------------------------------------------------------
 * Fonction : ALLPixels()
@@ -382,19 +382,11 @@ void Interface::Enregistre()
     //Libération de la mémoire
     delete WidgetAppercu3D;
 
+    //Passage en mode interface 3D
+    mode3D = 1;
+
     //Lancement interface 3D
     Widget3D* Scene3D = new Widget3D();
-    /*while (Scene3D->isVisible())
-    {
-        if (Scene3D->isActiveWindow())
-        {
-            *souris3D = 0;
-        }
-        else
-        {
-            *souris3D = 1;
-        }
-    }*/
 }
 
 /*--------------------------------------------------------------------------
@@ -1488,8 +1480,8 @@ void Interface::Action3DMouseTz() {
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
 void Interface::Action3DMouseIntensite(){
-    //Condition si souris désactivée
-    if (*souris3D == 0)
+    //Condition si souris désactivée ou en mode interface 3D
+    if ((*souris3D == 0) || (mode3D == 1))
         return;
 
     int inte = Intensite; //vaut 1 au 1er clic et 0 au 2e clic sur bouton droite
@@ -1565,8 +1557,8 @@ void Interface::Action3DMouseIntensite(){
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
 void Interface::DoubleClics() {
-    //Condition si souris désactivée
-    if (*souris3D == 0)
+    //Condition si souris désactivée ou en mode interface 3D
+    if ((*souris3D == 0)||(mode3D == 1))
         return;
 
     //Condition de double clics
@@ -1590,6 +1582,9 @@ void Interface::DoubleClics() {
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
 void Interface::ClicGauche(){
+    //Condition si souris en mode interface 3D
+    if (mode3D == 1)
+        return;
     //Conditon si le bouton cliqué
     if (OnOffSouris3D == 1) { //Au premier clic
         *souris3D = 1; //Activation de la souris 3D
@@ -1614,6 +1609,7 @@ void Interface::ClicGauche(){
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
 void Interface::SaveAs() {
+
     qApp->beep(); // Signal the screenshoot
     
     //Initialisation de la hauteur des images
@@ -2416,4 +2412,5 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     
     //Temps d'intervalle entre actualisations : ici 10ms
     timer->start(10);
+
 }

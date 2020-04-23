@@ -1,7 +1,6 @@
 #include "DICOM_3Dmouse.h"
 #include "Scene3D.h"
 #include "Widget3D.h"
-//#include "Read_data_3Dmouse.h"
 
 
 /*--------------------------------------------------------------------------
@@ -14,13 +13,40 @@
 *
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
-void Widget3D::DoubleClics() {
+void Widget3D::DoubleClics3D() {
+    //Condition si souris 3D désactivée ou en mode interfae 2D
+    if (mode3D == 0)
+        return;
+
     //Condition de double clics
     if ((clicD == 1) && (clicG == 1)) {
         SaveAs3D();
         clicD = 0;
         clicG = 0;
     }
+    else
+        return;
+}
+
+/*--------------------------------------------------------------------------
+* Fonctions : ClicGauche3D()
+*
+* Description : Appel centrage si le bouton gauche de la souris 3D est pressé
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Widget3D::ClicGauche3D() {
+    //Condition si souris désactivée ou en mode interface 3D
+    if (mode3D == 0)
+        return;
+
+    int clicg = Intensite; //vaut 1 au 1er clic et 0 au 2e clic sur bouton gauche
+
+    //Condition si clic sur bouton droit de la souris 3D
+    if (clicg == 1)
+        centrage();
     else
         return;
 }
@@ -69,6 +95,9 @@ void Widget3D::SaveAs3D() {
 *--------------------------------------------------------------------------*/
 void Widget3D::closeEvent(QCloseEvent* event)
 {
+    //Passage en mode interface 3D
+    mode3D = 0;
+
     this->deleteLater();
     event->accept();
 
@@ -111,6 +140,7 @@ Widget3D::Widget3D()
     Fichier = new QMenu("&Fichier");//Init menu fichier
     Affichage = new QMenu("&Affichage");//Init menu affichage
 
+
     //Actions liées aux différents menus
     Fichier->addAction("Enregistrer sous", this, SLOT(SaveAs3D()));
     Affichage->addAction("Recentrer", this, SLOT(centrage()));
@@ -125,9 +155,13 @@ Widget3D::Widget3D()
     Layout->setMenuBar(menu);
     Layout->addWidget(container, 1, 0, Qt::AlignJustify);
 
-    //Appel de la fonction mouse3DMove toutes les 10ms
+    //Appel des fonctions toutes les 10ms
     timer = new QTimer();
+
     connect(timer, SIGNAL(timeout()), this, SLOT(Actu3D()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics3D()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(ClicGauche3D()));
+
     timer->start(10);
 
     //paramètres du widget
