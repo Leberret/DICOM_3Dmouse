@@ -13,23 +13,8 @@ int main(int argc, char* argv[])
         "selection-color: white;"
         "selection-background-color: darkGrey;");
     
-    int res;
-    /* Initialize 3D mouse */
-    res = SbInit();
-
-    /* if 3D mouse was not detected then print error, close win., exit prog. */
-    if (res < 1)
-    {
-        QMessageBox error;
-        error.setText("Sorry - No supported 3Dconnexion device available."); //Ajout à la boite QMessageBox
-        error.exec();//affichage boite de dialogue
-        
-
-        ExitProcess(1);                /* exit program */
-    }
-    else {
-        DispatchLoopNT();
-    }
+    Init3DMouse();
+    
 
     return a.exec();
 }

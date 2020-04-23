@@ -1,15 +1,44 @@
 #include "Read_data_3Dmouse.h"
 
 //Définition des variables globales
-HDC          hdc;
+//HDC          hdc;
 SiHdl        devHdl;
-TCHAR        devicename[100] = _T("");
+//TCHAR        devicename[100] = _T("");
 HWND         hWndMain;
-HWND         hWnd3D;
 INT          pTx, pTy, pTz, pRx, pRy, pRz;
 INT          Intensite=0,prevInt;
 INT          OnOffSouris3D=0,prevOnOffSouris3D;
 INT          clicD = 0,clicG = 0;
+
+/*--------------------------------------------------------------------------
+* Fonction : Init3DMouse()
+*
+* Description : Appel SbInit et vérifie si l'initialisation de la souris 3D
+* c'est bien passé
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Init3DMouse() {
+    int res;
+
+    // Initialisation de la souris 3D
+    res = SbInit();
+    //Condtiion de vérification d'erreur
+    if (res < 1) //Si erreur
+    {
+        QMessageBox error;
+        error.setText("Sorry - No supported 3Dconnexion device available."); //Ajout à la boite QMessageBox
+        error.exec(); //Affichage boite de dialogue
+
+        ExitProcess(1); //Fermeture du programme
+    }
+    else { //Si pas d'erreur
+        //Appel de la boucle
+        DispatchLoopNT();
+    }
+}
 
 /*--------------------------------------------------------------------------
 * Fonction : SbInit()
@@ -45,7 +74,7 @@ int SbInit()
     SiOpenWinAddHintStringEnum(&oData, SI_HINT_DRIVERVERSION, L"17.5.5");
 
     //Ouverture des données
-    if ((devHdl = SiOpenEx(L"Logiciel de navigation 3D dans les images IRM", SI_ANY_DEVICE, SI_NO_MASK, SI_EVENT, &oData)) == NULL)
+    if ((devHdl = SiOpenEx(L"Interface de reconstruction 3D des IRM", SI_ANY_DEVICE, SI_NO_MASK, SI_EVENT, &oData)) == NULL)
     {
         SiTerminate();  //Appelé pour fermer la bibliothèque d'entrée SpaceWare
         
@@ -67,6 +96,8 @@ int SbInit()
         res = 1;
         return res;
     }
+    
+    
 
 }
 
@@ -157,9 +188,7 @@ void SbMotionEvent(SiSpwEvent* pEvent)
 * Valeur retournée :  aucune
 *--------------------------------------------------------------------------*/
 void BoutonsEvent(SiSpwEvent* pEvent)
-{
-    
-    hdc = GetDC(hWndMain);
+{ 
     switch (pEvent->u.cmdEventData.functionNumber)
     {
     //Bouton de gauche

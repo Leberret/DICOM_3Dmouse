@@ -384,6 +384,17 @@ void Interface::Enregistre()
 
     //Lancement interface 3D
     Widget3D* Scene3D = new Widget3D();
+    /*while (Scene3D->isVisible())
+    {
+        if (Scene3D->isActiveWindow())
+        {
+            *souris3D = 0;
+        }
+        else
+        {
+            *souris3D = 1;
+        }
+    }*/
 }
 
 /*--------------------------------------------------------------------------

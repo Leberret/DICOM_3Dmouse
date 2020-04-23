@@ -21,7 +21,7 @@ using namespace std;
 //Variables globales externes
 extern INT			Coupe, Min, Max;
 extern INT			pTx, pTy, pTz, pRx, pRy, pRz;
-extern HWND			hWnd3D;
+//extern HWND			hWndMain;
 
 //Class My3DScene.
 class My3DScene : public Qt3DExtras::Qt3DWindow
@@ -56,8 +56,7 @@ private:
 	
 public slots:
 	void mouse3DMove();
-	void SaveAs();
-	void DoubleClics();
+	void Recentrer();
 
 public:
 	My3DScene();

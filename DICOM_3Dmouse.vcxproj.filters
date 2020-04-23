@@ -76,9 +76,15 @@
     <ClCompile Include="Scene3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Widget3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="DICOM_3Dmouse.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Widget3D.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

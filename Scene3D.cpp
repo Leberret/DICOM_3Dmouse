@@ -1,5 +1,6 @@
 #include "Scene3D.h"
 #include "DICOM_3Dmouse.h"
+#include "Widget3D.h"
 
 //Appel des variables globales externes
 extern int Coupe, Min, Max;
@@ -235,6 +236,7 @@ void My3DScene::mouse3DMove()
     int i = *compteurRX;
     int j = *compteurRY;
     int k = *compteurRZ;
+  
 
     //Translation selon les veleurs de la souris pTx, pTy, pTz
     this->SceneTransform->setTranslation(QVector3D((float)h/10.0, (float)l/2.0, (float)m / 10.0));
@@ -418,50 +420,21 @@ void My3DScene::mouse3DMove()
 }
 
 /*--------------------------------------------------------------------------
-* Fonctions : DoubleClics()
+* Fonction : Recentrer()
 *
-* Description : Appel SaveAs si les 2 boutons de la souris 3D sont
-* pressé enssemble ou non
+* Description : Recentrer l'objet 3D et la caméra
 *
-* Arguments : aucun
+* Arguments : Aucun
 *
-* Valeur retournée : aucune
+* Valeur retournée : Aucune
 *--------------------------------------------------------------------------*/
-void My3DScene::DoubleClics() {
-    //Condition de double clics
-    if ((clicD == 1) && (clicG == 1)) {
-        SaveAs();
-        clicD = 0;
-        clicG = 0;
-    }
-    else
-        return;
+void My3DScene::Recentrer()
+{
+    this->camera()->setViewCenter(QVector3D(0, 0.02 * (Max - Min) / 2, 0));//Position initiale
+    *compteurTX = 0;
+    *compteurTY = 0;
+    *compteurTZ = 0;
 }
-
-/*--------------------------------------------------------------------------
-* Fonctions : SaveAs()
-*
-* Description : Permet de screenshoter les trois coupes avec leur spinbox et
-* de les enregistrer
-*
-* Arguments : aucun
-*
-* Valeur retournée : aucune
-*--------------------------------------------------------------------------*/
-void My3DScene::SaveAs() {
-    qApp->beep(); // Signal the screenshoot
-
-    // Prise du screenshoot
-    //QPixmap pixmap = QPixmap::grabWindow(this->winId, 0, 0, -1, -1);
-
-    //Fenêtre d'enregistrement
-    //QString filePath = QFileDialog::getSaveFileName(this, tr("Enregistrer sous"), "../Screenshot_1.png", tr("Images (*.png *.xpm *.jpg)"));
-
-    //Sauvegarde de l'image
-    //pixmap.save(filePath);
-
-}
-
 
 /*--------------------------------------------------------------------------
 * Fonction : My3DScene()
@@ -474,10 +447,6 @@ void My3DScene::SaveAs() {
 *--------------------------------------------------------------------------*/
 My3DScene::My3DScene()
 {
-
-    //Identifiant de la fenêtre
-    //hWnd3D = (HWND)this->winId();
-
     //Initialisation des variables globales
     init();
 
@@ -485,11 +454,4 @@ My3DScene::My3DScene()
     createObjects();
     createCamera();
     setRootEntity(&scene);
-
-    //Appel de la fonction mouse3DMove toutes les 10ms
-    QTimer* timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &My3DScene::mouse3DMove);
-    connect(timer, &QTimer::timeout, this, &My3DScene::DoubleClics);
-
-    timer->start(10);
 }

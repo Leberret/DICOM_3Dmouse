@@ -42,9 +42,14 @@ signals:
 
 public slots:
 	void centrage();
+	void Actu3D();
+	void SaveAs3D();
+	void DoubleClics();
 public:
 	QGridLayout* Layout;
 	QWidget* container;
 	QMenuBar* menu;
+	QMenu* Fichier;
 	QMenu* Affichage;
+	QTimer* timer;
 };

@@ -9,7 +9,10 @@
 
 using namespace std;
 
+
+
 int DispatchLoopNT();
 int SbInit();
 void SbMotionEvent(SiSpwEvent* pEvent);
 void BoutonsEvent(SiSpwEvent* pEvent);
+void Init3DMouse();

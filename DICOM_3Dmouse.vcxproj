@@ -47,7 +47,7 @@
   </ImportGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <QtInstall>msvc2017_64</QtInstall>
-    <QtModules>3danimation;3dcore;3dextras;3dinput;3dlogic;3drender;core;gui;widgets</QtModules>
+    <QtModules>3dextras;core;gui;widgets</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <QtInstall>msvc2017_64</QtInstall>
@@ -105,6 +105,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Read_data_3Dmouse.cpp" />
     <ClCompile Include="Scene3D.cpp" />
+    <ClCompile Include="Widget3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="DICOM_3Dmouse.h" />
@@ -137,6 +138,7 @@
     <ClInclude Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\write_visitor.h" />
     <ClInclude Include="Read_data_3Dmouse.h" />
     <ClInclude Include="Scene3D.h" />
+    <QtMoc Include="Widget3D.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="E:\Documents\Etudes_M1\Projet_M1\dcm\dcm\CMakeLists.txt" />
