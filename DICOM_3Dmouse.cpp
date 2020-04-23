@@ -381,11 +381,9 @@ void Interface::Enregistre()
 
     //Libération de la mémoire
     delete WidgetAppercu3D;
-    
+
     //Lancement interface 3D
-    Widget3D Scene3D;// = new Widget3D();
-    //Exécution
-    Scene3D.show();
+    Widget3D* Scene3D = new Widget3D();
 }
 
 /*--------------------------------------------------------------------------
@@ -2325,7 +2323,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
 
     //Indentifiant de la fenêtre pour détection souris 3D
     hWndMain = (HWND)this->winId();
-    hWnd = hWndMain;
+
     //Initialisation Timer pour actualiser les evenements souris3D
     QTimer* timer = new QTimer(this);
 
