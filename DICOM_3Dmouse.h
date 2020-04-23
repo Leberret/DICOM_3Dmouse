@@ -78,6 +78,7 @@ public slots:
 	void InfoCoupes();
 	void Enregistre();
 	void AIDE();
+	void fenetreActive();
 
 	//------------------Interface 3D-------------------------
 	void FirstImage(QString k);

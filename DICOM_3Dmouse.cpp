@@ -382,9 +382,6 @@ void Interface::Enregistre()
     //Libération de la mémoire
     delete WidgetAppercu3D;
 
-    //Passage en mode interface 3D
-    mode3D = 1;
-
     //Lancement interface 3D
     Widget3D* Scene3D = new Widget3D();
 }
@@ -2292,6 +2289,16 @@ void Interface::AIDE()
         "   -> Presser sur le bouton de droite de votre souris 3D");
     aide.exec();
 }
+
+void Interface::fenetreActive()
+{
+    if (isActiveWindow())
+        mode3D = 0;
+    else {
+        mode3D = 1;
+    }
+}
+
 /*--------------------------------------------------------------------------
 * Fonctions : Interface()
 *
@@ -2430,8 +2437,7 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTz()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseIntensite()));
     connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
-
-    
+    connect(timer, SIGNAL(timeout()), this, SLOT(fenetreActive()));
     
     //Temps d'intervalle entre actualisations : ici 10ms
     timer->start(10);

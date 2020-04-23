@@ -46,7 +46,7 @@ public slots:
 	void Actu3D();
 	void SaveAs3D();
 	void DoubleClics3D();
-	void ClicGauche3D();
+	void ClicDroit3D();
 public:
 	QGridLayout* Layout;
 	QWidget* container;

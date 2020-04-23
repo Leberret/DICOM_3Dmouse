@@ -442,6 +442,22 @@ void My3DScene::Recentrer()
     *compteurTY = 0;
     *compteurTZ = 0;
 }
+/*--------------------------------------------------------------------------
+* Fonction : BloquerScene()
+*
+* Description : Recentrer l'objet 3D et la caméra et le vérouiller au centre
+*
+* Arguments : Aucun
+*
+* Valeur retournée : Aucune
+*--------------------------------------------------------------------------*/
+void My3DScene::BloquerScene()
+{
+    this->camera()->setViewCenter(QVector3D(0, 0.02 * (Max - Min) / 2, 0));//Position initiale
+    *compteurTX = 0;
+    *compteurTY = 0;
+
+}
 
 /*--------------------------------------------------------------------------
 * Fonction : My3DScene()

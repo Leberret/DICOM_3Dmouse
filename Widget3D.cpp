@@ -29,7 +29,7 @@ void Widget3D::DoubleClics3D() {
 }
 
 /*--------------------------------------------------------------------------
-* Fonctions : ClicGauche3D()
+* Fonctions : ClicDroit3D()
 *
 * Description : Appel centrage si le bouton gauche de la souris 3D est pressé
 *
@@ -37,12 +37,12 @@ void Widget3D::DoubleClics3D() {
 *
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
-void Widget3D::ClicGauche3D() {
+void Widget3D::ClicDroit3D() {
     //Condition si souris désactivée ou en mode interface 3D
     if (mode3D == 0)
         return;
 
-    int clicg = Intensite; //vaut 1 au 1er clic et 0 au 2e clic sur bouton gauche
+    int clicg = Intensite; //vaut 1 au 1er clic et 0 au 2e clic sur bouton droit
 
     //Condition si clic sur bouton droit de la souris 3D
     if (clicg == 1)
@@ -95,9 +95,6 @@ void Widget3D::SaveAs3D() {
 *--------------------------------------------------------------------------*/
 void Widget3D::closeEvent(QCloseEvent* event)
 {
-    //Passage en mode interface 3D
-    mode3D = 0;
-
     this->deleteLater();
     event->accept();
 
@@ -160,7 +157,7 @@ Widget3D::Widget3D()
 
     connect(timer, SIGNAL(timeout()), this, SLOT(Actu3D()));
     connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics3D()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(ClicGauche3D()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(ClicDroit3D()));
 
     timer->start(10);
 

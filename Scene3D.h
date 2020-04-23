@@ -58,6 +58,7 @@ private:
 public slots:
 	void mouse3DMove();
 	void Recentrer();
+	void BloquerScene();
 
 public:
 	My3DScene();
