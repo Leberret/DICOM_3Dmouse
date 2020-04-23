@@ -42,12 +42,17 @@ public:
 signals:
 
 public slots:
-	void centrage();
+
 	void Actu3D();
-	void SaveAs3D();
 	void DoubleClics3D();
 	void ClicDroit3D();
-public:
+	void centrage();
+	void bloquer();
+	void SaveAs3D();
+	void AIDE3D();
+	void ClicGauche3D();
+
+public:	
 	QGridLayout* Layout;
 	QWidget* container;
 	QMenuBar* menu;

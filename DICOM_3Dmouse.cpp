@@ -730,9 +730,13 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
 *--------------------------------------------------------------------------*/
 void Interface::UtiliserCurseurIntensite()
 {
-
     if (*NbFichiers == 0) //Condition d'existence du dossier
         return;
+
+    //Condition si souris en mode interface 3D
+    if (mode3D == 1)
+        return;
+
     sliderIntensite->setRange(-500, 500); //Nuances d'intensité
     sliderIntensite->setValue(*variationIntensite);//Init a 0 -> valMax réelle
     layout->addWidget(sliderIntensite, 3, 0, 1, 3);//Position
@@ -766,6 +770,10 @@ void Interface::UtiliserCurseurIntensite()
 void Interface::UtiliserSouris3D() 
 {
     if (*NbFichiers == 0) //Condition d'existence du dossier
+        return;
+
+    //Condition si souris en mode interface 3D
+    if (mode3D == 1)
         return;
 
     //Mise en locale d'une variable globale
@@ -1215,10 +1223,15 @@ void Interface::ActionSpin3(int valueSpin3) //Récuperer la valeur du curseur lor
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
 void Interface::Action3DMouseTx() {
+    //Condition si souris en mode interface 3D
+    if (mode3D == 1)
+        return;
+
     //Condition d'utilisation de la souris
     int value = *souris3D;
     if (value == 0) //Si souris 3D off
         return;
+
     //Récupération du nombre d'images suivant la position de la coupe sagittale
     int NbImages;
     switch (*coupe)
@@ -1295,6 +1308,10 @@ void Interface::Action3DMouseTx() {
     *lastTxValue = pTx;
 }
 void Interface::Action3DMouseTy() {
+    //Condition si souris en mode interface 3D
+    if (mode3D == 1)
+        return;
+
     //Condition d'utilisation de la souris
     int value = *souris3D;
     if (value == 0)
@@ -1380,6 +1397,10 @@ void Interface::Action3DMouseTy() {
     *lastTyValue = pTy;
 }
 void Interface::Action3DMouseTz() {
+    //Condition si souris en mode interface 3D
+    if (mode3D == 1)
+        return;
+
     //Condition d'utilisation de la souris
     int value = *souris3D;
     if (value == 0)
@@ -2269,7 +2290,8 @@ void Interface::closeEvent(QCloseEvent* event)
 /*--------------------------------------------------------------------------
 * Fonctions : AIDE()
 *
-* Description : Affiche une fenêtre expliquant les diversses actions
+* Description : Affiche une fenêtre expliquant les diversses actions de la 
+* souris 3D
 *
 * Arguments : aucun
 *
@@ -2290,11 +2312,21 @@ void Interface::AIDE()
     aide.exec();
 }
 
+/*--------------------------------------------------------------------------
+* Fonctions : fenetreActive()
+*
+* Description : Change la valeur de la variable globale mode3D en fonction 
+* de la fenêtre active
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
 void Interface::fenetreActive()
 {
-    if (isActiveWindow())
+    if (isActiveWindow()) //Si interface principale active
         mode3D = 0;
-    else {
+    else { //Si interface de reconstruction 3D active
         mode3D = 1;
     }
 }

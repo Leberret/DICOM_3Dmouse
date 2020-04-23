@@ -31,7 +31,8 @@ void Widget3D::DoubleClics3D() {
 /*--------------------------------------------------------------------------
 * Fonctions : ClicDroit3D()
 *
-* Description : Appel centrage si le bouton gauche de la souris 3D est pressé
+* Description : Appel la fonction bloquer si le bouton gauche de la souris 
+* 3D est pressé
 *
 * Arguments : aucun
 *
@@ -46,9 +47,35 @@ void Widget3D::ClicDroit3D() {
 
     //Condition si clic sur bouton droit de la souris 3D
     if (clicg == 1)
-        centrage();
+        bloquer();
     else
         return;
+}
+
+/*--------------------------------------------------------------------------
+* Fonctions : ClicGauche3D()
+*
+* Description : Appel la fonction centrage si le bouton droit de la souris
+* 3D est pressé
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Widget3D::ClicGauche3D() {
+    //Condition si souris en mode interface 2D
+    if (mode3D == 0)
+        return;
+
+    //Conditon si le bouton cliqué
+    //if (OnOffSouris3D == 1) { //Au premier clic
+    if ((clicG==1)&&(clicD==0)){
+        centrage();
+        //Actu3D();
+    }
+    else { //Au deuxième clic
+        return;
+    }
 }
 
 /*--------------------------------------------------------------------------
@@ -114,10 +141,57 @@ void Widget3D::centrage() {
     Visualisation3D->Recentrer();
 }
 
+/*--------------------------------------------------------------------------
+* Fonctions : bloquer()
+*
+* Description : Appel de la fonction de recentrage et de bloquage de l'objet 3D dans la
+* classe My3DScene
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Widget3D::bloquer() {
+    Visualisation3D->BloquerScene();
+}
+
+/*--------------------------------------------------------------------------
+* Fonctions : Actu3D()
+*
+* Description : Appel de la fonction de mouse3DMove de la classe My3DScene
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
 void Widget3D::Actu3D() {
     Visualisation3D->mouse3DMove();
 }
 
+/*--------------------------------------------------------------------------
+* Fonctions : AIDE3D()
+*
+* Description : Affiche une fenêtre expliquant les diversses actions de la
+* souris 3D
+*
+* Arguments : aucun
+*
+* Valeur retournée : aucune
+*--------------------------------------------------------------------------*/
+void Widget3D::AIDE3D()
+{
+    QMessageBox aide;
+    aide.setWindowTitle("Aide utilisation logiciel avec Souris 3D");
+    QString n = "\n";
+    aide.setIcon(QMessageBox::Information);
+    aide.setText("Centrer la caméra et l'objet :" + n +
+        "   -> Presser sur le bouton de gauche de votre souris 3D." + n +
+        " Realiser une capture d'ecran :" + n +
+        "   -> Presser simultanement des deux boutons lateraux de votre souris 3D." + n +
+        " Bloquer l'objet en position centrale : " + n +
+        "   -> Presser sur le bouton de droite de votre souris 3D");
+    aide.exec();
+}
 
 /*--------------------------------------------------------------------------
 * Fonctions : Widget3D()
@@ -148,7 +222,8 @@ Widget3D::Widget3D()
 
     //Ajout des composants à leurs entités
     menu->addMenu(Fichier);
-    menu->addMenu(Affichage);
+    menu->addMenu(Affichage);    
+    menu->addAction("Aide", this, SLOT(AIDE3D()));
     Layout->setMenuBar(menu);
     Layout->addWidget(container, 1, 0, Qt::AlignJustify);
 
@@ -158,6 +233,7 @@ Widget3D::Widget3D()
     connect(timer, SIGNAL(timeout()), this, SLOT(Actu3D()));
     connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics3D()));
     connect(timer, SIGNAL(timeout()), this, SLOT(ClicDroit3D()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(ClicGauche3D()));
 
     timer->start(10);
 
