@@ -2,6 +2,7 @@
 #include "DICOM_3Dmouse.h"
 #include "Scene3D.h"
 
+
 int main(int argc, char* argv[])
 {
 	QApplication a(argc, argv);
@@ -12,7 +13,7 @@ int main(int argc, char* argv[])
         "background-color:black;"
         "selection-color: white;"
         "selection-background-color: darkGrey;");
-    
+
     Init3DMouse();
     
 

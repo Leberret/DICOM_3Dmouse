@@ -23,6 +23,7 @@ extern INT			Coupe, Min, Max;
 extern INT			pTx, pTy, pTz, pRx, pRy, pRz;
 //extern HWND			hWndMain;
 
+
 //Class My3DScene.
 class My3DScene : public Qt3DExtras::Qt3DWindow
 {

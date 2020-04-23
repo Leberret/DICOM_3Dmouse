@@ -156,3 +156,4 @@ private:
 	QPushButton* validerVisu;
 	QComboBox* comboBoxVisu;
 };
+

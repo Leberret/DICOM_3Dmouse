@@ -61,8 +61,7 @@ void Widget3D::SaveAs3D() {
 /*--------------------------------------------------------------------------
 * Fonctions : closeEvent()
 *
-* Description : Appel de la fonction Supprimer qui permet de supprimer le
-* dossier image et son contenu lors de la fermeture de la fenêtre principale
+* Description : Permet de libérer la mémoire lors de la fermeture de la fenêtre
 *
 * Arguments : event : évenement de fermeture de la fenêtre
 *

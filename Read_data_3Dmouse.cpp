@@ -1,9 +1,7 @@
 #include "Read_data_3Dmouse.h"
 
 //Définition des variables globales
-//HDC          hdc;
 SiHdl        devHdl;
-//TCHAR        devicename[100] = _T("");
 HWND         hWndMain;
 INT          pTx, pTy, pTz, pRx, pRy, pRz;
 INT          Intensite=0,prevInt;
@@ -25,14 +23,14 @@ void Init3DMouse() {
 
     // Initialisation de la souris 3D
     res = SbInit();
-    //Condtiion de vérification d'erreur
+
+    //Conditions de vérification d'erreur
     if (res < 1) //Si erreur
     {
         QMessageBox error;
         error.setText("Sorry - No supported 3Dconnexion device available."); //Ajout à la boite QMessageBox
         error.exec(); //Affichage boite de dialogue
 
-        ExitProcess(1); //Fermeture du programme
     }
     else { //Si pas d'erreur
         //Appel de la boucle
@@ -74,7 +72,7 @@ int SbInit()
     SiOpenWinAddHintStringEnum(&oData, SI_HINT_DRIVERVERSION, L"17.5.5");
 
     //Ouverture des données
-    if ((devHdl = SiOpenEx(L"Interface de reconstruction 3D des IRM", SI_ANY_DEVICE, SI_NO_MASK, SI_EVENT, &oData)) == NULL)
+    if ((devHdl = SiOpenEx(L"Logiciel de navigation 3D dans les images IRM", SI_ANY_DEVICE, SI_NO_MASK, SI_EVENT, &oData)) == NULL)
     {
         SiTerminate();  //Appelé pour fermer la bibliothèque d'entrée SpaceWare
         

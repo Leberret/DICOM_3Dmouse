@@ -1488,10 +1488,14 @@ void Interface::Action3DMouseTz() {
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
 void Interface::Action3DMouseIntensite(){
-    //Condition d'utilisation de la souris et si clic sur bouton droit de la souris 3D
-    int value = *souris3D;
+    //Condition si souris désactivée
+    if (*souris3D == 0)
+        return;
+
     int inte = Intensite; //vaut 1 au 1er clic et 0 au 2e clic sur bouton droite
-    if ((value == 0) || (inte == 0)) {
+
+    //Condition si clic sur bouton droit de la souris 3D
+    if (inte == 0) {
         if (*MenuIntensite == 1) //Si le menu a la main
             return;
         else { //sinon
@@ -1561,6 +1565,10 @@ void Interface::Action3DMouseIntensite(){
 * Valeur retournée : aucune
 *--------------------------------------------------------------------------*/
 void Interface::DoubleClics() {
+    //Condition si souris désactivée
+    if (*souris3D == 0)
+        return;
+
     //Condition de double clics
     if ((clicD == 1) && (clicG == 1)) {
         SaveAs();
@@ -2397,12 +2405,14 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(MajClicCoupe3(QMouseEvent*)));
     
     //Actualisation des données de la souris en fonction du timer
+    connect(timer, SIGNAL(timeout()), this, SLOT(ClicGauche()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTx()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTy()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTz()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseIntensite()));
     connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(ClicGauche()));
+
+    
     
     //Temps d'intervalle entre actualisations : ici 10ms
     timer->start(10);

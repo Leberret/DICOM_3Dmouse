@@ -236,7 +236,14 @@ void My3DScene::mouse3DMove()
     int i = *compteurRX;
     int j = *compteurRY;
     int k = *compteurRZ;
-  
+    
+    if ((pTx > 5) || (pTx < -5) || (pTy > 5) || (pTy < -5) || (pTy > 5) || (pTy < -5) || (pRx > 5) || (pRx < -5) || (pRy > 5) || (pRy < -5) || (pRz > 5) || (pRz < -5)) {
+        //Réinitialisation de la caméra
+        this->camera()->lens()->setPerspectiveProjection(10.0f, 1.0f, 0.1f, 1000.0f);
+        this->camera()->setPosition(QVector3D(0, 70.0f, 0));
+        this->camera()->setViewCenter(QVector3D(0, 0.02 * (Max - Min) / 2, 0));
+        this->camera()->setUpVector(QVector3D(0, 0, 1));
+    }
 
     //Translation selon les veleurs de la souris pTx, pTy, pTz
     this->SceneTransform->setTranslation(QVector3D((float)h/10.0, (float)l/2.0, (float)m / 10.0));
