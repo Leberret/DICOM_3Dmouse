@@ -1283,14 +1283,20 @@ void Interface::Action3DMouseTx() {
         if ((pTx > 5) &&(pTx >= * lastTxValue) && (pTx<20)){
             i=i-1;
         }
-        else if ((pTx >= 20) && (pTx >= * lastTxValue) && (pTx < 300)) {
+        else if ((pTx >= 20) && (pTx >= * lastTxValue) && (pTx < 200)) {
             i = i-3;
+        }
+        else if ((pTx >= *lastTxValue) && (pTx >= 200)) {
+            i = i - 15;
         }
         else if ((pTx < -5) && (pTx <= * lastTxValue) && (pTx > -20)) {
             i=i+1;
         }
-        else if ((pTx <= -20) && (pTx <= *lastTxValue) && (pTx > -300)) {
+        else if ((pTx <= -20) && (pTx <= *lastTxValue) && (pTx > -200)) {
             i = i+3;
+        }
+        else if ((pTx <= *lastTxValue) && (pTx <= -200)) {
+            i = i + 15;
         }
     }
     
@@ -1369,13 +1375,19 @@ void Interface::Action3DMouseTy() {
             i = i - 1;
         }
         else if ((pTy >= 20) && (pTy >= * lastTyValue) && (pTy < 150)) {
-            i = i - 2;
+            i = i - 3;
+        }
+        else if ((pTy >= *lastTyValue) && (pTy >= 150)) {
+            i = i - 15;
         }
         else if ((pTy < -5) && (pTy <= *lastTyValue) && (pTy > -20)) {
             i = i + 1;
         }
         else if ((pTy <= -20) && (pTy <= *lastTyValue) && (pTy > -150)) {
-            i = i + 2;
+            i = i + 3;
+        }
+        else if ((pTy <= *lastTyValue) && (pTy <= -150)) {
+            i = i + 15;
         }
         
     }
@@ -1457,14 +1469,20 @@ void Interface::Action3DMouseTz() {
         if ((pTz > 5) && (pTz >= * lastTzValue) && (pTz <20)) {
             i = i - 1;
         }
-        else if ((pTz >= 20) && (pTz >= * lastTzValue) && (pTz < 250)) {
-            i = i - 2;
+        else if ((pTz >= 20) && (pTz >= * lastTzValue) && (pTz < 200)) {
+            i = i - 3;
+        }
+        else if ((pTz >= *lastTzValue) && (pTz >= 200)) {
+            i = i - 15;
         }
         else if ((pTz < -5) && (pTz <= *lastTzValue) && (pTz > -20)) {
             i = i + 1;
         }
-        else if ((pTz <= -20) && (pTz <= *lastTzValue) && (pTz > -250)) {
-            i = i + 2;
+        else if ((pTz <= -20) && (pTz <= *lastTzValue) && (pTz > -200)) {
+            i = i + 3;
+        }
+        else if ((pTz <= *lastTzValue) && (pTz <= -200)) {
+            i = i + 15;
         }
         
     }
