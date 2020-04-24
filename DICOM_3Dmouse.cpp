@@ -2305,7 +2305,8 @@ void Interface::mousePressEvent(QMouseEvent* e){
 * Fonctions : closeEvent()
 *
 * Description : Appel de la fonction Supprimer qui permet de supprimer le 
-* dossier image et son contenu lors de la fermeture de la fenêtre principale
+* dossier image et son contenu et permet de finir la boucle de la souris 3D
+* lors de la fermeture de la fenêtre principale
 *
 * Arguments : event : évenement de fermeture de la fenêtre
 *
@@ -2314,8 +2315,8 @@ void Interface::mousePressEvent(QMouseEvent* e){
 void Interface::closeEvent(QCloseEvent* event)
 {
     Supprimer();
+    exit(1);
     event->accept();
-
 }
 
 /*--------------------------------------------------------------------------

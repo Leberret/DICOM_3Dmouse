@@ -31,7 +31,7 @@ void Init3DMouse() {
         QMessageBox error;
         error.setIcon(QMessageBox::Warning);
         error.setWindowIcon(QIcon("icon.png"));
-        error.setText("Sorry - No supported 3Dconnexion device available."); //Ajout à la boite QMessageBox
+        error.setText("Desole - Aucun peripherique 3Dconnexion pris en charge disponible"); //Ajout à la boite QMessageBox
         error.exec(); //Affichage boite de dialogue
 
     }
