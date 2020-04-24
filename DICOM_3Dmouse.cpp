@@ -110,9 +110,20 @@ void Interface::AppercuVisualisation3D()
     comboBoxVisu->addItem("Coupe 1");
     comboBoxVisu->addItem("Coupe 2");
     comboBoxVisu->addItem("Coupe 3");
-    comboBoxVisu->setStyleSheet("color: white;"
-        "background-color:rgb(30,30,30);"
+    comboBoxVisu->setStyleSheet("color: rgb(30,30,30);"
+        "background-color:rgb(230,230,230);"
+        "selection-color:rgb(230,230,230)  ;"
+        "border-radius: 0px;"
+        "selection-background-color: rgb(30,30,30);");
+    LineEditSaisieMax->setStyleSheet("color: rgb(30,30,30);"
+        "background-color:rgb(230,230,230);"
         "selection-color:rgb(30,30,30)  ;"
+        "border-radius: 0px;"
+        "selection-background-color: rgb(230,230,230);");
+    LineEditSaisieMin->setStyleSheet("color:rgb(30,30,30);"
+        "background-color:rgb(230,230,230);"
+        "selection-color:rgb(30,30,30)  ;"
+        "border-radius: 0px;"
         "selection-background-color: rgb(230,230,230);");
     //Mise en place des connexions
     connect(comboBoxVisu, SIGNAL(activated(int)), this, SLOT(SelectCoupes(int)));
@@ -141,6 +152,7 @@ void Interface::AppercuVisualisation3D()
     WidgetAppercu3D->setStyleSheet("color: white;"
         "background-color:rgb(30,30,30);"
         "selection-color: white;"
+        "border-radius: 0px;"
         "selection-background-color: darkGrey;");
     //Affichage fenêtre
     WidgetAppercu3D->show();
@@ -348,10 +360,10 @@ void Interface::Enregistre()
     int cpt = Min;
 
     //Barre de chargement
-    QProgressDialog progress("Enregistrement des "+QString::number(Max-Min)+" images", "Cancel", Min, Max, this);
+    QProgressDialog progress("Enregistrement des "+QString::number(Max-Min)+" images", "Cancel", Min, Max,this);
     progress.setWindowModality(Qt::WindowModal);
     progress.setWindowTitle("Chargement");
-    progress.setMinimumSize(300, 50);
+    progress.setMinimumSize(400, 50);
     progress.setCancelButton(0);
     progress.setMinimumDuration(0);
 
@@ -633,9 +645,9 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
     *NbFichiers = Listchemin.length();
 
     //Création barre de chargement des images
-    QProgressDialog* Chargement = new QProgressDialog("Importation des "+QString::number(*NbFichiers)+" images", "Cancel", 0, *NbFichiers, this);//Paramètres de la barre
+    QProgressDialog* Chargement = new QProgressDialog("Importation des "+QString::number(*NbFichiers)+" images", "Cancel", 0, *NbFichiers,this);//Paramètres de la barre
     Chargement->setWindowTitle("Chargement");
-    Chargement->setMinimumSize(300,50);
+    Chargement->setMinimumSize(400,50);
     Chargement->setWindowModality(Qt::WindowModal);
     Chargement->setCancelButton(0);//Impossible d'annuler
     Chargement->setMinimumDuration(5);//Pas de temps mini de chargement
@@ -2474,26 +2486,32 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     file->setStyleSheet("color: white;"
         "background-color:rgb(30,30,30);"
         "selection-color: black;"
+        "border-radius: 0px;"
         "selection-background-color: rgb(230,230,230);");
     Affichage->setStyleSheet("color: white;"
         "background-color:rgb(30,30,30);"
         "selection-color: black;"
+        "border-radius: 0px;"
         "selection-background-color: rgb(230,230,230);");
     Info->setStyleSheet("color: white;"
         "background-color:rgb(30,30,30);"
         "selection-color: black;"
+        "border-radius: 0px;"
         "selection-background-color: rgb(230,230,230);");
     Outils->setStyleSheet("color: white;"
         "background-color:rgb(30,30,30);"
         "selection-color: black;"
+        "border-radius: 0px;"
         "selection-background-color: rgb(230,230,230);");
     menu->setStyleSheet("color: black;"
         "background-color:rgb(230,230,230);"
         "selection-color: black;"
+        "border-radius: 0px;"
         "selection-background-color:rgb(30,30,30) ;");
     //Ajout du menu au layout
     layout->setMenuBar(menu);
-
+    imageLabel1->setPixmap(QPixmap::fromImage(QImage("icon.png")).scaled(QSize(100, 100), Qt::IgnoreAspectRatio)); //Ajoute au layout
+    layout->addWidget(imageLabel1);//Ajout du layout à l'image
     //Paramétrage du layout
     layout->setAlignment(Qt::AlignHCenter);//Centrage de tous les éléments du layout
     setWindowState(windowState() | Qt::WindowMaximized);//Fenetre en plein ecran
