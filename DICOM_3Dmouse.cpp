@@ -2483,31 +2483,31 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     menu->addMenu(Affichage);
     menu->addMenu(Outils);
     menu->addAction("Aide", this, SLOT(AIDE()));
-    file->setStyleSheet("color: white;"
+    file->setStyleSheet("color:rgb(230,230,230);"
         "background-color:rgb(30,30,30);"
-        "selection-color: black;"
+        "selection-color: rgb(30,30,30);"
         "border-radius: 0px;"
         "selection-background-color: rgb(230,230,230);");
-    Affichage->setStyleSheet("color: white;"
+    Affichage->setStyleSheet("color:rgb(230,230,230);"
         "background-color:rgb(30,30,30);"
-        "selection-color: black;"
+        "selection-color: rgb(30,30,30);"
         "border-radius: 0px;"
         "selection-background-color: rgb(230,230,230);");
-    Info->setStyleSheet("color: white;"
+    Info->setStyleSheet("color:rgb(230,230,230);"
         "background-color:rgb(30,30,30);"
-        "selection-color: black;"
+        "selection-color: rgb(30,30,30);"
         "border-radius: 0px;"
         "selection-background-color: rgb(230,230,230);");
-    Outils->setStyleSheet("color: white;"
+    Outils->setStyleSheet("color:rgb(230,230,230);"
         "background-color:rgb(30,30,30);"
-        "selection-color: black;"
+        "selection-color: rgb(30,30,30);"
         "border-radius: 0px;"
         "selection-background-color: rgb(230,230,230);");
-    menu->setStyleSheet("color: black;"
+    menu->setStyleSheet("color: rgb(30,30,30);"
         "background-color:rgb(230,230,230);"
-        "selection-color: black;"
+        "selection-color: rgb(30,30,30);"
         "border-radius: 0px;"
-        "selection-background-color:rgb(30,30,30) ;");
+        "selection-background-color:rgb(230,230,230) ;");
     //Ajout du menu au layout
     layout->setMenuBar(menu);
     imageLabel1->setPixmap(QPixmap::fromImage(QImage("icon.png")).scaled(QSize(100, 100), Qt::IgnoreAspectRatio)); //Ajoute au layout

@@ -9,10 +9,10 @@ int main(int argc, char* argv[])
 
 	Interface w;
 	w.show();
-    w.setStyleSheet("color: white;"
+    w.setStyleSheet("color: rgb(230,230,230);"
         "background-color:rgb(30,30,30);"
-        "selection-color: white;"
-        "selection-background-color: darkGrey;");
+        "selection-color: rgb(30,30,30);"
+        "selection-background-color:rgb(230,230,230) ;");
     Init3DMouse();
     
 
