@@ -342,8 +342,10 @@ void Interface::Enregistre()
     int cpt = Min;
 
     //Barre de chargement
-    QProgressDialog progress("Importation des images", "Cancel", Min, Max, this);
+    QProgressDialog progress("Enregistrement des "+QString::number(Max-Min)+" images", "Cancel", Min, Max, this);
     progress.setWindowModality(Qt::WindowModal);
+    progress.setWindowTitle("Chargement");
+    progress.setMinimumSize(300, 50);
     progress.setCancelButton(0);
     progress.setMinimumDuration(0);
 
@@ -622,7 +624,9 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
     *NbFichiers = Listchemin.length();
 
     //Création barre de chargement des images
-    QProgressDialog Chargement("Importation des images", "Cancel", 0, *NbFichiers, this);//Paramètres de la barre
+    QProgressDialog Chargement("Importation des "+QString::number(*NbFichiers)+" images", "Cancel", 0, *NbFichiers, this);//Paramètres de la barre
+    Chargement.setWindowTitle("Chargement");
+    Chargement.setMinimumSize(300,50);
     Chargement.setWindowModality(Qt::WindowModal);
     Chargement.setCancelButton(0);//Impossible d'annuler
     Chargement.setMinimumDuration(0);//Pas de temps mini de chargement
