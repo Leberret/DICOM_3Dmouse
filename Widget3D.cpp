@@ -219,14 +219,14 @@ Widget3D::Widget3D()
 
     //Conversion de la Scene3d en QWidget et fixation de sa taille
     container = createWindowContainer(Visualisation3D);
-    container->setFixedSize(999, 725);
+    container->setFixedSize(999, 700);
 
     //Ajout des composants à leurs entités
     menu->addMenu(Fichier);
     menu->addMenu(Affichage);    
     menu->addAction("Aide", this, SLOT(AIDE3D()));
     Layout->setMenuBar(menu);
-    Layout->addWidget(container, 1, 0, Qt::AlignJustify);
+    Layout->addWidget(container, 1, 0, Qt::AlignBottom);
 
     //Appel des fonctions toutes les 10ms
     timer = new QTimer();
@@ -240,6 +240,7 @@ Widget3D::Widget3D()
 
     //paramètres du widget
     setLayout(Layout);
+    setStyleSheet("background-color:white;");
     setFixedSize(1000, 800);
     setWindowIcon(QIcon("icon.png"));
     setWindowTitle("Interface de reconstruction 3D des IRM");//titre fenetre
