@@ -110,6 +110,7 @@ void Interface::AppercuVisualisation3D()
     comboBoxVisu->addItem("Coupe 1");
     comboBoxVisu->addItem("Coupe 2");
     comboBoxVisu->addItem("Coupe 3");
+    comboBoxVisu->setFixedSize(100, 22);
     comboBoxVisu->setStyleSheet("color: rgb(30,30,30);"
         "background-color:rgb(230,230,230);"
         "selection-color:rgb(230,230,230)  ;"
@@ -1257,11 +1258,15 @@ void Interface::Action3DMouseTx() {
     //Condition si souris en mode interface 3D
     if (mode3D == 1)
         return;
-
+ 
     //Condition d'utilisation de la souris
     int value = *souris3D;
-    if (value == 0) //Si souris 3D off
+
+    if (value == 0){ //Si souris 3D off
+        //Récupération du numéro de l'image précédemment affichée 
+        *NumImageTx = slider1->value();
         return;
+    }
 
     //Récupération du nombre d'images suivant la position de la coupe sagittale
     int NbImages;
@@ -1278,7 +1283,7 @@ void Interface::Action3DMouseTx() {
         break;
     }
 
-    //Récupération du numéro de l'image précédemment affichée
+    //Récupération du numéro de l'image précédemment affichée avec le slider
     int i = *NumImageTx;
 
     //Condition de navigation entre 0 et le nombre d'images
@@ -1351,8 +1356,11 @@ void Interface::Action3DMouseTy() {
 
     //Condition d'utilisation de la souris
     int value = *souris3D;
-    if (value == 0)
+    if (value == 0) { //Si souris 3D off
+        //Récupération du numéro de l'image précédemment affichée avec le slider
+        *NumImageTy = slider2->value();
         return;
+    }
 
     //Récupération du nombre d'images suivant la position de la coupe transversale
     int NbImages;
@@ -1444,10 +1452,14 @@ void Interface::Action3DMouseTz() {
     if (mode3D == 1)
         return;
 
+    
     //Condition d'utilisation de la souris
     int value = *souris3D;
-    if (value == 0)
+    if (value == 0) { //Si souris 3D off
+        //Récupération du numéro de l'image précédemment affichée avec le slider
+        *NumImageTz = slider3->value();
         return;
+    }
 
     //Récupération du nombre d'images suivant la position de la coupe coronale
     int NbImages;
@@ -1652,10 +1664,12 @@ void Interface::ClicGauche(){
     //Condition si souris en mode interface 3D
     if (mode3D == 1)
         return;
+
     //Conditon si le bouton cliqué
     if (OnOffSouris3D == 1) { //Au premier clic
         *souris3D = 1; //Activation de la souris 3D
         *MenuSouris3D = 0; //Le menu On/Off de la souris3D n'a pas la main
+        return;
     }
     else{ //Au deuxième clic
         if (*MenuSouris3D == 1) //Si le menu On/Off de la souris3D a la main
@@ -2538,13 +2552,13 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     connect(this, SIGNAL(clic(QMouseEvent*)), this, SLOT(MajClicCoupe3(QMouseEvent*)));
     
     //Actualisation des données de la souris en fonction du timer
+    connect(timer, SIGNAL(timeout()), this, SLOT(fenetreActive()));
     connect(timer, SIGNAL(timeout()), this, SLOT(ClicGauche()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTx()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTy()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseTz()));
     connect(timer, SIGNAL(timeout()), this, SLOT(Action3DMouseIntensite()));
     connect(timer, SIGNAL(timeout()), this, SLOT(DoubleClics()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(fenetreActive()));
     
     //Temps d'intervalle entre actualisations : ici 10ms
     timer->start(10);

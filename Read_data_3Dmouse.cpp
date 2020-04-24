@@ -199,6 +199,11 @@ void BoutonsEvent(SiSpwEvent* pEvent)
     //Bouton de gauche
     case V3DCMD_KEY_F1:
         clicG = pEvent->u.cmdEventData.pressed;
+
+        //Condition si souris en mode interface 3D
+        if (mode3D == 1)
+            return;
+
         if ((pEvent->u.cmdEventData.pressed == 1) && (clicD == 0)) {
             int i = prevOnOffSouris3D;
             if (i == 0) {

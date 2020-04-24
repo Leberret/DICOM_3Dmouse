@@ -68,10 +68,8 @@ void Widget3D::ClicGauche3D() {
         return;
 
     //Conditon si le bouton cliqué
-    //if (OnOffSouris3D == 1) { //Au premier clic
     if ((clicG==1)&&(clicD==0)){
         centrage();
-        //Actu3D();
     }
     else { //Au deuxième clic
         return;

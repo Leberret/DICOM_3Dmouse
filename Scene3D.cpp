@@ -666,9 +666,7 @@ void My3DScene::mouse3DMove()
 *--------------------------------------------------------------------------*/
 void My3DScene::Recentrer()
 {
-    this->camera()->setViewCenter(QVector3D(0, 0, 0));//Position initiale
-    //this->SceneTransform->setTranslation(QVector3D(0.0, 0.0, 0.0));
-    //mouse3DMove();
+    this->camera()->setViewCenter(QVector3D(0.0, 0.0, 0.0));//Position initiale
     *compteurTX = 0;
     *compteurTY = 0;
     *compteurTZ = 0;
@@ -685,10 +683,9 @@ void My3DScene::Recentrer()
 *--------------------------------------------------------------------------*/
 void My3DScene::BloquerScene()
 {
-    this->camera()->setViewCenter(QVector3D(0, 0.02 * (Max - Min) / 2, 0));//Position initiale
+    this->camera()->setViewCenter(QVector3D(0.0, 0.0, 0.0));//Position initiale
     *compteurTX = 0;
     *compteurTZ = 0;
-
 }
 
 /*--------------------------------------------------------------------------
