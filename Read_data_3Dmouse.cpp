@@ -29,6 +29,8 @@ void Init3DMouse() {
     if (res < 1) //Si erreur
     {
         QMessageBox error;
+        error.setIcon(QMessageBox::Warning);
+        error.setWindowIcon(QIcon("icon.png"));
         error.setText("Sorry - No supported 3Dconnexion device available."); //Ajout à la boite QMessageBox
         error.exec(); //Affichage boite de dialogue
 
@@ -58,6 +60,8 @@ int SbInit()
     {
         //Message d'erreur
         QMessageBox error;
+        error.setIcon(QMessageBox::Warning);
+        error.setWindowIcon(QIcon("icon.png"));
         error.setText("Erreur : Impossible de charger la librairie SiAppDll"); //Ajout à la boite QMessageBox
         error.exec(); //Affichage boite de dialogue
     }
@@ -83,6 +87,8 @@ int SbInit()
 
         //Message d'erreur
         QMessageBox error;
+        error.setIcon(QMessageBox::Warning);
+        error.setWindowIcon(QIcon("icon.png"));
         error.setText("Erreur : Problème avec l'initialisation de la souris 3D"); //Ajout à la boite QMessageBox
         error.exec(); //Affichage boite de dialogue
     }
