@@ -2315,7 +2315,7 @@ void Interface::mousePressEvent(QMouseEvent* e){
 void Interface::closeEvent(QCloseEvent* event)
 {
     Supprimer();
-    //exit(1);
+    exit(1);
     event->accept();
 }
 

@@ -72,23 +72,12 @@ void My3DScene::createObjects()
     Qt3DRender::QTextureLoader* loader;
 
     if (Max - Min < 200) {
-
-        //Barre de chargement
-        QProgressDialog progress("Chargement de la scene 3D", "Cancel", Min, Max, this);
-        progress.setWindowModality(Qt::WindowModal);
-        progress.setWindowTitle("Chargement");
-        progress.setMinimumSize(300, 50);
-        progress.setCancelButton(0);
-        progress.setMinimumDuration(0);
-
         //De l'image de départ à l'image d'arrivée
         for (int i = Min; i < Max - 1; i++)
         {
             //Répétition de la même image trois fois
             for (int k = 0; k < 3; k += 1)
             {
-                progress.setValue(i);
-
                 //--------------------------FACE RECTO---------------------------------------
                 //Initialisation Entité, plan et transform
                 this->planeEntity = new Qt3DCore::QEntity(&this->scene);
@@ -140,8 +129,6 @@ void My3DScene::createObjects()
                 this->planeEntity->addComponent(this->planeTransform);
             }
         }
-        progress.setValue(Max);
-
     }
     else if(Max - Min >= 200 && Max - Min <= 300)
     {

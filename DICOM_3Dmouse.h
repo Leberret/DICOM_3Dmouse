@@ -22,7 +22,6 @@
 #include "Scene3D.h"
 #include <direct.h>
 
-
 //Appel des variables globales externes
 extern HWND         hWndMain;
 extern INT			Coupe, Min, Max;
@@ -80,7 +79,6 @@ public slots:
 	void Enregistre();
 	void AIDE();
 	void fenetreActive();
-	void lancementInteraface3D();
 
 	//------------------Interface 3D-------------------------
 	void FirstImage(QString k);
