@@ -72,6 +72,7 @@ void My3DScene::createObjects()
     Qt3DRender::QTextureLoader* loader;
 
     if (Max - Min < 200) {
+
         //De l'image de départ à l'image d'arrivée
         for (int i = Min; i < Max - 1; i++)
         {
@@ -266,6 +267,7 @@ void My3DScene::createCamera()
     this->camera()->setPosition(QVector3D(0, 70.0f, 0));
     this->camera()->setViewCenter(QVector3D(0, 0.02 * (Max - Min) / 2, 0));
     this->camera()->setUpVector(QVector3D(0, 0, 1));
+   
 
     //Contrôle de la caméra
     this->cameraController = new Qt3DExtras::QOrbitCameraController(&this->scene);
