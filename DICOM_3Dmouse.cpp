@@ -110,7 +110,10 @@ void Interface::AppercuVisualisation3D()
     comboBoxVisu->addItem("Coupe 1");
     comboBoxVisu->addItem("Coupe 2");
     comboBoxVisu->addItem("Coupe 3");
-
+    comboBoxVisu->setStyleSheet("color: white;"
+        "background-color:rgb(30,30,30);"
+        "selection-color:rgb(30,30,30)  ;"
+        "selection-background-color: rgb(230,230,230);");
     //Mise en place des connexions
     connect(comboBoxVisu, SIGNAL(activated(int)), this, SLOT(SelectCoupes(int)));
     connect(SliderVisuIntensite, SIGNAL(valueChanged(int)), this, SLOT(AfficheIntensiteTransparence()));
@@ -135,7 +138,10 @@ void Interface::AppercuVisualisation3D()
     WidgetAppercu3D->setWindowTitle("Apercu de visualisation pour reconstitution 3D");//titre fenetre
     WidgetAppercu3D->setWindowIcon(QIcon("icon.png"));//Mettre un Icon a la fenetre
     WidgetAppercu3D->setLayout(LayoutVisuImage);
-
+    WidgetAppercu3D->setStyleSheet("color: white;"
+        "background-color:rgb(30,30,30);"
+        "selection-color: white;"
+        "selection-background-color: darkGrey;");
     //Affichage fenêtre
     WidgetAppercu3D->show();
 
@@ -2305,8 +2311,7 @@ void Interface::mousePressEvent(QMouseEvent* e){
 * Fonctions : closeEvent()
 *
 * Description : Appel de la fonction Supprimer qui permet de supprimer le 
-* dossier image et son contenu et permet de finir la boucle de la souris 3D
-* lors de la fermeture de la fenêtre principale
+* dossier image et son contenu lors de la fermeture de la fenêtre principale
 *
 * Arguments : event : évenement de fermeture de la fenêtre
 *
@@ -2315,8 +2320,8 @@ void Interface::mousePressEvent(QMouseEvent* e){
 void Interface::closeEvent(QCloseEvent* event)
 {
     Supprimer();
-    exit(1);
     event->accept();
+
 }
 
 /*--------------------------------------------------------------------------
@@ -2466,7 +2471,26 @@ Interface::Interface() : QWidget() //Widget = fenetre principale
     menu->addMenu(Affichage);
     menu->addMenu(Outils);
     menu->addAction("Aide", this, SLOT(AIDE()));
-
+    file->setStyleSheet("color: white;"
+        "background-color:rgb(30,30,30);"
+        "selection-color: black;"
+        "selection-background-color: rgb(230,230,230);");
+    Affichage->setStyleSheet("color: white;"
+        "background-color:rgb(30,30,30);"
+        "selection-color: black;"
+        "selection-background-color: rgb(230,230,230);");
+    Info->setStyleSheet("color: white;"
+        "background-color:rgb(30,30,30);"
+        "selection-color: black;"
+        "selection-background-color: rgb(230,230,230);");
+    Outils->setStyleSheet("color: white;"
+        "background-color:rgb(30,30,30);"
+        "selection-color: black;"
+        "selection-background-color: rgb(230,230,230);");
+    menu->setStyleSheet("color: black;"
+        "background-color:rgb(230,230,230);"
+        "selection-color: black;"
+        "selection-background-color:rgb(30,30,30) ;");
     //Ajout du menu au layout
     layout->setMenuBar(menu);
 

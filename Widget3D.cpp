@@ -225,6 +225,20 @@ Widget3D::Widget3D()
     menu->addMenu(Fichier);
     menu->addMenu(Affichage);    
     menu->addAction("Aide", this, SLOT(AIDE3D()));
+    Fichier->setStyleSheet("color: white;"
+        "background-color:rgb(30,30,30);"
+        "selection-color: black;"
+        "border-radius: 0px;"
+        "selection-background-color: rgb(230,230,230);");
+    Affichage->setStyleSheet("color: white;"
+        "background-color:rgb(30,30,30);"
+        "selection-color: black;"
+        "border-radius: 0px;"
+        "selection-background-color: rgb(230,230,230);");
+    menu->setStyleSheet("color: black;"
+        "background-color:rgb(230,230,230);"
+        "selection-color: black;"
+        "selection-background-color:rgb(30,30,30) ;");
     Layout->setMenuBar(menu);
     Layout->addWidget(container, 1, 0, Qt::AlignBottom);
 
