@@ -4,9 +4,10 @@
 SiHdl        devHdl;
 HWND         hWndMain;
 INT          pTx, pTy, pTz, pRx, pRy, pRz;
-INT          Intensite=0,prevInt;
-INT          OnOffSouris3D=0,prevOnOffSouris3D;
+INT          Intensite=0,prevInt=0;
+INT          OnOffSouris3D=0,prevOnOffSouris3D=0;
 INT          clicD = 0,clicG = 0;
+INT          FixeClic = 0, prevFixeClic=0;
 
 /*--------------------------------------------------------------------------
 * Fonction : Init3DMouse()
@@ -209,14 +210,30 @@ void BoutonsEvent(SiSpwEvent* pEvent)
     case V3DCMD_KEY_F2:
         clicD = pEvent->u.cmdEventData.pressed;
         if ((pEvent->u.cmdEventData.pressed == 1) && (clicG==0)) {
-            int i = prevInt;
-            if (i == 0) {
-                Intensite = 1;
+            //Condition si souris en mode interface 3D
+            if (mode3D == 1) {
+                int j = prevFixeClic;
+                if (j == 0) {
+                    FixeClic = 1;
+                }
+                else {
+                    FixeClic = 0;
+                }
+                prevFixeClic = FixeClic;
             }
-            else {
-                Intensite = 0;
+
+            //Condition si souris en mode interface 2D
+            else if(mode3D==0){
+                int i = prevInt;
+                if (i == 0) {
+                    Intensite = 1;
+                }
+                else {
+                    Intensite = 0;
+                }
+                prevInt = Intensite;
             }
-            prevInt = Intensite;
+            
         }
         break;
 

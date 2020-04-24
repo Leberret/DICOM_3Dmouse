@@ -9,6 +9,8 @@
 
 using namespace std;
 
+//Appel des variables globales externes
+extern INT			mode3D;
 
 
 int DispatchLoopNT();

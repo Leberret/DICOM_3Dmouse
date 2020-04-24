@@ -43,7 +43,7 @@ void Widget3D::ClicDroit3D() {
     if (mode3D == 0)
         return;
 
-    int clicg = Intensite; //vaut 1 au 1er clic et 0 au 2e clic sur bouton droit
+    int clicg = FixeClic; //vaut 1 au 1er clic et 0 au 2e clic sur bouton droit
 
     //Condition si clic sur bouton droit de la souris 3D
     if (clicg == 1)
