@@ -183,8 +183,9 @@ void Widget3D::AIDE3D()
     QMessageBox aide;
     aide.setWindowTitle("Aide utilisation logiciel avec Souris 3D");
     QString n = "\n";
+    aide.setWindowIcon(QIcon("icon.png"));
     aide.setIcon(QMessageBox::Information);
-    aide.setText("Centrer la caméra et l'objet :" + n +
+    aide.setText("Centrer la camera et l'objet :" + n +
         "   -> Presser sur le bouton de gauche de votre souris 3D." + n +
         " Realiser une capture d'ecran :" + n +
         "   -> Presser simultanement des deux boutons lateraux de votre souris 3D." + n +
@@ -240,6 +241,7 @@ Widget3D::Widget3D()
     //paramètres du widget
     setLayout(Layout);
     setFixedSize(1000, 800);
+    setWindowIcon(QIcon("icon.png"));
     setWindowTitle("Interface de reconstruction 3D des IRM");//titre fenetre
 
     show();

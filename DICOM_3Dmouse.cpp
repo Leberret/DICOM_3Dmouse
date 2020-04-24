@@ -539,7 +539,7 @@ void Interface::displayTags()
         "Type d'images : " + type + "\n" +
         "Interpretation photometrique : " + photo + "\n"); //Ajout à la boite QMessageBox
     msg.setWindowTitle("Informations patient");
-    msg.setWindowIcon(QIcon("patient.png"));
+    msg.setWindowIcon(QIcon("icon.png"));
 
     //Affichage boite de dialogue
     msg.exec();
@@ -606,6 +606,9 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
     //Conditions d'existance des fichiers dans le dossier
     if (!direction.hasNext()) {
         QMessageBox ErreurDossier;
+        ErreurDossier.setWindowTitle("ATTENTION");
+        ErreurDossier.setWindowIcon(QIcon("icon.png"));
+        ErreurDossier.setIcon(QMessageBox::Warning);
         ErreurDossier.setText("Le dossier est incorrect");
         ErreurDossier.exec();
         delete Listechemin;//Réinitialisation du chemin d'accès
@@ -624,18 +627,15 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
     *NbFichiers = Listchemin.length();
 
     //Création barre de chargement des images
-    QProgressDialog Chargement("Importation des "+QString::number(*NbFichiers)+" images", "Cancel", 0, *NbFichiers, this);//Paramètres de la barre
-    Chargement.setWindowTitle("Chargement");
-    Chargement.setMinimumSize(300,50);
-    Chargement.setWindowModality(Qt::WindowModal);
-    Chargement.setCancelButton(0);//Impossible d'annuler
-    Chargement.setMinimumDuration(0);//Pas de temps mini de chargement
+    QProgressDialog* Chargement = new QProgressDialog("Importation des "+QString::number(*NbFichiers)+" images", "Cancel", 0, *NbFichiers, this);//Paramètres de la barre
+    Chargement->setWindowTitle("Chargement");
+    Chargement->setMinimumSize(300,50);
+    Chargement->setWindowModality(Qt::WindowModal);
+    Chargement->setCancelButton(0);//Impossible d'annuler
+    Chargement->setMinimumDuration(5);//Pas de temps mini de chargement
     //Gestion d'ouverture et de lecture de tous les fichiers du dossier
     for (int NbFichier = 0; NbFichier < *NbFichiers; NbFichier++)
     {
-        //Ajout valeur barre de chargement
-        Chargement.setValue(NbFichier);
-
         *pathFolder = Listchemin[NbFichier]; //Selection du chemin selon la boucle
 
         //Convertion le QString* en const char * 
@@ -653,11 +653,19 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
 
         if (dataDcm == NULL) {//Condition d'existence du fichier //C:/Users/lefur/Desktop/Cours/M1/Projet_Souris3D/IMAGES/BrainIRM/IMG0001.dcm
             QMessageBox ErreurFichiers;
-            ErreurFichiers.setText("Le format est incohérent avec le format DICOM");
+            ErreurFichiers.setWindowTitle("ATTENTION");
+            ErreurFichiers.setWindowIcon(QIcon("icon.png"));
+            ErreurFichiers.setIcon(QMessageBox::Warning);
+            ErreurFichiers.setText("Le format est incoherent avec le format DICOM");
             ErreurFichiers.exec();
+            delete Chargement;
+            delete Listechemin;//Réinitialisation du chemin d'accès
             ouvrirFichiers();//Rappel de l'ouverture des fichiers (nouvelle sélection)
             return;//sortie de l'execution actuelle
         }
+        //Ajout valeur barre de chargement
+        Chargement->setValue(NbFichier);
+
         *rows = getUShortTagValue(0x00280010, dataDcm);//Nombre de lignes
         *cols = getUShortTagValue(0x00280011, dataDcm);//Nombre de colonnes
 
@@ -670,7 +678,8 @@ void Interface::ouvrirFichiers() //Ouvrir le dossier l'image en fonction du posi
     }
 
     //Hors de la boucle for, ajout de la valeur max pour fin de chargement
-    Chargement.setValue(*NbFichiers);
+    Chargement->setValue(*NbFichiers);
+    delete Chargement;
             
     //-----------------------Paramétrage et positionnement des outils------------------------
     SpinBox1->setButtonSymbols(QSpinBox::NoButtons);
@@ -2306,6 +2315,7 @@ void Interface::AIDE()
     QMessageBox aide;
     aide.setWindowTitle("Aide utilisation logiciel avec Souris 3D");
     QString n = "\n";
+    aide.setWindowIcon(QIcon("icon.png"));
     aide.setIcon(QMessageBox::Information);
     aide.setText("Activer la navigation avec la souris 3D :"+n+
         "   -> Presser sur le bouton de gauche de votre souris 3D."+n+
