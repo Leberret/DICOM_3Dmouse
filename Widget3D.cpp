@@ -238,7 +238,6 @@ Widget3D::Widget3D()
     menu->setStyleSheet("color: black;"
         "background-color:rgb(230,230,230);"
         "selection-color: black;"
-        "border-radius: 0px;"
         "selection-background-color:rgb(30,30,30) ;");
     Layout->setMenuBar(menu);
     Layout->addWidget(container, 1, 0, Qt::AlignBottom);
