@@ -67,14 +67,15 @@ void My3DScene::createObjects()
 {
     //Récupération de la coupe pour ajouter dans chemin d'accès
     string coupe = to_string(Coupe);
-
+    int Milieu = (int)((Max - Min )/ 2);
+    int nbImage = Max - Milieu;
     //Definition texture
     Qt3DRender::QTextureLoader* loader;
 
-    if (Max - Min < 200) {
+    if ((int)(Max - Min) < 200) {
 
         //De l'image de départ à l'image d'arrivée
-        for (int i=0; i < Max/2; i++)
+        for (int i=0; i < Milieu; i++)
         {
             //Répétition de la même image trois fois
             for (int k = 0; k < 3; k += 1)
@@ -95,7 +96,7 @@ void My3DScene::createObjects()
                 this->planeTexture = new Qt3DExtras::QTextureMaterial(this->planeMesh);
                 string cheminimage;
                 string format = ".PNG";
-                string numero = to_string(Max/2 +i);
+                string numero = to_string(nbImage +i);
                 cheminimage = "Images/Coupe" + coupe + "_" + numero + format;
                 loader->setSource(QUrl::fromLocalFile(QString::fromStdString(cheminimage)));
                 this->planeTexture->setTexture(loader);
@@ -130,7 +131,7 @@ void My3DScene::createObjects()
                 this->planeEntity->addComponent(this->planeTransform);
             }
         }
-        for (int i = 0; i < Max/2; i++)
+        for (int i = 0; i < Milieu; i++)
         {
             //Répétition de la même image trois fois
             for (int k = 0; k < 3; k += 1)
@@ -151,7 +152,7 @@ void My3DScene::createObjects()
                 this->planeTexture = new Qt3DExtras::QTextureMaterial(this->planeMesh);
                 string cheminimage;
                 string format = ".PNG";
-                string numero = to_string(Max/2-i);
+                string numero = to_string(nbImage -i);
                 cheminimage = "Images/Coupe" + coupe + "_" + numero + format;
                 loader->setSource(QUrl::fromLocalFile(QString::fromStdString(cheminimage)));
                 this->planeTexture->setTexture(loader);
@@ -187,9 +188,9 @@ void My3DScene::createObjects()
             }
         }
     }
-    else if(Max - Min >= 200 && Max - Min <= 300)
+    else if((int)(Max - Min) >= 200 &&(int)( Max - Min) <= 300)
     {
-        for (int i = 0; i < Max / 2; i++)
+        for (int i = 0; i < Milieu; i++)
         {
             //Répétition de la même image trois fois
             for (int k = 0; k < 2; k += 1)
@@ -210,7 +211,7 @@ void My3DScene::createObjects()
                 this->planeTexture = new Qt3DExtras::QTextureMaterial(this->planeMesh);
                 string cheminimage;
                 string format = ".PNG";
-                string numero = to_string(Max/2+i);
+                string numero = to_string(nbImage +i);
                 cheminimage = "Images/Coupe" + coupe + "_" + numero + format;
                 loader->setSource(QUrl::fromLocalFile(QString::fromStdString(cheminimage)));
                 this->planeTexture->setTexture(loader);
@@ -245,7 +246,7 @@ void My3DScene::createObjects()
                 this->planeEntity->addComponent(this->planeTransform);
             }
         }
-        for (int i = 0; i < Max / 2; i++)
+        for (int i = 0; i < Milieu; i++)
         {
             //Répétition de la même image trois fois
             for (int k = 0; k < 2; k += 1)
@@ -266,7 +267,7 @@ void My3DScene::createObjects()
                 this->planeTexture = new Qt3DExtras::QTextureMaterial(this->planeMesh);
                 string cheminimage;
                 string format = ".PNG";
-                string numero = to_string(Max/2-i);
+                string numero = to_string(nbImage -i);
                 cheminimage = "Images/Coupe" + coupe + "_" + numero + format;
                 loader->setSource(QUrl::fromLocalFile(QString::fromStdString(cheminimage)));
                 this->planeTexture->setTexture(loader);
@@ -305,7 +306,7 @@ void My3DScene::createObjects()
     else
     {
         //De l'image de départ à l'image d'arrivée
-        for (int i = 0; i < Max / 2; i++)
+        for (int i = 0; i < Milieu; i++)
         {
             //--------------------------FACE RECTO---------------------------------------
             //Initialisation Entité, plan et transform
@@ -323,7 +324,7 @@ void My3DScene::createObjects()
             this->planeTexture = new Qt3DExtras::QTextureMaterial(this->planeMesh);
             string cheminimage;
             string format = ".PNG";
-            string numero = to_string(Max/2+i);
+            string numero = to_string(nbImage +i);
             cheminimage = "Images/Coupe" + coupe + "_" + numero + format;
             loader->setSource(QUrl::fromLocalFile(QString::fromStdString(cheminimage)));
             this->planeTexture->setTexture(loader);
@@ -357,7 +358,7 @@ void My3DScene::createObjects()
             this->planeEntity->addComponent(this->planeTexture);
             this->planeEntity->addComponent(this->planeTransform);
         }
-        for (int i = 0; i < Max / 2; i++)
+        for (int i = 0; i < Milieu; i++)
         {
             //--------------------------FACE RECTO---------------------------------------
             //Initialisation Entité, plan et transform
@@ -375,7 +376,7 @@ void My3DScene::createObjects()
             this->planeTexture = new Qt3DExtras::QTextureMaterial(this->planeMesh);
             string cheminimage;
             string format = ".PNG";
-            string numero = to_string(Max/2-i);
+            string numero = to_string(nbImage -i);
             cheminimage = "Images/Coupe" + coupe + "_" + numero + format;
             loader->setSource(QUrl::fromLocalFile(QString::fromStdString(cheminimage)));
             this->planeTexture->setTexture(loader);
@@ -470,7 +471,7 @@ void My3DScene::mouse3DMove()
         //Réinitialisation de la caméra
         this->camera()->lens()->setPerspectiveProjection(10.0f, 1.0f, 0.1f, 1000.0f);
         this->camera()->setPosition(QVector3D(0, 70.0f, 0));
-        this->camera()->setViewCenter(QVector3D(0, 0.02 * (Max - Min) / 2, 0));
+        this->camera()->setViewCenter(QVector3D(0,0, 0));
         this->camera()->setUpVector(QVector3D(0, 0, 1));
     }
 
