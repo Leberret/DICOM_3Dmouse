@@ -483,14 +483,14 @@ void My3DScene::mouse3DMove()
     if ((pTx > 5) && (pTx >= *precValueTX) && (pTx < 20)) {
         h = h - 1;
     }
-    else if ((pTx >= 20) && (pTx >= *precValueTX) && (pTx < 600)) {
+    else if ((pTx >= 20) && (pTx >= *precValueTX)) {
         h = h - 3;
     }
 
     else if ((pTx < -5) && (pTx <= *precValueTX) && (pTx > -20)) {
         h = h + 1;
     }
-    else if ((pTx <= -20) && (pTx <= *precValueTX) && (pTx > -600)) {
+    else if ((pTx <= -20) && (pTx <= *precValueTX)) {
         h = h + 3;
     }
 
@@ -506,14 +506,14 @@ void My3DScene::mouse3DMove()
     if ((-pTy > 5) && (-pTy >= *precValueTY) && (-pTy < 20)) {
         l = l - 1;
     }
-    else if ((-pTy >= 20) && (-pTy >= *precValueTY) && (-pTy < 600)) {
+    else if ((-pTy >= 20) && (-pTy >= *precValueTY)) {
         l = l - 3;
     }
 
     else if ((-pTy < -5) && (-pTy <= *precValueTY) && (-pTy > -20)) {
         l = l + 1;
     }
-    else if ((-pTy <= -20) && (-pTy <= *precValueTY) && (-pTy > -600)) {
+    else if ((-pTy <= -20) && (-pTy <= *precValueTY)) {
         l = l + 3;
     }
 
@@ -529,14 +529,14 @@ void My3DScene::mouse3DMove()
     if ((-pTz > 5) && (-pTz >= *precValueTZ) && (-pTz < 20)) {
         m = m - 1;
     }
-    else if ((-pTz >= 20) && (-pTz >= *precValueTZ) && (-pTz < 600)) {
+    else if ((-pTz >= 20) && (-pTz >= *precValueTZ)) {
         m = m - 3;
     }
 
     else if ((-pTz < -5) && (-pTz <= *precValueTZ) && (-pTz > -20)) {
         m = m + 1;
     }
-    else if ((-pTz <= -20) && (-pTz <= *precValueTZ) && (-pTz > -600)) {
+    else if ((-pTz <= -20) && (-pTz <= *precValueTZ)) {
         m = m + 3;
     }
 
@@ -548,31 +548,21 @@ void My3DScene::mouse3DMove()
 
 
     //--------------------------RX-------------------------------
-    //Conditions pour avoir une valeur d'angle cohérente
-    if ((i > -360) && (i < 360)) {
-        this->SceneTransform->setRotationX(i);
+    this->SceneTransform->setRotationX(i);
         
-        //Conditions de sensibilité de la souris 3D
-        if ((pRx > 5) && (pRx >= *precValueRX) && (pRx < 20)) {
-            i = i - 1;
-        }
-        else if ((pRx >= 20) && (pRx >= *precValueRX) && (pRx < 600)) {
-            i = i - 3;
-        }
-
-        else if ((pRx < -5) && (pRx <= *precValueRX) && (pRx > -20)) {
-            i = i + 1;
-        }
-        else if ((pRx <= -20) && (pRx <= *precValueRX) && (pRx > -600)) {
-            i = i + 3;
-        }
+    //Conditions de sensibilité de la souris 3D
+    if ((pRx > 5) && (pRx >= *precValueRX) && (pRx < 20)) {
+        i = i - 1;
+    }
+    else if ((pRx >= 20) && (pRx >= *precValueRX)) {
+        i = i - 3;
     }
 
-    else if (i <= -360) {
-        i = 0;
+    else if ((pRx < -5) && (pRx <= *precValueRX) && (pRx > -20)) {
+        i = i + 1;
     }
-    else if (i >= 360) {
-        i = 0;
+    else if ((pRx <= -20) && (pRx <= *precValueRX)) {
+        i = i + 3;
     }
 
     //Mémorisation de la valeur du NumImageTx
@@ -582,31 +572,21 @@ void My3DScene::mouse3DMove()
     *precValueRX = pRx;
 
     //--------------------------RY-------------------------------
-    //Conditions pour avoir une valeur d'angle cohérente
-    if ((j > -360) && (j < 360)) {
-        this->SceneTransform->setRotationY(j);
+    this->SceneTransform->setRotationY(j);
         
-        //Conditions de sensibilité de la souris 3D
-        if ((-pRy > 5) && (-pRy >= *precValueRY) && (-pRy < 20)) {
-            j = j - 1;
-        }
-        else if ((-pRy >= 20) && (-pRy >= *precValueRY) && (-pRy < 600)) {
-            j = j - 3;
-        }
-
-        else if ((-pRy < -5) && (-pRy <= *precValueRY) && (-pRy > -20)) {
-            j = j + 1;
-        }
-        else if ((-pRy <= -20) && (-pRy <= *precValueRY) && (-pRy > -600)) {
-            j = j + 3;
-        }
+    //Conditions de sensibilité de la souris 3D
+    if ((-pRy > 5) && (-pRy >= *precValueRY) && (-pRy < 20)) {
+        j = j - 1;
+    }
+    else if ((-pRy >= 20) && (-pRy >= *precValueRY) && (-pRy < 600)) {
+        j = j - 3;
     }
 
-    else if (j <= -360) {
-        j = 0;
+    else if ((-pRy < -5) && (-pRy <= *precValueRY) && (-pRy > -20)) {
+        j = j + 1;
     }
-    else if (j >= 360) {
-        j = 0;
+    else if ((-pRy <= -20) && (-pRy <= *precValueRY) && (-pRy > -600)) {
+        j = j + 3;
     }
 
     //Mémorisation de la valeur du NumImageTx
@@ -617,32 +597,21 @@ void My3DScene::mouse3DMove()
 
 
     //--------------------------RZ-------------------------------
-    //Conditions pour avoir une valeur d'angle cohérente
-    if ((k > -360) && (k < 360)) {
-        this->SceneTransform->setRotationZ(k);
-        //Conditions de sensibilité de la souris 3D
-        if ((-pRz > 5) && (-pRz >= *precValueRZ) && (-pRz < 20)) {
-            k = k - 1;
-        }
-        else if ((-pRz >= 20) && (-pRz >= *precValueRZ) && (-pRz < 600)) {
-            k = k - 3;
-        }
-
-        else if ((-pRz < -5) && (-pRz <= *precValueRZ) && (-pRz > -20)) {
-            k = k + 1;
-        }
-        else if ((-pRz <= -20) && (-pRz <= *precValueRZ) && (-pRz > -600)) {
-            k = k + 3;
-        }
+    this->SceneTransform->setRotationZ(k);
+    //Conditions de sensibilité de la souris 3D
+    if ((-pRz > 5) && (-pRz >= *precValueRZ) && (-pRz < 20)) {
+        k = k - 1;
+    }
+    else if ((-pRz >= 20) && (-pRz >= *precValueRZ) && (-pRz < 600)) {
+        k = k - 3;
     }
 
-    else if (k <= -360) {
-        k = 0;
+    else if ((-pRz < -5) && (-pRz <= *precValueRZ) && (-pRz > -20)) {
+        k = k + 1;
     }
-    else if (k >= 360) {
-        k = 0;
+    else if ((-pRz <= -20) && (-pRz <= *precValueRZ) && (-pRz > -600)) {
+        k = k + 3;
     }
-
 
     //Mémorisation de la valeur du NumImageTx
     *compteurRZ = k;
